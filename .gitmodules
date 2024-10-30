@@ -1,0 +1,3 @@
+[submodule "public/people-flow-data"]
+	path = public/people-flow-data
+	url = git@github.com:code4fukui/fukui-kanko-people-flow-data.git
