@@ -11,7 +11,7 @@ export default async function EstimatedGenderGraph(props: { place: Place; date: 
 
   const data = (await dataService.get(props.place, year, month, day))
     .filter((row) => row[1] === "Face")
-    .map((row) => (row[7] === "male" ? "男性" : row[7] === "female" ? "女性" : "その他"))
+    .map((row) => (row[6] === "male" ? "男性" : row[6] === "female" ? "女性" : "その他"))
     .reduce(
       (p: { answer: string; count: number }[][], c) => {
         if (!p[0].map((v) => v.answer).includes(c)) p[0].push({ answer: c, count: 0 });
@@ -39,7 +39,7 @@ export default async function EstimatedGenderGraph(props: { place: Place; date: 
   };
 
   return (
-    <Card title="推定された年齢の割合">
+    <Card title="推定された性別の割合">
       <Graph type="donut" series={options.series} options={options} />
     </Card>
   );

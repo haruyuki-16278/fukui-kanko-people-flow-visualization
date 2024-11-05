@@ -30,7 +30,8 @@ export default async function DetectedPeopleGraph(props: { place: Place; date: D
   };
 
   return (
-    <Card title="単位時間あたりの検出された人数">
+    <Card title={`単位時間あたりに人が検出された回数`}>
+      <p className="text-sm">{`合計: ${peopleAt.reduce((sum, v) => sum + v, 0)}回`}</p>
       <Graph type="bar" series={options.series} options={options} />
     </Card>
   );

@@ -30,7 +30,8 @@ export default async function DetectedFaceGraph(props: { place: Place; date: Dat
   };
 
   return (
-    <Card title="単位時間あたりの検出された人数">
+    <Card title="単位時間あたりに人の顔が検出された回数">
+      <p className="text-sm">{`合計: ${faceAt.reduce((sum, v) => sum + v, 0)}回`}</p>
       <Graph type="bar" series={options.series} options={options} />
     </Card>
   );

@@ -11,7 +11,7 @@ export default async function EstimatedAgeGraph(props: { place: Place; date: Dat
 
   const data = (await dataService.get(props.place, year, month, day))
     .filter((row) => row[1] === "Face")
-    .map((row) => `${row[5].toString().padStart(2, "0")}~${row[6].toString().padStart(2, "0")}`)
+    .map((row) => row[5].toString())
     .reduce(
       (p: { answer: string; count: number }[][], c) => {
         if (!p[0].map((v) => v.answer).includes(c)) p[0].push({ answer: c, count: 0 });
