@@ -5,9 +5,14 @@ import EstimatedGenderGraph from "@/components/graphs/estimated-gender.component
 
 const days = ["日", "月", "火", "水", "木", "金", "土"] as const;
 
-export default async function Home() {
-  const date = new Date();
-  date.setDate(date.getDate() - 1);
+export default async function byDate({
+  params,
+}: {
+  params: Promise<{ year: string; month: string; date: string }>;
+}) {
+  const date = new Date(
+    ((params) => `${params.year}-${params.month}-${params.date}`)(await params),
+  );
   const dateStr = `${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getDate().toString().padStart(2, "0")}(${days[date.getDay()]})`;
   return (
     <>
