@@ -3,8 +3,27 @@ import DetectedFaceGraph from "@/components/graphs/detected-face.component";
 import DetectedPeopleGraph from "@/components/graphs/detected-people.component";
 import EstimatedAgeGraph from "@/components/graphs/estimated-age.component";
 import EstimatedGenderGraph from "@/components/graphs/estimated-gender.component";
+import { DateService } from "@/services/date.service";
 
-export default async function byDate({
+export async function generateStaticParams() {
+  const now = new Date();
+  const routes = [];
+  for (
+    let i = new Date(DateService.minDate);
+    i.getTime() < now.getTime();
+    i.setDate(i.getDate() + 1)
+  ) {
+    routes.push({
+      year: i.getFullYear().toString(),
+      month: (i.getMonth() + 1).toString().padStart(2, "0"),
+      date: i.getDate().toString().padStart(2, "0"),
+    });
+  }
+
+  return routes;
+}
+
+export default async function page({
   params,
 }: {
   params: Promise<{ year: string; month: string; date: string }>;
