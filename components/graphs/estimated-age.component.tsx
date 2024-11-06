@@ -11,7 +11,7 @@ export default async function EstimatedAgeGraph(props: { place: Place; date: Dat
 
   const data = (await dataService.get(props.place, year, month, day))
     .filter((row) => row[1] === "Face")
-    .map((row) => row[5].toString())
+    .map((row) => row[5].replace(",", "~"))
     .reduce(
       (p: { answer: string; count: number }[][], c) => {
         if (!p[0].map((v) => v.answer).includes(c)) p[0].push({ answer: c, count: 0 });
@@ -20,7 +20,9 @@ export default async function EstimatedAgeGraph(props: { place: Place; date: Dat
       },
       [[]],
     )[0]
-    .sort((a, b) => Number(a.answer.slice(0, 2)) - Number(b.answer.slice(0, 2)));
+    .sort(
+      (a, b) => Number(a.answer.match(/(\d*)~\d*/)?.[1]) - Number(b.answer.match(/(\d*)~\d*/)?.[1]),
+    );
   const options = {
     series: data.map((v) => v.count),
     labels: data.map((v) => v.answer),

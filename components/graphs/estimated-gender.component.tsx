@@ -20,7 +20,7 @@ export default async function EstimatedGenderGraph(props: { place: Place; date: 
       },
       [[]],
     )[0]
-    .sort((a, b) => Number(a.answer.slice(0, 2)) - Number(b.answer.slice(0, 2)));
+    .sort((a, b) => (a.answer === "男性" ? 0 : 1) - (b.answer === "男性" ? 0 : 1));
   const options = {
     series: data.map((v) => v.count),
     labels: data.map((v) => v.answer),
