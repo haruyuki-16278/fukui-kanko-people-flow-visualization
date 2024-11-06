@@ -33,7 +33,7 @@ export default async function page({
   );
   return (
     <>
-      <DateNavigation currentDate={date}></DateNavigation>
+      <DateNavigation currentDate={date} className="mb-4"></DateNavigation>
       <article className="mb-4 flex flex-col items-center p-4">
         <h2 className="mb-2 text-xl font-bold">福井駅でのAIカメラによる解析</h2>
         <div className="grid h-full w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">

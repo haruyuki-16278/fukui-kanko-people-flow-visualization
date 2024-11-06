@@ -2,7 +2,7 @@ import { DateService } from "@/services/date.service";
 import { ChevronLeftIcon, ChevronRightIcon } from "@primer/octicons-react";
 import Link from "next/link";
 
-export default async function DateNavigation(props: { currentDate: Date }) {
+export default async function DateNavigation(props: { currentDate: Date; className?: string }) {
   const prevDate = ((currentDate) => {
     const res = new Date(currentDate);
     res.setDate(res.getDate() - 1);
@@ -17,7 +17,7 @@ export default async function DateNavigation(props: { currentDate: Date }) {
   const nextDateStr = DateService.dateStrOf(nextDate, "/");
 
   return (
-    <nav className="flex w-3/4 min-w-96 items-center justify-between">
+    <nav className={`flex w-3/4 min-w-96 items-center justify-between ${props.className}`}>
       {prevDate.getTime() >= DateService.minDate.getTime() ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-start text-primary underline transition-all hover:font-bold"
