@@ -31,6 +31,8 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: "Asia/Tokyo"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -51,7 +53,7 @@ jobs:
           #
           # You may remove this line if you want to manage the configuration yourself.
           static_site_generator: next
-          generator_config_file: next.config.mjs
+          generator_config_file: next.config.ts
       - name: Restore cache
         uses: actions/cache@v4
         with:
@@ -70,7 +72,6 @@ jobs:
           pnpm next build
         env:
           PAGES: true
-          TZ: "Asia/Tokyo"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
