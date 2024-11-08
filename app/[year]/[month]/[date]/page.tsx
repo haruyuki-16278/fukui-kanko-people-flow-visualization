@@ -6,11 +6,11 @@ import EstimatedGenderGraph from "@/components/graphs/estimated-gender.component
 import { DateService } from "@/services/date.service";
 
 export async function generateStaticParams() {
-  const now = new Date();
+  const yesterday = DateService.yesterday();
   const routes = [];
   for (
     let i = new Date(DateService.minDate);
-    i.getTime() < now.getTime();
+    i.getTime() < yesterday.getTime();
     i.setDate(i.getDate() + 1)
   ) {
     routes.push({
