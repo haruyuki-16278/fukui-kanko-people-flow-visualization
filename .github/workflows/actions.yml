@@ -41,7 +41,9 @@ jobs:
         run: git submodule update --remote --init
       - name: Run git status
         id: status
-        run: echo "{status}={$(git status -s)} >> $GITHUB_OUTPUT"
+        run: |
+          echo "{status}={$(git status -s)} >> $GITHUB_OUTPUT"
+          cat $GITHUB_OUTPUT
       - name: Add and Commit files
         run: |
           git add .
