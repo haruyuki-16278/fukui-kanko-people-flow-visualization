@@ -36,7 +36,7 @@ jobs:
           submodules: recursice
       - name: Update submodules
         id: update
-        run: git submodule update --remote --recursive
+        run: git submodule update --remote --init
       - name: Run git status
         id: status
         run: echo "{status}={$(git status -s)} >> $GITHUB_OUTPUT"
