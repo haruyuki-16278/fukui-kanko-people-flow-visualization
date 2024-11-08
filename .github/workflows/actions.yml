@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursice
+          submodules: recursive
       - name: Update submodules
         id: update
         run: git submodule update --remote --init
