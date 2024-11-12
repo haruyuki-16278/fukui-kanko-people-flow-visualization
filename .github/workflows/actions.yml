@@ -28,6 +28,7 @@ jobs:
   update:
     name: Update Submodules
     runs-on: ubuntu-latest
+    if: contains(${{ github.event.head_commit.message }}, '🤖')
     env:
       TZ: "Asia/Tokyo"
     permissions:
@@ -44,7 +45,7 @@ jobs:
           git add .
           git config --local user.email "actions@github.com"
           git config --local user.name "GitHub Actions"
-          git commit -m "Update submodules at $(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")"
+          git commit -m "🤖 Update submodules at $(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")"
       - name: Push changes
         run: |
           git pull --rebase
