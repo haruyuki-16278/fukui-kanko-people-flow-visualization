@@ -38,9 +38,8 @@ jobs:
           submodules: recursive
           token: ${{ secrets.WORKFLOW_TOKEN }}
       - name: Update submodules
-        run: git submodule update --remote --init
-      - name: Add and Commit files
         run: |
+          git submodule update --remote --init
           git diff
           git add .
           git config --local user.email "actions@github.com"
