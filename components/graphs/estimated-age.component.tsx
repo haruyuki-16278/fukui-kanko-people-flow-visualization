@@ -1,6 +1,7 @@
-import { DataService, Place } from "@/services/data.service";
+import { DataService } from "@/services/data.service";
 import Card from "../card.component";
 import { Graph } from "../graph.component";
+import { Place } from "@/interfaces/place.interface";
 
 export default async function EstimatedAgeGraph(props: { place: Place; date: Date }) {
   const dataService = new DataService();
