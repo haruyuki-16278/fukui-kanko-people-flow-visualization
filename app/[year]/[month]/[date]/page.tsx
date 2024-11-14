@@ -4,9 +4,9 @@ import DetectedLisencePlateGraph from "@/components/graphs/detected-license-plat
 import DetectedPeopleGraph from "@/components/graphs/detected-people.component";
 import EstimatedAgeGraph from "@/components/graphs/estimated-age.component";
 import EstimatedGenderGraph from "@/components/graphs/estimated-gender.component";
-import EstimatedPrefectureGraph from "@/components/graphs/estimated-prefecture.component";
 import EstimatedRentalCarGraph from "@/components/graphs/estimated-rental-car.component";
 import { DateService } from "@/services/date.service";
+import EstimatedARegionGraph from "@/components/graphs/estimated-a-region.component";
 
 export async function generateStaticParams() {
   const yesterday = DateService.yesterday();
@@ -60,12 +60,12 @@ export default async function page({
           レインボーライン第一駐車場入口でのAIカメラによる解析
         </h2>
         <div className="grid h-full w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <DetectedLisencePlateGraph place={"rainbow-one"} date={date} />
+          <EstimatedARegionGraph place={"rainbow-one"} date={date} />
+          <EstimatedRentalCarGraph place={"rainbow-one"} date={date} />
           <DetectedFaceGraph place={"rainbow-one"} date={date} />
           <EstimatedAgeGraph place={"rainbow-one"} date={date} />
           <EstimatedGenderGraph place={"rainbow-one"} date={date} />
-          <DetectedLisencePlateGraph place={"rainbow-one"} date={date} />
-          <EstimatedPrefectureGraph place={"rainbow-one"} date={date} />
-          <EstimatedRentalCarGraph place={"rainbow-one"} date={date} />
         </div>
       </article>
     </>

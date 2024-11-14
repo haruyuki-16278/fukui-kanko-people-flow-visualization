@@ -4,7 +4,7 @@ import Card from "../card.component";
 import { Graph } from "../graph.component";
 import { aRegionFromRegion } from "@/interfaces/license-plate.interface";
 
-export default async function EstimatedPrefectureGraph(props: { place: Place; date: Date }) {
+export default async function EstimatedARegionGraph(props: { place: Place; date: Date }) {
   const dataService = new DataService();
 
   const year = props.date.getFullYear();
@@ -23,7 +23,9 @@ export default async function EstimatedPrefectureGraph(props: { place: Place; da
       },
       [[]],
     )[0]
-    .sort((a, b) => b.count - a.count);
+    .sort((a, b) =>
+      a.answer === "不明" ? Infinity : b.answer === "不明" ? -Infinity : b.count - a.count,
+    );
 
   const options = {
     series: data.map((v) => v.count),

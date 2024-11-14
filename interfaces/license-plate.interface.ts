@@ -199,13 +199,13 @@ export const licensePlateRegions: { region: string; prefecture: Prefecture; aReg
   { region: "奄美", prefecture: "鹿児島県", aRegion: "九州" },
   { region: "沖縄", prefecture: "沖縄県", aRegion: "沖縄" },
 ] as const;
-export const prefFromRegion = (region: string): Prefecture | undefined => {
+export const prefFromRegion = (region: string): Prefecture | "不明" => {
   if (licensePlateRegions.map((v) => v.region).includes(region)) {
-    return licensePlateRegions.find((v) => v.region === region)?.prefecture;
-  } else return undefined;
+    return licensePlateRegions.find((v) => v.region === region)?.prefecture ?? "不明";
+  } else return "不明";
 };
-export const aRegionFromRegion = (region: string): ARegion | undefined => {
+export const aRegionFromRegion = (region: string): ARegion | "不明" => {
   if (licensePlateRegions.map((v) => v.region).includes(region)) {
-    return licensePlateRegions.find((v) => v.region === region)?.aRegion;
-  } else return undefined;
+    return licensePlateRegions.find((v) => v.region === region)?.aRegion ?? "不明";
+  } else return "不明";
 };
