@@ -1,8 +1,11 @@
 import DateNavigation from "@/components/date-navigation.component";
 import DetectedFaceGraph from "@/components/graphs/detected-face.component";
+import DetectedLisencePlateGraph from "@/components/graphs/detected-license-plate.component";
 import DetectedPeopleGraph from "@/components/graphs/detected-people.component";
 import EstimatedAgeGraph from "@/components/graphs/estimated-age.component";
 import EstimatedGenderGraph from "@/components/graphs/estimated-gender.component";
+import EstimatedPrefectureGraph from "@/components/graphs/estimated-prefecture.component";
+import EstimatedRentalCarGraph from "@/components/graphs/estimated-rental-car.component";
 import { DateService } from "@/services/date.service";
 
 export async function generateStaticParams() {
@@ -50,6 +53,19 @@ export default async function page({
           <DetectedFaceGraph place={"tojinbo"} date={date} />
           <EstimatedAgeGraph place={"tojinbo"} date={date} />
           <EstimatedGenderGraph place={"tojinbo"} date={date} />
+        </div>
+      </article>
+      <article className="mb-4 flex flex-col items-center p-4">
+        <h2 className="mb-2 text-xl font-bold">
+          レインボーライン第一駐車場入口でのAIカメラによる解析
+        </h2>
+        <div className="grid h-full w-full grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <DetectedFaceGraph place={"rainbow-one"} date={date} />
+          <EstimatedAgeGraph place={"rainbow-one"} date={date} />
+          <EstimatedGenderGraph place={"rainbow-one"} date={date} />
+          <DetectedLisencePlateGraph place={"rainbow-one"} date={date} />
+          <EstimatedPrefectureGraph place={"rainbow-one"} date={date} />
+          <EstimatedRentalCarGraph place={"rainbow-one"} date={date} />
         </div>
       </article>
     </>
