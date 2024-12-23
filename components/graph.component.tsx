@@ -29,52 +29,28 @@ export const graphTypes = [
  * クライアントでApexChartのグラフを表示するコンポーネント
  * @param props Apex ChartのChartコンポーネントにわたすプロパティ
  */
-export function Graph(props: Required<Pick<Props, "type" | "series" | "options">>) {
+export function Graph(
+  props: Required<Pick<Props, "type" | "series" | "options">> & {
+    size?: "large" | "medium" | "small";
+  },
+) {
   const [innerWidth, setInnerWidth] = useState(640);
   useEffect(() => {
     setInnerWidth(window.innerWidth);
   }, [setInnerWidth]);
   return (
-    <div className="relative grid h-fit w-[280px] place-content-center sm:h-[270px] sm:w-[360px]">
-      <div className="absolute left-0 top-0 grid h-fit w-[280px] place-content-center sm:h-[270px] sm:w-[360px]">
+    <div className={`relative grid h-fit w-[360px] place-content-center sm:h-[360px] sm:w-[480px]`}>
+      <div className="absolute left-0 top-0 grid h-fit w-[360px] place-content-center sm:h-[360px] sm:w-[480px]">
         <GraphIcon className="fill-surface animate-pulse" size="large" />
       </div>
       <Chart
-        className="absolute left-0 top-0 grid h-fit w-[280px] place-content-center bg-background sm:h-[270px] sm:w-[360px]"
+        className="absolute left-0 top-0 grid h-fit w-[360px] place-content-center bg-background sm:h-[360px] sm:w-[480px]"
         type={props?.type}
         series={props?.series}
-        height={innerWidth <= 640 ? 210 : 270}
-        width={innerWidth <= 640 ? 280 : 360}
+        height={innerWidth <= 640 ? 270 : 360}
+        width={innerWidth <= 640 ? 360 : 480}
         stroke={props?.type === "line" ? { curve: "smooth", width: 1 } : {}}
-        options={{
-          ...props?.options,
-          chart: { toolbar: { show: false } },
-          legend: { show: false },
-          dataLabels: ["pie", "donut"].includes(props.type)
-            ? {
-                enabled: true,
-                formatter: (_, opts) => {
-                  const name = String(opts.w.globals.labels[opts.seriesIndex]);
-                  return name;
-                },
-              }
-            : {},
-          plotOptions:
-            props.type === "donut"
-              ? {
-                  pie: {
-                    donut: {
-                      labels: {
-                        show: true,
-                        total: {
-                          show: true,
-                        },
-                      },
-                    },
-                  },
-                }
-              : {},
-        }}
+        options={props?.options}
       />
     </div>
   );

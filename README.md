@@ -17,3 +17,11 @@ pnpm dev
 ```
 
 ブラウザで [http://localhost:3000](http://localhost:3000) を開くことで起動された開発サーバーのビルド結果を閲覧できます。
+
+### gitサブモジュールの更新
+
+手元で最新データに更新したいときはサブモジュールで利用しているデータをupdateする必要があります。
+
+```bash
+git submodule update --remote
+```

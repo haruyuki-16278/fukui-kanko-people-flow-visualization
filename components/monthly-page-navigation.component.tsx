@@ -1,30 +1,45 @@
-import { DateService } from "@/services/date.service";
 import { ChevronLeftIcon, ChevronRightIcon } from "@primer/octicons-react";
 import Link from "next/link";
 
-export default async function DateNavigation(props: { currentDate: Date; className?: string }) {
-  const prevDate = ((currentDate) => {
-    const res = new Date(currentDate);
-    res.setDate(res.getDate() - 1);
-    return res;
-  })(props.currentDate);
-  const prevDateStr = DateService.dateStrOf(prevDate, "/");
-  const nextDate = ((currentDate) => {
-    const res = new Date(currentDate);
-    res.setDate(res.getDate() + 1);
-    return res;
-  })(props.currentDate);
-  const nextDateStr = DateService.dateStrOf(nextDate, "/");
+const startedAt = new Date("2024-10-01");
+const latestMonth = (() => {
+  const v = new Date();
+  v.setDate(1);
+  v.setHours(0);
+  v.setMinutes(0);
+  v.setSeconds(0);
+  v.setMilliseconds(0);
+  return v;
+})();
+
+export default async function MonthlyPageNavigation(props: {
+  year: string | number;
+  month: string | number;
+  className?: string;
+}) {
+  const current = new Date(`${props.year}-${props.month}-01`);
+  const prevAvailable = startedAt.getTime() < current.getTime();
+  const prevDate = (() => {
+    const v = new Date(current);
+    v.setMonth(v.getMonth() - 1);
+    return v;
+  })();
+  const nextAvailable = latestMonth.getTime() > current.getTime();
+  const nextDate = (() => {
+    const v = new Date(current);
+    v.setMonth(v.getMonth() + 1);
+    return v;
+  })();
 
   return (
     <nav className={`flex w-3/4 min-w-96 items-center justify-between ${props.className}`}>
-      {prevDate.getTime() >= DateService.minDate.getTime() ? (
+      {prevAvailable ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-start text-primary underline transition-all hover:font-bold"
-          href={"/" + prevDateStr}
+          href={`/monthly/${prevDate.getFullYear()}/${prevDate.getMonth() + 1}`}
         >
           <ChevronLeftIcon size={"medium"} className="group-hover:scale-110" />
-          {prevDateStr} {`(${DateService.dows[prevDate.getDay()]})`}
+          {`${prevDate.getFullYear()}年 ${prevDate.getMonth() + 1}月`}
         </Link>
       ) : (
         <span className="flex w-40 flex-shrink-[1] items-center justify-start text-gray-500">
@@ -33,15 +48,14 @@ export default async function DateNavigation(props: { currentDate: Date; classNa
         </span>
       )}
       <h2 className="flex-shrink-[1] text-center text-lg font-bold">
-        {DateService.dateStrOf(props.currentDate)}{" "}
-        {`(${DateService.dows[props.currentDate.getDay()]})`}
+        {`${current.getFullYear()}年 ${current.getMonth() + 1}月`}
       </h2>
-      {nextDate.getTime() <= new Date().getTime() - 1000 * 60 * 60 * 24 ? (
+      {nextAvailable ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-end text-primary underline transition-all hover:font-bold"
-          href={"/" + nextDateStr}
+          href={`/monthly/${nextDate.getFullYear()}/${nextDate.getMonth() + 1}`}
         >
-          {nextDateStr} {`(${DateService.dows[nextDate.getDay()]})`}
+          {`${nextDate.getFullYear()}年 ${nextDate.getMonth() + 1}月`}
           <ChevronRightIcon size={"medium"} className="group-hover:scale-110" />
         </Link>
       ) : (
