@@ -58,7 +58,7 @@ export default async function MonthlyEstimatedPrefectureGraph(props: {
       },
     },
     chart: {
-      type: "bar",
+      type: "bar" as const,
       stacked: true,
       zoom: {
         enabled: false,
@@ -73,7 +73,7 @@ export default async function MonthlyEstimatedPrefectureGraph(props: {
     plotOptions: {
       bar: {
         borderRadius: 4,
-        borderRadiusApplication: "end",
+        borderRadiusApplication: "end" as const,
       },
     },
     legend: {

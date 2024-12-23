@@ -51,7 +51,7 @@ export default async function MonthlyDetectedPersonGraph(props: {
       },
     },
     chart: {
-      type: "bar",
+      type: "bar" as const,
       zoom: {
         enabled: false,
       },
@@ -66,7 +66,7 @@ export default async function MonthlyDetectedPersonGraph(props: {
     plotOptions: {
       bar: {
         borderRadius: 4,
-        borderRadiusApplication: "end",
+        borderRadiusApplication: "end" as const,
       },
     },
     grid: {

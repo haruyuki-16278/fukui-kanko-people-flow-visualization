@@ -40,7 +40,7 @@ export default async function MonthlyEstimatedCarCategorySummaryGraph(props: {
     series: summary.map((v) => v.value),
     labels: summary.map((v) => v.name),
     chart: {
-      type: "donut",
+      type: "donut" as const,
       zoom: {
         enabled: false,
       },

@@ -40,7 +40,6 @@ export default async function MonthlyEstimatedPrefectureSummaryGraph(props: {
     series: summary.map((v) => v.value),
     labels: summary.map((v) => v.name),
     chart: {
-      type: "donut",
       zoom: {
         enabled: false,
       },

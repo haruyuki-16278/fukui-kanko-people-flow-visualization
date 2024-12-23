@@ -58,9 +58,9 @@ export default async function MonthlyEstimatedAgeGraph(props: {
       },
     },
     chart: {
-      type: "bar",
+      type: "bar" as const,
       stacked: true,
-      stackType: "100%",
+      stackType: "100%" as const,
       zoom: {
         enabled: false,
       },
@@ -74,7 +74,7 @@ export default async function MonthlyEstimatedAgeGraph(props: {
     plotOptions: {
       bar: {
         borderRadius: 4,
-        borderRadiusApplication: "end",
+        borderRadiusApplication: "end" as const,
       },
     },
     grid: {
