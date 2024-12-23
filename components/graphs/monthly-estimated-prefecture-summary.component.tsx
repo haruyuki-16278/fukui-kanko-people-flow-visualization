@@ -12,7 +12,7 @@ export default async function MonthlyEstimatedPrefectureSummaryGraph(props: {
   month: number;
 }) {
   const csvStr = readFileSync(
-    `${process.cwd()}/public/people-flow-data/monthly/${props.placement}/LicensePlate/${props.year}/${props.year}-${props.month}.csv`,
+    `${process.cwd()}/data/people-flow-data/monthly/${props.placement}/LicensePlate/${props.year}/${props.year}-${props.month}.csv`,
   ).toString();
   const data = Papa.parse<AggregatedData>(csvStr, { header: true }).data.slice(0, -1);
   // console.log(data);
