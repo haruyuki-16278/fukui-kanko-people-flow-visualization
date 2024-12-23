@@ -12,7 +12,7 @@ const latestMonth = (() => {
   return v;
 })();
 
-export default async function MonthlyPageNavigation(props: {
+export async function MonthlyPageNavigation(props: {
   year: string | number;
   month: string | number;
   className?: string;

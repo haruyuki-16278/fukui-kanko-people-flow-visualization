@@ -1,8 +1,7 @@
-"use server";
 import { Placement } from "@/interfaces/place.interface";
 import { readFileSync } from "fs";
 import Papa from "papaparse";
-import Card from "../card.component";
+import { Card } from "../card.component";
 import { Graph } from "../graph.component";
 import { AggregatedData } from "@/interfaces/aggregated-data.interface";
 
@@ -17,7 +16,7 @@ const dayColors = [
   "#b1e3fc",
 ];
 
-export default async function MonthlyEstimatedGenderGraph(props: {
+export async function MonthlyEstimatedGenderGraph(props: {
   placement: Placement;
   year: number;
   month: number;

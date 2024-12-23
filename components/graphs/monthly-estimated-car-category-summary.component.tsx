@@ -1,12 +1,11 @@
-"use server";
 import { Placement } from "@/interfaces/place.interface";
 import { readFileSync } from "fs";
 import Papa from "papaparse";
-import Card from "../card.component";
+import { Card } from "../card.component";
 import { Graph } from "../graph.component";
 import { AggregatedData, carCategories } from "@/interfaces/aggregated-data.interface";
 
-export default async function MonthlyEstimatedCarCategorySummaryGraph(props: {
+export async function MonthlyEstimatedCarCategorySummaryGraph(props: {
   placement: Placement;
   year: number;
   month: number;

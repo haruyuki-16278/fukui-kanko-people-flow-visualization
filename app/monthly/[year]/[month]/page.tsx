@@ -1,11 +1,11 @@
-import MonthlyDetectedPersonGraph from "@/components/graphs/monthly-detected-person.component";
-import MonthlyEstimatedAgeGraph from "@/components/graphs/monthly-estimated-age.component";
-import MonthlyEstimatedCarCategorySummaryGraph from "@/components/graphs/monthly-estimated-car-category-summary.component";
-import MonthlyEstimatedCarCategoryGraph from "@/components/graphs/monthly-estimated-car-category.component";
-import MonthlyEstimatedGenderGraph from "@/components/graphs/monthly-estimated-gender.component";
-import MonthlyEstimatedPrefectureSummaryGraph from "@/components/graphs/monthly-estimated-prefecture-summary.component";
-import MonthlyEstimatedPrefectureGraph from "@/components/graphs/monthly-estimated-prefecture.component";
-import MonthlyPageNavigation from "@/components/monthly-page-navigation.component";
+import { MonthlyDetectedPersonGraph } from "@/components/graphs/monthly-detected-person.component";
+import { MonthlyEstimatedAgeGraph } from "@/components/graphs/monthly-estimated-age.component";
+import { MonthlyEstimatedCarCategorySummaryGraph } from "@/components/graphs/monthly-estimated-car-category-summary.component";
+import { MonthlyEstimatedCarCategoryGraph } from "@/components/graphs/monthly-estimated-car-category.component";
+import { MonthlyEstimatedGenderGraph } from "@/components/graphs/monthly-estimated-gender.component";
+import { MonthlyEstimatedPrefectureSummaryGraph } from "@/components/graphs/monthly-estimated-prefecture-summary.component";
+import { MonthlyEstimatedPrefectureGraph } from "@/components/graphs/monthly-estimated-prefecture.component";
+import { MonthlyPageNavigation } from "@/components/monthly-page-navigation.component";
 
 export async function generateStaticParams() {
   const routes = [];
