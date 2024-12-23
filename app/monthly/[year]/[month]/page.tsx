@@ -7,8 +7,28 @@ import MonthlyEstimatedPrefectureSummaryGraph from "@/components/graphs/monthly-
 import MonthlyEstimatedPrefectureGraph from "@/components/graphs/monthly-estimated-prefecture.component";
 import MonthlyPageNavigation from "@/components/monthly-page-navigation.component";
 
-export default async function Home() {
-  const date = new Date();
+export async function generateStaticParams() {
+  const routes = [];
+  for (
+    let i = new Date("2024-10-01");
+    i.getTime() < new Date().getTime();
+    i.setMonth(i.getMonth() + 1)
+  ) {
+    routes.push({
+      year: i.getFullYear().toString(),
+      month: (i.getMonth() + 1).toString().padStart(2, "0"),
+    });
+  }
+
+  return routes;
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ year: string; month: string }>;
+}) {
+  const date = new Date(((params) => `${params.year}-${params.month}-01`)(await params));
   return (
     <>
       <MonthlyPageNavigation year={date.getFullYear()} month={date.getMonth() + 1} />
