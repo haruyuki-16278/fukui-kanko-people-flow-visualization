@@ -17,6 +17,7 @@ export async function MonthlyPageNavigation(props: {
   month: string | number;
   className?: string;
 }) {
+  const now = new Date();
   const current = new Date(`${props.year}-${props.month}-01`);
   const prevAvailable = startedAt.getTime() < current.getTime();
   const prevDate = (() => {
@@ -53,7 +54,11 @@ export async function MonthlyPageNavigation(props: {
       {nextAvailable ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-end text-primary underline transition-all hover:font-bold"
-          href={`/monthly/${nextDate.getFullYear()}/${nextDate.getMonth() + 1}`}
+          href={
+            now.getFullYear() === nextDate.getFullYear() && now.getMonth() === nextDate.getMonth()
+              ? "/"
+              : `/monthly/${nextDate.getFullYear()}/${nextDate.getMonth() + 1}`
+          }
         >
           {`${nextDate.getFullYear()}年 ${nextDate.getMonth() + 1}月`}
           <ChevronRightIcon size={"medium"} className="group-hover:scale-110" />
