@@ -1,0 +1,44 @@
+name: Update Submodule
+
+on:
+  # 手動実行
+  workflow_dispatch:
+  # mainブランチへのpush
+  push:
+    branches: ["main"]
+  # 定期実行
+  schedule:
+    # UTCで実行されているのでJST AM0時過ぎに実行される
+    - cron: "8 15 * * *"
+
+jobs:
+  # サブモジュールの更新
+  update:
+    name: Update Submodules
+    runs-on: ubuntu-latest
+    if: "!startsWith(${{ github.event.head_commit.message }}, '🤖')"
+    env:
+      TZ: "Asia/Tokyo"
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+      - name: Update submodules
+        run: |
+          git submodule update --remote --init
+          git diff
+          git add .
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          if [ $(git status -s | wc -l) -eq 0 ]; then
+            echo "already updated."
+          else
+            git commit -m "🤖 Update submodules at $(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")"
+          fi
+      - name: Push changes
+        run: |
+          git pull --rebase
+          git push origin main
