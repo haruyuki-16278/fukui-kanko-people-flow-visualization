@@ -53,6 +53,15 @@ export function Graph(
         options={{
           ...props?.options,
           chart: { ...props?.options?.chart, animations: { enabled: false } },
+          dataLabels: {
+            ...props.options.dataLabels,
+            formatter: ["pie", "donut"].includes(props.type)
+              ? (val, opts) => {
+                  const name = opts.w.globals.labels[opts.seriesIndex];
+                  return [name, Number(val).toFixed(1) + "%"] as unknown as string;
+                }
+              : undefined,
+          },
         }}
       />
     </div>
