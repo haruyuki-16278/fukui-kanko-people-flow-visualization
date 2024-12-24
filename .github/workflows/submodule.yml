@@ -3,9 +3,6 @@ name: Update Submodule
 on:
   # 手動実行
   workflow_dispatch:
-  # mainブランチへのpush
-  push:
-    branches: ["main"]
   # 定期実行
   schedule:
     # UTCで実行されているのでJST AM0時過ぎに実行される
@@ -16,7 +13,6 @@ jobs:
   update:
     name: Update Submodules
     runs-on: ubuntu-latest
-    if: "!startsWith(${{ github.event.head_commit.message }}, '🤖')"
     env:
       TZ: "Asia/Tokyo"
     permissions:
