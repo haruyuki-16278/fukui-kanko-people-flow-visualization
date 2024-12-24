@@ -7,7 +7,7 @@ export default async function Home() {
   const date = new Date();
   return (
     <>
-      <article className="grid grid-cols-1 lg:grid-cols-2">
+      <article className="flex flex-wrap justify-center gap-4">
         <div className="mb-4 flex flex-col items-center p-4">
           <h2 className="mb-2 text-xl font-bold">福井駅東口（観光案内所前）</h2>
           <MonthlyDetectedPersonGraph
