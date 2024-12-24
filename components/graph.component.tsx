@@ -42,7 +42,7 @@ export function Graph(
     <div
       className={`relative grid h-[180px] w-[240px] place-content-center sm:h-[360px] sm:w-[480px]`}
     >
-      <div className="absolute left-0 top-0 grid h-fit w-[240px] place-content-center sm:h-[360px] sm:w-[480px]">
+      <div className="absolute left-0 top-0 grid h-[180px] w-[240px] place-content-center sm:h-[360px] sm:w-[480px]">
         <GraphIcon className="fill-surface animate-pulse" size="large" />
       </div>
       <Chart

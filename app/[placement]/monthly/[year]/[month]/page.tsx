@@ -44,7 +44,7 @@ export default async function Page({
       {(await params).placement === "fukui-station-east-entrance" ? (
         <article className="mb-4 flex flex-col items-center p-4">
           <h2 className="mb-2 text-xl font-bold">福井駅東口（観光案内所前）</h2>
-          <div className="grid h-full w-full grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="flex flex-wrap justify-center gap-4">
             <MonthlyDetectedPersonGraph
               placement="fukui-station-east-entrance"
               year={date.getFullYear()}
@@ -65,7 +65,7 @@ export default async function Page({
       ) : (await params).placement === "tojinbo-shotaro" ? (
         <article className="mb-4 flex flex-col items-center p-4">
           <h2 className="mb-2 text-xl font-bold">東尋坊</h2>
-          <div className="grid h-full w-full grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="flex flex-wrap justify-center gap-4">
             <MonthlyDetectedPersonGraph
               placement="tojinbo-shotaro"
               year={date.getFullYear()}
@@ -86,7 +86,7 @@ export default async function Page({
       ) : (await params).placement === "rainbow-line-parking-lot-1-gate" ? (
         <article className="mb-4 flex flex-col items-center p-4">
           <h2 className="mb-2 text-xl font-bold">レインボーライン第一駐車場</h2>
-          <div className="grid h-full w-full grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="flex flex-wrap justify-center gap-4">
             <MonthlyEstimatedPrefectureGraph
               placement="rainbow-line-parking-lot-1-gate"
               year={date.getFullYear()}
@@ -112,7 +112,7 @@ export default async function Page({
       ) : (await params).placement === "rainbow-line-parking-lot-2-gate" ? (
         <article className="mb-4 flex flex-col items-center p-4">
           <h2 className="mb-2 text-xl font-bold">レインボーライン第二駐車場</h2>
-          <div className="grid h-full w-full grid-cols-1 gap-4 xl:grid-cols-2">
+          <div className="flex flex-wrap justify-center gap-4">
             <MonthlyEstimatedPrefectureGraph
               placement="rainbow-line-parking-lot-2-gate"
               year={date.getFullYear()}
