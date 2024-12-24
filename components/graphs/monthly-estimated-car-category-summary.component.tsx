@@ -47,8 +47,8 @@ export async function MonthlyEstimatedCarCategorySummaryGraph(props: {
         show: false,
       },
     },
-    dataLabels: {
-      enabled: false,
+    legend: {
+      show: false,
     },
     plotOptions: {
       pie: {
@@ -65,8 +65,11 @@ export async function MonthlyEstimatedCarCategorySummaryGraph(props: {
   };
 
   return (
-    <Card title="検出されたナンバープレートの地域">
-      <Graph type="donut" series={options.series} options={options}></Graph>
+    <Card
+      title="一ヶ月の累計台数 車の用途別割合"
+      information="AIカメラによるナンバープレートの ひらがな/ローマ字 の分析結果をもとに集計しています"
+    >
+      <Graph type="donut" series={options.series} options={options} />
     </Card>
   );
 }

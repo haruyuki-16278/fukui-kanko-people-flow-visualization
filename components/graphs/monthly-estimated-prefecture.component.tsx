@@ -27,7 +27,7 @@ export async function MonthlyEstimatedPrefectureGraph(props: {
   const data = Papa.parse<AggregatedData>(csvStr, { header: true }).data.slice(0, -1);
   // console.log(data);
 
-  const firstDayDow = new Date(props.year, props.month - 1).getDay();
+  const firstDayDow = new Date(data[0]["aggregate from"]).getDay();
   const options = {
     series: Object.entries(prefectures).map(([k, v]) => {
       return {
@@ -43,9 +43,6 @@ export async function MonthlyEstimatedPrefectureGraph(props: {
       };
     }),
     xaxis: {
-      title: {
-        text: "日付",
-      },
       categories: data.map((v) => {
         const date = new Date(v["aggregate from"]);
         return `${date.getMonth() + 1}/${date.getDate()} (${days[date.getDay()]})`;
@@ -53,7 +50,7 @@ export async function MonthlyEstimatedPrefectureGraph(props: {
     },
     yaxis: {
       title: {
-        text: "割合",
+        text: "台数",
       },
     },
     chart: {
@@ -92,8 +89,11 @@ export async function MonthlyEstimatedPrefectureGraph(props: {
   };
 
   return (
-    <Card title="検出されたナンバープレートの地域">
-      <Graph type="bar" series={options.series} options={options}></Graph>
+    <Card
+      title="車の検出回数 日別/地域別"
+      information="AIカメラによるナンバープレートの検出・分析結果をもとに集計・分類しています"
+    >
+      <Graph type="bar" series={options.series} options={options} />
     </Card>
   );
 }

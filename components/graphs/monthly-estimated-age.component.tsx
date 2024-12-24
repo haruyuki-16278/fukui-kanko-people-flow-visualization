@@ -27,7 +27,7 @@ export async function MonthlyEstimatedAgeGraph(props: {
   const data = Papa.parse<AggregatedData>(csvStr, { header: true }).data.slice(0, -1);
   // console.log(data);
 
-  const firstDayDow = new Date(props.year, props.month - 1).getDay();
+  const firstDayDow = new Date(data[0]["aggregate from"]).getDay();
   const options = {
     series: Object.entries(ageRanges).map(([k, v]) => {
       return {
@@ -43,9 +43,6 @@ export async function MonthlyEstimatedAgeGraph(props: {
       };
     }),
     xaxis: {
-      title: {
-        text: "日付",
-      },
       categories: data.map((v) => {
         const date = new Date(v["aggregate from"]);
         return `${date.getMonth() + 1}/${date.getDate()} (${days[date.getDay()]})`;
@@ -53,7 +50,7 @@ export async function MonthlyEstimatedAgeGraph(props: {
     },
     yaxis: {
       title: {
-        text: "割合",
+        text: "割合 [%]",
       },
     },
     chart: {
@@ -90,7 +87,10 @@ export async function MonthlyEstimatedAgeGraph(props: {
   };
 
   return (
-    <Card title="検出された顔の年齢推定">
+    <Card
+      title="推定された年齢の割合 日別"
+      information="AIカメラによる顔検出結果をもとに集計しています"
+    >
       <Graph type="bar" series={options.series} options={options}></Graph>
     </Card>
   );

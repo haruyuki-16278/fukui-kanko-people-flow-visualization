@@ -46,9 +46,6 @@ export async function MonthlyEstimatedPrefectureSummaryGraph(props: {
         show: false,
       },
     },
-    dataLabels: {
-      enabled: false,
-    },
     plotOptions: {
       pie: {
         donut: {
@@ -64,8 +61,11 @@ export async function MonthlyEstimatedPrefectureSummaryGraph(props: {
   };
 
   return (
-    <Card title="検出されたナンバープレートの地域">
-      <Graph type="donut" series={options.series} options={options}></Graph>
+    <Card
+      title="一ヶ月の累計台数 ナンバープレートの地域名別"
+      information="AIカメラによるナンバープレートの検出・分析結果をもとに集計・分類しています"
+    >
+      <Graph type="donut" series={options.series} options={options} />
     </Card>
   );
 }

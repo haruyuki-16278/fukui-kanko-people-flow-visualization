@@ -27,7 +27,7 @@ export async function MonthlyDetectedPersonGraph(props: {
   const data = Papa.parse<AggregatedData>(csvStr, { header: true }).data.slice(0, -1);
   // console.log(data);
 
-  const firstDayDow = new Date(props.year, props.month - 1).getDay();
+  const firstDayDow = new Date(data[0]["aggregate from"]).getDay();
   const options = {
     series: [
       {
@@ -36,9 +36,6 @@ export async function MonthlyDetectedPersonGraph(props: {
       },
     ],
     xaxis: {
-      title: {
-        text: "日付",
-      },
       categories: data.map((v) => {
         const date = new Date(v["aggregate from"]);
         return `${date.getMonth() + 1}/${date.getDate()} (${days[date.getDay()]})`;
@@ -46,7 +43,7 @@ export async function MonthlyDetectedPersonGraph(props: {
     },
     yaxis: {
       title: {
-        text: "検出数",
+        text: "検出回数",
       },
     },
     chart: {
@@ -82,7 +79,7 @@ export async function MonthlyDetectedPersonGraph(props: {
   };
 
   return (
-    <Card title="人が検出された回数">
+    <Card title="人の検出回数" information="AIカメラによる人物の検出結果をもとに集計しています">
       <Graph type="bar" series={options.series} options={options}></Graph>
     </Card>
   );
