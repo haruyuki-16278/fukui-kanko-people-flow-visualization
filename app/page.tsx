@@ -77,6 +77,31 @@ export default async function Home() {
           ></MonthlyEstimatedCarCategorySummaryGraph>
         </div>
       </article>
+      <article className="mb-4 flex flex-col items-center p-4">
+        <h2 className="mb-2 text-xl font-bold">レインボーライン第二駐車場</h2>
+        <div className="grid h-full w-full grid-cols-1 gap-4 xl:grid-cols-2">
+          <MonthlyEstimatedPrefectureGraph
+            placement="rainbow-line-parking-lot-2-gate"
+            year={date.getFullYear()}
+            month={date.getMonth() + 1}
+          ></MonthlyEstimatedPrefectureGraph>
+          <MonthlyEstimatedPrefectureSummaryGraph
+            placement="rainbow-line-parking-lot-2-gate"
+            year={date.getFullYear()}
+            month={date.getMonth() + 1}
+          ></MonthlyEstimatedPrefectureSummaryGraph>
+          <MonthlyEstimatedCarCategoryGraph
+            placement="rainbow-line-parking-lot-2-gate"
+            year={date.getFullYear()}
+            month={date.getMonth() + 1}
+          ></MonthlyEstimatedCarCategoryGraph>
+          <MonthlyEstimatedCarCategorySummaryGraph
+            placement="rainbow-line-parking-lot-2-gate"
+            year={date.getFullYear()}
+            month={date.getMonth() + 1}
+          ></MonthlyEstimatedCarCategorySummaryGraph>
+        </div>
+      </article>
     </>
   );
 }
