@@ -73,8 +73,8 @@ export const prefectures = {
 };
 
 export const carCategories = {
-  PassengerCars: "乗用車",
-  CommercialVehicle: "商用車",
+  PassengerCars: "自家用車",
+  CommercialVehicle: "事業用車",
   RentACar: "レンタカー",
   Other: "その他",
 };
