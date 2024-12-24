@@ -92,6 +92,7 @@ export async function MonthlyEstimatedPrefectureGraph(props: {
     <Card
       title="車の検出回数 日別/地域別"
       information="AIカメラによるナンバープレートの検出・分析結果をもとに集計・分類しています"
+      sourceUrl={`https://github.com/code4fukui/fukui-kanko-people-flow-data/blob/main/monthly/${props.placement}/LicensePlate/${props.year}/${props.year}-${props.month}.csv`}
     >
       <Graph type="bar" series={options.series} options={options} />
     </Card>

@@ -68,6 +68,7 @@ export async function MonthlyEstimatedCarCategorySummaryGraph(props: {
     <Card
       title="一ヶ月の累計台数 車の用途別割合"
       information="AIカメラによるナンバープレートの ひらがな/ローマ字 の分析結果をもとに集計しています"
+      sourceUrl={`https://github.com/code4fukui/fukui-kanko-people-flow-data/blob/main/monthly/${props.placement}/LicensePlate/${props.year}/${props.year}-${props.month}.csv`}
     >
       <Graph type="donut" series={options.series} options={options} />
     </Card>

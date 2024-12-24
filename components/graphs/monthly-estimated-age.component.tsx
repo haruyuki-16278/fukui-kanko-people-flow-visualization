@@ -90,6 +90,7 @@ export async function MonthlyEstimatedAgeGraph(props: {
     <Card
       title="推定された年齢の割合 日別"
       information="AIカメラによる顔検出結果をもとに集計しています"
+      sourceUrl={`https://github.com/code4fukui/fukui-kanko-people-flow-data/blob/main/monthly/${props.placement}/Face/${props.year}/${props.year}-${props.month}.csv`}
     >
       <Graph type="bar" series={options.series} options={options}></Graph>
     </Card>
