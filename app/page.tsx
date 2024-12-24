@@ -39,7 +39,7 @@ export default async function Home() {
           </Link>
         </div>
         <div className="mb-4 flex flex-col items-center p-4">
-          <h2 className="mb-2 text-xl font-bold">レインボーライン第一駐車場</h2>
+          <h2 className="mb-2 text-xl font-bold">レインボーライン</h2>
           <MonthlyEstimatedPrefectureGraph
             placement="rainbow-line-parking-lot-1-gate"
             year={date.getFullYear()}
