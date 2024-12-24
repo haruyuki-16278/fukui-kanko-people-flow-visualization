@@ -23,12 +23,18 @@ export default function RootLayout({
       <body className="flex min-h-screen flex-col items-center justify-center p-4 antialiased">
         <header className="border-separator flex h-fit w-full items-center justify-start gap-x-2 border-b-2 pb-2">
           <Link
-            className="flex h-fit w-fit items-center justify-start gap-x-2 no-underline"
+            className="group flex h-fit w-fit items-center justify-start gap-x-2 no-underline"
             href="/"
             rel="noopener noreferrer"
           >
-            <GraphIcon size="medium" verticalAlign="top" className="fill-primary" />
-            <h1 className="text-2xl font-bold">福井観光DX:グラフ</h1>
+            <GraphIcon
+              size="medium"
+              verticalAlign="top"
+              className="group-hover:scale-120 fill-primary transition-all"
+            />
+            <h1 className="text-2xl font-bold transition-all group-hover:scale-110 group-hover:underline">
+              福井観光DX:グラフ
+            </h1>
           </Link>
         </header>
         <main className="flex h-full w-full flex-grow flex-col items-center p-4">{children}</main>
