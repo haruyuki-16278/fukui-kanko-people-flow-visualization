@@ -50,7 +50,10 @@ export function Graph(
         height={innerWidth <= 640 ? 270 : 360}
         width={innerWidth <= 640 ? 360 : 480}
         stroke={props?.type === "line" ? { curve: "smooth", width: 1 } : {}}
-        options={props?.options}
+        options={{
+          ...props?.options,
+          chart: { ...props?.options?.chart, animations: { enabled: false } },
+        }}
       />
     </div>
   );
