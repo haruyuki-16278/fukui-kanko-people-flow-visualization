@@ -39,16 +39,18 @@ export function Graph(
     setInnerWidth(window.innerWidth);
   }, [setInnerWidth]);
   return (
-    <div className={`relative grid h-fit w-[360px] place-content-center sm:h-[360px] sm:w-[480px]`}>
-      <div className="absolute left-0 top-0 grid h-fit w-[360px] place-content-center sm:h-[360px] sm:w-[480px]">
+    <div
+      className={`relative grid h-[180px] w-[240px] place-content-center sm:h-[360px] sm:w-[480px]`}
+    >
+      <div className="absolute left-0 top-0 grid h-fit w-[240px] place-content-center sm:h-[360px] sm:w-[480px]">
         <GraphIcon className="fill-surface animate-pulse" size="large" />
       </div>
       <Chart
-        className="absolute left-0 top-0 grid h-fit w-[360px] place-content-center bg-background sm:h-[360px] sm:w-[480px]"
+        className="absolute left-0 top-0 grid h-[180px] w-[240px] place-content-center bg-background sm:h-[360px] sm:w-[480px]"
         type={props?.type}
         series={props?.series}
-        height={innerWidth <= 640 ? 270 : 360}
-        width={innerWidth <= 640 ? 360 : 480}
+        height={innerWidth <= 640 ? 180 : 360}
+        width={innerWidth <= 640 ? 240 : 480}
         stroke={props?.type === "line" ? { curve: "smooth", width: 1 } : {}}
         options={{
           ...props?.options,

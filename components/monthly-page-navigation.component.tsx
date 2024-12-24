@@ -49,7 +49,9 @@ export async function MonthlyPageNavigation(props: {
         </span>
       )}
       <h2 className="flex-shrink-[1] text-center text-lg font-bold">
-        {`${current.getFullYear()}年 ${current.getMonth() + 1}月`}
+        {`${current.getFullYear()}年`}
+        <wbr />
+        {`${current.getMonth() + 1}月`}
       </h2>
       {nextAvailable ? (
         <Link
