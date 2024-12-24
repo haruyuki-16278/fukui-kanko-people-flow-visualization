@@ -1,3 +1,4 @@
+import { Placement } from "@/interfaces/place.interface";
 import { ChevronLeftIcon, ChevronRightIcon } from "@primer/octicons-react";
 import Link from "next/link";
 
@@ -13,11 +14,11 @@ const latestMonth = (() => {
 })();
 
 export async function MonthlyPageNavigation(props: {
+  placement: Placement;
   year: string | number;
   month: string | number;
   className?: string;
 }) {
-  const now = new Date();
   const current = new Date(`${props.year}-${props.month}-01`);
   const prevAvailable = startedAt.getTime() < current.getTime();
   const prevDate = (() => {
@@ -37,7 +38,7 @@ export async function MonthlyPageNavigation(props: {
       {prevAvailable ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-start text-primary underline transition-all hover:font-bold"
-          href={`/monthly/${prevDate.getFullYear()}/${prevDate.getMonth() + 1}`}
+          href={`/${props.placement}/monthly/${prevDate.getFullYear()}/${prevDate.getMonth() + 1}`}
         >
           <ChevronLeftIcon size={"medium"} className="group-hover:scale-110" />
           {`${prevDate.getFullYear()}年 ${prevDate.getMonth() + 1}月`}
@@ -56,11 +57,7 @@ export async function MonthlyPageNavigation(props: {
       {nextAvailable ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-end text-primary underline transition-all hover:font-bold"
-          href={
-            now.getFullYear() === nextDate.getFullYear() && now.getMonth() === nextDate.getMonth()
-              ? "/"
-              : `/monthly/${nextDate.getFullYear()}/${nextDate.getMonth() + 1}`
-          }
+          href={`/${props.placement}/monthly/${nextDate.getFullYear()}/${nextDate.getMonth() + 1}`}
         >
           {`${nextDate.getFullYear()}年 ${nextDate.getMonth() + 1}月`}
           <ChevronRightIcon size={"medium"} className="group-hover:scale-110" />
