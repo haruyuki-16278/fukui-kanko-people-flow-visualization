@@ -6,10 +6,6 @@ on:
   # mainブランチへのpush
   push:
     branches: ["main"]
-  # 定期実行
-  schedule:
-    # UTCで実行されているのでJST AM1時過ぎに実行される
-    - cron: "8 16 * * *"
 
 # GitHub Pagesへのデプロイを許可
 permissions:
