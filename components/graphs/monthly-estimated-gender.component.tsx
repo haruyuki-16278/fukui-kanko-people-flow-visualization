@@ -114,7 +114,7 @@ export async function MonthlyEstimatedGenderGraph(props: {
     <Card
       title="推定された性別の割合 日別"
       information="AIカメラによる顔検出結果をもとに集計しています"
-      sourceUrl={`https://github.com/code4fukui/fukui-kanko-people-flow-data/blob/main/monthly/${props.placement}/Face/${props.year}/${props.year}-${props.month}.csv`}
+      sourceUrl={`https://github.com/code4fukui/fukui-kanko-people-flow-data/blob/main/monthly/${props.placement}/Face/${props.year}/${props.year}-${props.month.toString().padStart(2, "0")}.csv`}
     >
       <Graph type="bar" series={options.series} options={options}></Graph>
     </Card>

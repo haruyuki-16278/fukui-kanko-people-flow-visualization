@@ -82,7 +82,7 @@ export async function MonthlyDetectedPersonGraph(props: {
     <Card
       title="人の検出回数"
       information="AIカメラによる人物の検出結果をもとに集計しています"
-      sourceUrl={`https://github.com/code4fukui/fukui-kanko-people-flow-data/blob/main/monthly/${props.placement}/Person/${props.year}/${props.year}-${props.month}.csv`}
+      sourceUrl={`https://github.com/code4fukui/fukui-kanko-people-flow-data/blob/main/monthly/${props.placement}/Person/${props.year}/${props.year}-${props.month.toString().padStart(2, "0")}.csv`}
     >
       <Graph type="bar" series={options.series} options={options}></Graph>
     </Card>
