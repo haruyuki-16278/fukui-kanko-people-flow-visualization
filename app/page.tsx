@@ -16,7 +16,7 @@ export default async function Home() {
             month={date.getMonth() + 1}
           ></MonthlyDetectedPersonGraph>
           <Link
-            href={`/fukui-station-east-entrance/monthly/${date.getFullYear()}/${date.getMonth() + 1}`}
+            href={`/fukui-station-east-entrance/monthly/${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, "0")}`}
             className="mt-4 flex items-center underline hover:font-bold hover:text-primary"
           >
             福井駅のデータを詳しく見る
@@ -31,7 +31,7 @@ export default async function Home() {
             month={date.getMonth() + 1}
           ></MonthlyDetectedPersonGraph>
           <Link
-            href={`/tojinbo-shotaro/monthly/${date.getFullYear()}/${date.getMonth() + 1}`}
+            href={`/tojinbo-shotaro/monthly/${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, "0")}`}
             className="mt-4 flex items-center underline hover:font-bold hover:text-primary"
           >
             東尋坊のデータを詳しく見る
@@ -46,14 +46,14 @@ export default async function Home() {
             month={date.getMonth() + 1}
           ></MonthlyEstimatedPrefectureGraph>
           <Link
-            href={`/rainbow-line-parking-lot-1-gate/monthly/${date.getFullYear()}/${date.getMonth() + 1}`}
+            href={`/rainbow-line-parking-lot-1-gate/monthly/${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, "0")}`}
             className="mt-4 flex items-center underline hover:font-bold hover:text-primary"
           >
             レインボーライン第一駐車場のデータを詳しく見る
             <ChevronRightIcon size={"medium"} />
           </Link>
           <Link
-            href={`/rainbow-line-parking-lot-2-gate/monthly/${date.getFullYear()}/${date.getMonth() + 1}`}
+            href={`/rainbow-line-parking-lot-2-gate/monthly/${date.getFullYear()}/${(date.getMonth() + 1).toString().padStart(2, "0")}`}
             className="mt-4 flex items-center underline hover:font-bold hover:text-primary"
           >
             レインボーライン第二駐車場のデータを詳しく見る

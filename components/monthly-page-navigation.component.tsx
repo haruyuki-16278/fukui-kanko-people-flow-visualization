@@ -38,7 +38,7 @@ export async function MonthlyPageNavigation(props: {
       {prevAvailable ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-start text-primary underline transition-all hover:font-bold"
-          href={`/${props.placement}/monthly/${prevDate.getFullYear()}/${prevDate.getMonth() + 1}`}
+          href={`/${props.placement}/monthly/${prevDate.getFullYear()}/${(prevDate.getMonth() + 1).toString().padStart(2, "0")}`}
         >
           <ChevronLeftIcon size={"medium"} className="group-hover:scale-110" />
           {`${prevDate.getFullYear()}年 ${prevDate.getMonth() + 1}月`}
@@ -57,7 +57,7 @@ export async function MonthlyPageNavigation(props: {
       {nextAvailable ? (
         <Link
           className="group flex w-40 flex-shrink-[1] items-center justify-end text-primary underline transition-all hover:font-bold"
-          href={`/${props.placement}/monthly/${nextDate.getFullYear()}/${nextDate.getMonth() + 1}`}
+          href={`/${props.placement}/monthly/${nextDate.getFullYear()}/${(nextDate.getMonth() + 1).toString().padStart(2, "0")}`}
         >
           {`${nextDate.getFullYear()}年 ${nextDate.getMonth() + 1}月`}
           <ChevronRightIcon size={"medium"} className="group-hover:scale-110" />

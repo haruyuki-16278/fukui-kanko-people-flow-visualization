@@ -22,7 +22,7 @@ export async function MonthlyDetectedPersonGraph(props: {
   month: number;
 }) {
   const csvStr = readFileSync(
-    `${process.cwd()}/data/people-flow-data/monthly/${props.placement}/Person/${props.year}/${props.year}-${props.month}.csv`,
+    `${process.cwd()}/data/people-flow-data/monthly/${props.placement}/Person/${props.year}/${props.year}-${props.month.toString().padStart(2, "0")}.csv`,
   ).toString();
   const data = Papa.parse<AggregatedData>(csvStr, { header: true }).data.slice(0, -1);
   // console.log(data);
