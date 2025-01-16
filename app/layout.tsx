@@ -1,6 +1,6 @@
+import { ExternalNavigaton } from "@/components/parts/external-navigation.component";
 import "./globals.css";
-import { GraphIcon, MarkGithubIcon } from "@primer/octicons-react";
-import Image from "next/image";
+import { GraphIcon } from "@primer/octicons-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 
@@ -21,7 +21,7 @@ export default function RootLayout({
         <link rel="icon" href="data:image/x-icon;," />
       </head>
       <body className="flex min-h-screen flex-col items-center justify-center p-4 antialiased">
-        <header className="border-separator flex h-fit w-full items-center justify-start gap-x-2 border-b-2 pb-2">
+        <header className="border-separator flex h-fit w-full items-center justify-between gap-x-2 border-b-2 pb-2">
           <Link
             className="group flex h-fit w-fit items-center justify-start gap-x-2 no-underline"
             href="/"
@@ -36,31 +36,9 @@ export default function RootLayout({
               福井観光DX:グラフ
             </h1>
           </Link>
+          <ExternalNavigaton />
         </header>
         <main className="flex h-full w-full flex-grow flex-col items-center p-4">{children}</main>
-        <footer className="border-separator flex h-fit w-full flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t-2 pt-2">
-          <a className="flex items-center gap-2" href="" target="_blank">
-            <MarkGithubIcon size="medium" />
-            Page source
-          </a>
-          <a
-            className="flex items-center gap-2"
-            href="https://github.com/code4fukui/fukui-kanko-people-flow-data"
-            target="_blank"
-          >
-            <MarkGithubIcon size="medium" />
-            Data source
-          </a>
-          <a href="https://code4fukui.github.io/" target="_blank">
-            <Image
-              aria-hidden
-              src="https://code4fukui.github.io/code4fukui_logo.svg"
-              alt="code4fukui logo"
-              width={100}
-              height={64}
-            />
-          </a>
-        </footer>
       </body>
     </html>
   );
