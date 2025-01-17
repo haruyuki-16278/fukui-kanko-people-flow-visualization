@@ -38,7 +38,7 @@ export default function RootLayout({
           </Link>
           <ExternalNavigaton />
         </header>
-        <main className="flex h-full w-full flex-grow flex-col items-center">{children}</main>
+        <main className="flex h-full w-full flex-grow flex-col items-center pt-4">{children}</main>
       </body>
     </html>
   );
