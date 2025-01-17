@@ -1,8 +1,8 @@
 import Image from "next/image";
 import {
-  ArrowUpRightIcon,
   DatabaseIcon,
   FileCodeIcon,
+  LinkExternalIcon,
   MarkGithubIcon,
   ThreeBarsIcon,
 } from "@primer/octicons-react";
@@ -80,14 +80,14 @@ export function ExternalNavigaton() {
               height={32}
             />
           </PopoverTrigger>
-          <PopoverContent className="flex w-52 items-center">
+          <PopoverContent className="flex w-56 items-center">
             <a
               href="https://code4fukui.github.io/"
               target="_blank"
               className="flex items-center gap-x-2 underline hover:font-bold"
             >
               Code for FUKUI とは
-              <ArrowUpRightIcon size="small" />
+              <LinkExternalIcon size="small" />
             </a>
           </PopoverContent>
         </Popover>
