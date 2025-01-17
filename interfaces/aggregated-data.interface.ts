@@ -8,6 +8,11 @@ export type AggregatedDataBase = {
   "total count": number;
 };
 export type AggregatedData = AggregatedDataBase & Record<string, string | number>;
+export const JapaneseObjectClass: Record<AggregatedData["object class"], string> = {
+  Person: "人物",
+  Face: "顔",
+  LisencePlate: "ナンバープレート",
+} as const;
 
 export const ageRanges = {
   range00to05: "0から5歳",
