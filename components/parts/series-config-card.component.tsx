@@ -71,7 +71,6 @@ export function SeriesConfigCard(props: {
   // 対象のオブジェクトクラスは間接的にカメラの設置場所に依存する
   const [objectClassIndex, setObjectClassIndex] = useState<number | undefined>(undefined);
   useEffect(() => {
-    console.log(objectClassIndex);
     if (objectClasses && objectClassIndex !== undefined) {
       const objectClass = objectClasses[objectClassIndex];
       props.setObjectClass(objectClass);
@@ -123,7 +122,6 @@ export function SeriesConfigCard(props: {
     const newValues = { ...exclude };
     if (s && newValues[k]) newValues[k] = newValues[k].filter((w) => w !== v);
     else newValues[k] = newValues[k] ? [...newValues[k], v] : [v];
-    console.log(newValues);
     setExclude(newValues);
   };
 
