@@ -12,9 +12,13 @@ import {
   ChartLegendContent,
 } from "@/components/ui/chart";
 import {
+  ageRanges,
   AggregatedData,
+  carCategories,
   DetailAttributeKey,
+  genders,
   ObjectClass,
+  prefectures,
 } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries, GraphType } from "@/interfaces/graph-series.interface";
 import { Placement } from "@/interfaces/place.interface";
@@ -31,8 +35,22 @@ export default function Home() {
       const config: ChartConfig = {};
       Object.keys(data[0]).forEach((k) => {
         if (k === "date") return;
+        const [id, attributeKey] = k.split("#");
+        const idSeries = series.find((v) => v.id === id);
+        let label = idSeries?.name ?? k;
+        if (attributeKey !== "" && idSeries && idSeries.focusedAttribute)
+          label +=
+            idSeries.focusedAttribute === "ageRanges"
+              ? " " + ageRanges[attributeKey as keyof typeof ageRanges]
+              : idSeries.focusedAttribute === "genders"
+                ? " " + genders[attributeKey as keyof typeof genders]
+                : idSeries.focusedAttribute === "prefectures"
+                  ? " " + prefectures[attributeKey as keyof typeof prefectures]
+                  : idSeries.focusedAttribute === "carCategories"
+                    ? " " + carCategories[attributeKey as keyof typeof carCategories]
+                    : "";
         config[k] = {
-          label: series.find((v) => v.id === k)?.name ?? k,
+          label,
         };
       });
       return config;
@@ -61,12 +79,12 @@ export default function Home() {
   });
 
   const [series, setSeries] = useState<GraphSeries[] | undefined>(undefined);
-  const onAddSeriesClick = () => {
+  const onClickAddSeries = () => {
     const newSeries = series ? [...series] : [];
     newSeries.push({ id: crypto.randomUUID(), graphType: "simple" });
     setSeries(newSeries);
   };
-  const onRemoveSeriesClick = (id: string) => {
+  const onClickRemoveSeries = (id: string) => {
     const newSeries = series ? [...series.filter((v) => v.id !== id)] : [];
     setSeries(newSeries);
   };
@@ -128,22 +146,70 @@ export default function Home() {
 
     for await (const item of series.filter((v) => v.show)) {
       if (!item.objectClass || !item.placement) return;
-      console.log("139", item.id);
 
       const csvStr = await (
         await fetch(`${window.location.origin}/${item.placement}/${item.objectClass}.csv`)
       ).text();
 
       const rawData = Papa.parse<AggregatedData>(csvStr, { header: true }).data;
-      newData = newData.map((newDataRow) => ({
-        ...newDataRow,
-        [item.id]:
-          Number(
-            rawData.find(
-              (rawDataRow) => String(rawDataRow["aggregate from"]).slice(0, 10) === newDataRow.date,
-            )?.["total count"],
-          ) ?? 0,
-      }));
+      if (item.graphType === "simple") {
+        newData = newData.map((newDataRow) => ({
+          ...newDataRow,
+          [item.id]:
+            Number(
+              rawData.find(
+                (rawDataRow) =>
+                  String(rawDataRow["aggregate from"]).slice(0, 10) === newDataRow.date,
+              )?.["total count"],
+            ) ?? 0,
+        }));
+      } else if (item.focusedAttribute) {
+        const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
+          rawData.map((rawDataRow) => {
+            let list;
+            switch (item.focusedAttribute) {
+              case "ageRanges":
+                list = ageRanges;
+                break;
+              case "genders":
+                list = genders;
+                break;
+              case "prefectures":
+                list = prefectures;
+                break;
+              case "carCategories":
+                list = carCategories;
+                break;
+              default:
+                throw new Error("invalid focuced attribute");
+            }
+            const data: Record<string, string | number> & { "aggregate from": string } = {
+              "aggregate from": rawDataRow["aggregate from"],
+            };
+            Object.keys(list)
+              .map((listitem) => ({
+                [`${item.id}#${listitem}`]: Object.keys(rawDataRow)
+                  .filter((key) => key.includes(listitem))
+                  .map((key) => Number(rawDataRow[key]))
+                  .reduce((sum, current) => (sum += current), 0),
+              }))
+              .forEach((obj) => Object.entries(obj).forEach(([k, v]) => (data[k] = v)));
+            return data;
+          });
+        newData = newData.map((newDataRow) => ({
+          ...newDataRow,
+          ...(() => {
+            const orientedDataItem = {
+              ...(orientedData.find(
+                (orientedDataRow) =>
+                  orientedDataRow["aggregate from"].slice(0, 10) === newDataRow.date,
+              ) as Record<string, string | number>),
+            };
+            delete orientedDataItem?.["aggregate from"];
+            return orientedDataItem;
+          })(),
+        }));
+      }
     }
     setData(newData);
   };
@@ -173,7 +239,7 @@ export default function Home() {
         <section className="w-full flex-grow">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="text-lg font-bold">📈 系統</h2>
-            <Button variant="outline" size="icon" onClick={onAddSeriesClick}>
+            <Button variant="outline" size="icon" onClick={onClickAddSeries}>
               <PlusIcon size="medium" />
             </Button>
           </div>
@@ -188,7 +254,7 @@ export default function Home() {
                 setPlacement={(v) => setPlacement(series.id, v)}
                 setObjectClass={(v) => setObjectClass(series.id, v)}
                 setExclude={(v) => setExclude(series.id, v)}
-                onRemoveClick={() => onRemoveSeriesClick(series.id)}
+                onRemoveClick={() => onClickRemoveSeries(series.id)}
               />
             ))}
           </div>
@@ -200,7 +266,7 @@ export default function Home() {
           </Button>
         </section>
       </aside>
-      {data && data.length > 0 ? (
+      {data && Object.keys(data[0]).length > 1 ? (
         <ChartContainer
           config={chartConfig()}
           className="h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-[calc(100%_-_48px_-_288px)] flex-grow"
@@ -210,19 +276,22 @@ export default function Home() {
             <XAxis dataKey="date" tickLine={false} tickMargin={7} axisLine={false} />
             <YAxis type="number" tickLine={true} tickCount={10} />
             {Object.keys(data[0])
-              .filter((k) => k !== "date")
-              .map((k, i) => (
+              .filter((key) => key !== "date")
+              .map((id, i) => (
                 <Bar
                   type="linear"
-                  key={k}
-                  dataKey={k}
-                  name={(series ? series.find((item) => item.id === k)?.name : undefined) ?? k}
-                  fill={`hsl(var(--chart-${i + 1}))`}
-                  radius={2}
+                  key={id}
+                  dataKey={id}
+                  stackId={id.split("#")[0]}
+                  name={(series ? series.find((item) => item.id === id)?.name : undefined) ?? id}
+                  fill={`hsl(var(--chart-${(i % 5) + 1}))`}
+                  radius={id.split("#")[1] === "" ? 2 : 0}
                 />
               ))}
             <ChartTooltip cursor={false} content={<ChartTooltipContent className="bg-white" />} />
-            <ChartLegend content={<ChartLegendContent />} />
+            {Object.keys(data[0]).length <= 10 ? (
+              <ChartLegend content={<ChartLegendContent />} />
+            ) : undefined}
           </BarChart>
         </ChartContainer>
       ) : (
