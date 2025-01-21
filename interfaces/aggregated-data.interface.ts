@@ -2,7 +2,7 @@ import { Placement } from "./place.interface";
 
 export type AggregatedDataBase = {
   placement: Placement;
-  "object class": "Person" | "Face" | "LisencePlate";
+  "object class": "Person" | "Face" | "LicensePlate";
   "aggregate from": string;
   "aggregate to": string;
   "total count": number;
@@ -11,8 +11,14 @@ export type AggregatedData = AggregatedDataBase & Record<string, string | number
 export const JapaneseObjectClass: Record<AggregatedData["object class"], string> = {
   Person: "人物",
   Face: "顔",
-  LisencePlate: "ナンバープレート",
+  LicensePlate: "ナンバープレート",
 } as const;
+
+export const genders = {
+  male: "男性",
+  female: "女性",
+  other: "その他",
+};
 
 export const ageRanges = {
   range00to05: "0から5歳",
@@ -82,4 +88,17 @@ export const carCategories = {
   CommercialVehicle: "事業用車",
   RentACar: "レンタカー",
   Other: "その他",
+};
+
+export const JapaneseAttributeName = (name: string) => {
+  switch (name) {
+    case "genders":
+      return "性別";
+    case "ageRanges":
+      return "年齢";
+    case "prefectures":
+      return "都道府県";
+    case "carCategories":
+      return "車両分類";
+  }
 };

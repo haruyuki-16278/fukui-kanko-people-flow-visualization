@@ -14,12 +14,12 @@ export const places = {
   "rainbow-one": {
     placement: "rainbow-line-parking-lot-1-gate",
     text: "レインボーライン 第一駐車場",
-    targetObjects: ["Face", "LisencePlate"] as const as AggregatedData["object class"][],
+    targetObjects: ["Face", "LicensePlate"] as const as AggregatedData["object class"][],
   },
   "rainbow-two": {
     placement: "rainbow-line-parking-lot-2-gate",
     text: "レインボーライン 第二駐車場",
-    targetObjects: ["Face", "LisencePlate"] as const as AggregatedData["object class"][],
+    targetObjects: ["Face", "LicensePlate"] as const as AggregatedData["object class"][],
   },
 } as const;
 export type Place = keyof typeof places;
