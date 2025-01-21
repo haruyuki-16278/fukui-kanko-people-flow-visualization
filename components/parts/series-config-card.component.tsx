@@ -60,6 +60,11 @@ export function SeriesConfigCard(props: {
     } else {
       setObjectClasses(undefined);
     }
+    setObjectClassIndex(undefined);
+    setFilterCandidates(undefined);
+    setGraphType("simple");
+    setFocusedAttributeIndex(undefined);
+    setExclude(undefined);
   }, [placement]);
   // 対象のオブジェクトクラスは間接的にカメラの設置場所に依存する
   const [objectClassIndex, setObjectClassIndex] = useState<number | undefined>(undefined);
@@ -82,6 +87,9 @@ export function SeriesConfigCard(props: {
         setFilterCandidates(undefined);
       }
     }
+    setGraphType("simple");
+    setFocusedAttributeIndex(undefined);
+    setExclude(undefined);
   }, [objectClassIndex]);
   // フィルタで取り除く値は間接的に対象のオブジェクトクラスに依存する
   const [exclude, setExclude] = useState<GraphSeries["exclude"]>(undefined);
@@ -91,15 +99,9 @@ export function SeriesConfigCard(props: {
 
   // コンポーネント内のデータの管理に利用する状態
   const [objectClasses, setObjectClasses] = useState<ObjectClass[] | undefined>(undefined);
-  useEffect(() => {
-    setObjectClassIndex(undefined);
-  }, [objectClasses]);
   const [filterCandidates, setFilterCandidates] = useState<
     Partial<typeof DetailAttributes> | undefined
   >(undefined);
-  useEffect(() => {
-    setExclude(undefined);
-  }, [filterCandidates]);
 
   const defaultSeriesName = () =>
     `${placement ? places[placement].text : ""}${
@@ -158,14 +160,20 @@ export function SeriesConfigCard(props: {
       </div>
       <div>
         <span>検出対象</span>
-        <Select disabled={!placement} onValueChange={(v) => setObjectClassIndex(Number(v))}>
+        <Select
+          disabled={!placement}
+          onValueChange={(v) => setObjectClassIndex(Number(v.split("#").at(-1)))}
+        >
           <SelectTrigger>
             <SelectValue placeholder="AIカメラの検出対象" />
           </SelectTrigger>
           <SelectContent>
             {placement && objectClasses
               ? objectClasses.map((objectClass, i) => (
-                  <SelectItem key={objectClass} value={i.toString()}>
+                  <SelectItem
+                    key={objectClass}
+                    value={`${placement}#${objectClass}#${i.toString()}`}
+                  >
                     {JapaneseObjectClass[objectClass]}
                   </SelectItem>
                 ))
