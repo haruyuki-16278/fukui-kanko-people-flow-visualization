@@ -188,11 +188,13 @@ export default function Home() {
             };
             Object.keys(list)
               .map((listitem) => ({
-                [`${item.id}#${listitem}`]: Object.keys(rawDataRow)
-                  // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
-                  .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
-                  .map((key) => Number(rawDataRow[key]))
-                  .reduce((sum, current) => (sum += current), 0),
+                [`${item.id}#${listitem}`]:
+                  Object.keys(rawDataRow)
+                    // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
+                    .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                    .map((key) => Number(rawDataRow[key]))
+                    .reduce((sum, current) => (sum += current), 0) /
+                  (item.graphType === "stack" ? 1 : rawDataRow["total count"] / 100),
               }))
               .forEach((obj) => Object.entries(obj).forEach(([k, v]) => (data[k] = v)));
             return data;
@@ -275,7 +277,12 @@ export default function Home() {
           <BarChart data={data}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="date" tickLine={false} tickMargin={7} axisLine={false} />
-            <YAxis type="number" tickLine={true} tickCount={10} />
+            <YAxis
+              type="number"
+              tickLine={true}
+              tickCount={10}
+              domain={[0, (dataMax: number) => Math.floor(dataMax)]}
+            />
             {Object.keys(data[0])
               .filter((key) => key !== "date")
               .map((id, i) => (
