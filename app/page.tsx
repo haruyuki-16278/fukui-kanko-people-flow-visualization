@@ -151,7 +151,39 @@ export default function Home() {
         await fetch(`${window.location.origin}/${item.placement}/${item.objectClass}.csv`)
       ).text();
 
-      const rawData = Papa.parse<AggregatedData>(csvStr, { header: true }).data;
+      const rawData = Papa.parse<AggregatedData>(csvStr, { header: true }).data.map(
+        (rawDataRow) => {
+          if (item.exclude === undefined) return rawDataRow;
+          else {
+            const filteredRow = { ...rawDataRow };
+            Object.keys(filteredRow).forEach((key) => {
+              const isKeyMatch = key
+                .split(" ")
+                .some((keyPart) =>
+                  item.exclude
+                    ? Object.values(item.exclude).some((exclude) =>
+                        exclude.some((excludeItem) => keyPart === excludeItem),
+                      )
+                    : false,
+                );
+              if (isKeyMatch) delete filteredRow[key];
+            });
+            filteredRow["total count"] = Object.entries(filteredRow)
+              .filter(
+                ([k]) =>
+                  ![
+                    "placement",
+                    "object class",
+                    "aggregate from",
+                    "aggregate to",
+                    "total count",
+                  ].includes(k),
+              )
+              .reduce((sum, current) => (sum += Number(current[1])), 0);
+            return filteredRow;
+          }
+        },
+      );
       if (item.graphType === "simple") {
         newData = newData.map((newDataRow) => ({
           ...newDataRow,
