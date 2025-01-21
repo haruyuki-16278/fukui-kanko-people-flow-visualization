@@ -189,7 +189,8 @@ export default function Home() {
             Object.keys(list)
               .map((listitem) => ({
                 [`${item.id}#${listitem}`]: Object.keys(rawDataRow)
-                  .filter((key) => key.includes(listitem))
+                  // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
+                  .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
                   .map((key) => Number(rawDataRow[key]))
                   .reduce((sum, current) => (sum += current), 0),
               }))
