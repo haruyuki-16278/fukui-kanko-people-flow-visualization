@@ -262,7 +262,7 @@ export default function Home() {
             ))}
           </div>
         </section>
-        <section className="sticky bottom-0 flex w-full justify-center bg-background py-4">
+        <section className="sticky bottom-0 flex w-full justify-center bg-[rgb(from_hsl(var(--background))_r_g_b_/_0.8)] py-4 backdrop-blur-sm">
           <Button onClick={() => onClickApply()} className="mx-auto">
             <GraphIcon size="medium" />
             グラフに反映
