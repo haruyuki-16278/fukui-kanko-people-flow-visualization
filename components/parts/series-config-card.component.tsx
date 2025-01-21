@@ -46,7 +46,7 @@ export function SeriesConfigCard(props: {
   useEffect(() => props.setGraphType(graphType), [graphType]);
   const [focusedAttributeIndex, setFocusedAttributeIndex] = useState<number | undefined>(undefined);
   useEffect(() => {
-    if (filterCandidates && focusedAttributeIndex)
+    if (filterCandidates && focusedAttributeIndex !== undefined)
       props.setFocusedAttribute(
         Object.keys(filterCandidates)[focusedAttributeIndex] as DetailAttributeKey,
       );
