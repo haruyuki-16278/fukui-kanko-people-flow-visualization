@@ -220,13 +220,11 @@ export default function Home() {
             };
             Object.keys(list)
               .map((listitem) => ({
-                [`${item.id}#${listitem}`]:
-                  Object.keys(rawDataRow)
-                    // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
-                    .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
-                    .map((key) => Number(rawDataRow[key]))
-                    .reduce((sum, current) => (sum += current), 0) /
-                  (item.graphType === "stack" ? 1 : rawDataRow["total count"] / 100),
+                [`${item.id}#${listitem}`]: Object.keys(rawDataRow)
+                  // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
+                  .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                  .map((key) => Number(rawDataRow[key]))
+                  .reduce((sum, current) => (sum += current), 0),
               }))
               .forEach((obj) => Object.entries(obj).forEach(([k, v]) => (data[k] = v)));
             return data;
@@ -306,7 +304,12 @@ export default function Home() {
           config={chartConfig()}
           className="h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-[calc(100%_-_48px_-_288px)] flex-grow"
         >
-          <BarChart data={data}>
+          <BarChart
+            data={data}
+            stackOffset={
+              series && series.every((item) => item.graphType === "ratio") ? "expand" : "none"
+            }
+          >
             <CartesianGrid vertical={false} />
             <XAxis dataKey="date" tickLine={false} tickMargin={7} axisLine={false} />
             <YAxis
