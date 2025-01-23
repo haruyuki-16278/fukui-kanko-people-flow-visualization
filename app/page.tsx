@@ -13,6 +13,15 @@ import {
 } from "@/components/ui/chart";
 import { Input } from "@/components/ui/input";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import {
   AGE_RANGES,
   AggregatedData,
   attributeValueText,
@@ -24,7 +33,7 @@ import {
 } from "@/interfaces/aggregated-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { PartiallyRequired } from "@/lib/utils";
-import { GraphIcon, PlusIcon, StarIcon, TrashIcon } from "@primer/octicons-react";
+import { GraphIcon, PlusIcon, ShareIcon, StarIcon, TrashIcon } from "@primer/octicons-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Papa from "papaparse";
@@ -75,6 +84,7 @@ export default function Home() {
   const [isSeriesAllValid, setIsSeriesAllValid] = useState(false);
   const [date, setDate] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
+  const [copied, setCopied] = useState(false);
 
   const getChartConfig = (): ChartConfig => {
     if (seriesAll && data && Object.keys(data[0]).length > 1) {
@@ -363,6 +373,7 @@ export default function Home() {
             disabled={!seriesAll || seriesAll.length === 0}
           />
           <Button
+            className="shrink-0"
             variant="outline"
             size="icon"
             disabled={!seriesAll || seriesAll.length === 0}
@@ -370,6 +381,31 @@ export default function Home() {
           >
             <StarIcon size="medium" />
           </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="shrink-0" variant="outline" size="icon">
+                <ShareIcon size="medium" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>グラフを共有する</DialogTitle>
+                <DialogDescription className="flex justify-center">
+                  <Button
+                    className="transition-all"
+                    disabled={copied}
+                    onClick={() => {
+                      navigator.clipboard.writeText(location.href);
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 1000);
+                    }}
+                  >
+                    {copied ? "コピーしました!" : "URLをコピーする"}
+                  </Button>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         </div>
         {!dirty && data && Object.keys(data[0]).length > 1 ? (
           <ChartContainer
