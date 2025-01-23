@@ -3,6 +3,7 @@ import "./globals.css";
 import { GraphIcon } from "@primer/octicons-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "福井県 観光オープンデータグラフ",
@@ -40,7 +41,7 @@ export default function RootLayout({
             <ExternalNavigaton />
           </header>
           <main className="flex h-full w-full max-w-full flex-grow items-center pt-4">
-            {children}
+            <Suspense>{children}</Suspense>
           </main>
         </div>
       </body>

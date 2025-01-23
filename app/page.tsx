@@ -37,7 +37,7 @@ import { GraphIcon, PlusIcon, ShareIcon, StarIcon, TrashIcon } from "@primer/oct
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Papa from "papaparse";
-import { Suspense, useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -287,33 +287,31 @@ export default function Home() {
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
         <section className="min-h-fit w-full overflow-x-hidden">
           <h2 className="text-lg font-bold">⭐️ お気に入り</h2>
-          <Suspense>
-            {Object.keys(stars).length > 0 ? (
-              Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
-                <div
-                  key={`${i}${starTitle}`}
-                  className="group mt-2 flex max-w-full items-center gap-x-2"
+          {Object.keys(stars).length > 0 ? (
+            Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
+              <div
+                key={`${i}${starTitle}`}
+                className="group mt-2 flex max-w-full items-center gap-x-2"
+              >
+                <Link
+                  className="block w-full max-w-full overflow-hidden text-ellipsis text-nowrap pl-2 underline group-hover:text-primary"
+                  href={`/?${new URLSearchParams({ starTitle, starSeriesAll })}`}
                 >
-                  <Link
-                    className="block w-full max-w-full overflow-hidden text-ellipsis text-nowrap pl-2 underline group-hover:text-primary"
-                    href={`/?${new URLSearchParams({ starTitle, starSeriesAll })}`}
-                  >
-                    {starTitle}
-                  </Link>
-                  <Button
-                    className="shrink-0"
-                    variant="destructive"
-                    size="icon"
-                    onClick={() => onClickUnstar(starTitle)}
-                  >
-                    <TrashIcon size="small" />
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <p className="pl-2">お気に入りがありません</p>
-            )}
-          </Suspense>
+                  {starTitle}
+                </Link>
+                <Button
+                  className="shrink-0"
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => onClickUnstar(starTitle)}
+                >
+                  <TrashIcon size="small" />
+                </Button>
+              </div>
+            ))
+          ) : (
+            <p className="pl-2">お気に入りがありません</p>
+          )}
         </section>
         <section className="w-full">
           <h2 className="mb-2 text-lg font-bold">📅 期間</h2>
