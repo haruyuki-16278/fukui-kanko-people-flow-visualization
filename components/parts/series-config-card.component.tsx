@@ -74,6 +74,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
       <div>
         <span>系統名</span>
         <Input
+          defaultValue={series.name}
           onChange={(v) =>
             notify(
               updateSeriesProperty(["name", !!v.target.value ? v.target.value : undefined], series),
@@ -86,6 +87,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
         <span>設置場所</span>
         <Select
           onValueChange={(v: Placement) => notify(updateSeriesProperty(["placement", v], series))}
+          defaultValue={series.placement}
         >
           <SelectTrigger>
             <SelectValue placeholder="AIカメラの設置場所" />
