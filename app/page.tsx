@@ -247,6 +247,7 @@ export default function Home() {
             selected={date}
             onSelect={(v) => {
               setDate(v);
+              setDirty(true);
             }}
             disabled={{
               before: new Date("2024-10-17"),
