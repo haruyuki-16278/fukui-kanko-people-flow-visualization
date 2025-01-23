@@ -154,7 +154,9 @@ export default function Home() {
     for await (const series of seriesAll.filter((v) => v.show)) {
       if (!series.placement && !series.objectClass) return;
       const csvStr = await (
-        await fetch(`${window.location.origin}/${series.placement}/${series.objectClass}.csv`)
+        await fetch(
+          `${location.origin}${location.pathname}${series.placement}/${series.objectClass}.csv`,
+        )
       ).text();
 
       const rawData = Papa.parse<AggregatedData>(csvStr, { header: true }).data.map(
