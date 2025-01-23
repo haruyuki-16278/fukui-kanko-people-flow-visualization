@@ -74,6 +74,28 @@ function getDefaultDateRange(): DateRange {
   };
 }
 
+const getChartConfig = (
+  seriesAll: GraphSeries[],
+  data: Record<string, string | number>[],
+): ChartConfig => {
+  if (seriesAll && data && Object.keys(data[0]).length > 1) {
+    const config: ChartConfig = {};
+    Object.keys(data[0]).forEach((k) => {
+      if (k === "date") return;
+      const [id, attributeKey] = k.split("#");
+      const series = seriesAll.find((v) => v.id === id);
+      if (series === undefined) return id;
+      let label = series.name ?? defaultSeriesName(series);
+      if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
+        label += attributeValueText(series.focusedAttribute, attributeKey);
+      config[k] = {
+        label,
+      };
+    });
+    return config;
+  } else return {};
+};
+
 export default function Home() {
   const searchParams = useSearchParams();
 
@@ -85,25 +107,7 @@ export default function Home() {
   const [date, setDate] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [copied, setCopied] = useState(false);
-
-  const getChartConfig = (): ChartConfig => {
-    if (seriesAll && data && Object.keys(data[0]).length > 1) {
-      const config: ChartConfig = {};
-      Object.keys(data[0]).forEach((k) => {
-        if (k === "date") return;
-        const [id, attributeKey] = k.split("#");
-        const series = seriesAll.find((v) => v.id === id);
-        if (series === undefined) return id;
-        let label = series.name ?? defaultSeriesName(series);
-        if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
-          label += attributeValueText(series.focusedAttribute, attributeKey);
-        config[k] = {
-          label,
-        };
-      });
-      return config;
-    } else return {};
-  };
+  const [chartConfig, setChartConfig] = useState<ChartConfig>({});
 
   const setSeries = (series: GraphSeries) => {
     if (seriesAll === undefined || seriesAll.length === 0)
@@ -253,6 +257,7 @@ export default function Home() {
       }
     }
     setData(newData);
+    setChartConfig(getChartConfig(seriesAll, newData));
   }, [date, seriesAll]);
 
   const onClickStar = () => {
@@ -407,10 +412,10 @@ export default function Home() {
             </DialogContent>
           </Dialog>
         </div>
-        {!dirty && data && Object.keys(data[0]).length > 1 ? (
+        {!dirty && data && Object.keys(data[0] ?? {}).length > 1 ? (
           <ChartContainer
             key={title}
-            config={getChartConfig()}
+            config={chartConfig}
             className="h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px_-_48px)] w-full flex-grow"
           >
             <BarChart
