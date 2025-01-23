@@ -161,6 +161,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                       onValueChange={(v: ObjectClassAttribute) =>
                         notify(updateSeriesProperty(["focusedAttribute", v], series))
                       }
+                      defaultValue={series.focusedAttribute}
                     >
                       <SelectTrigger
                         className={cn(
