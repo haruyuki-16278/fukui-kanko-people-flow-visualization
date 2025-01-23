@@ -18,13 +18,17 @@ import {
   attributeValueText,
   CAR_CATEGORIES,
   GENDERS,
+  JAPANESE_ATTRIBUTE_NAME,
+  ObjectClassAttribute,
   PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { PartiallyRequired } from "@/lib/utils";
-import { GraphIcon, PlusIcon, StarIcon } from "@primer/octicons-react";
+import { GraphIcon, PlusIcon, StarIcon, TrashIcon } from "@primer/octicons-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Papa from "papaparse";
-import { useState } from "react";
+import { Suspense, useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
@@ -62,8 +66,10 @@ function getDefaultDateRange(): DateRange {
 }
 
 export default function Home() {
+  const searchParams = useSearchParams();
+
+  const [stars, setStars] = useState<Record<string, string>>({});
   const [dirty, setDirty] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [seriesAll, setSeriesAll] = useState<GraphSeries[] | undefined>(undefined);
   const [isSeriesAllValid, setIsSeriesAllValid] = useState(false);
@@ -123,7 +129,7 @@ export default function Home() {
     setData(newData);
   };
 
-  const onClickApply = async () => {
+  const onClickApply = useCallback(async () => {
     setDirty(false);
     if (!date || !date.from || !date.to || !seriesAll) {
       setData(undefined);
@@ -235,11 +241,70 @@ export default function Home() {
       }
     }
     setData(newData);
+  }, [date, seriesAll]);
+
+  const onClickStar = () => {
+    const newStars = JSON.parse(localStorage.getItem("stars") ?? "{}");
+    newStars[title ?? new Date().toLocaleString()] = JSON.stringify(seriesAll);
+    localStorage.setItem("stars", JSON.stringify(newStars));
+    setStars(newStars);
   };
+  const onClickUnstar = (title: string) => {
+    const newStars = { ...stars };
+    delete newStars[title];
+    localStorage.setItem("stars", JSON.stringify(newStars));
+    setStars(newStars);
+  };
+
+  useEffect(() => {
+    const titleFromQuery = searchParams.get("starTitle");
+    setTitle(titleFromQuery ?? undefined);
+    const seriesFromQuery = JSON.parse(searchParams.get("starSeriesAll") ?? "[]");
+    if (seriesFromQuery?.length > 0) {
+      setSeriesAll(seriesFromQuery);
+      setIsSeriesAllValid(seriesFromQuery.every(isSeriesValid));
+      onClickApply();
+    } else {
+      setSeriesAll(undefined);
+      setIsSeriesAllValid(false);
+    }
+    const starsLocal = JSON.parse(localStorage.getItem("stars") ?? "{}");
+    setStars(starsLocal);
+  }, [searchParams]);
 
   return (
     <>
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
+        <section className="min-h-fit w-full overflow-x-hidden">
+          <h2 className="text-lg font-bold">⭐️ お気に入り</h2>
+          <Suspense>
+            {Object.keys(stars).length > 0 ? (
+              Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
+                <div
+                  key={`${i}${starTitle}`}
+                  className="group mt-2 flex max-w-full items-center gap-x-2"
+                >
+                  <Link
+                    className="block w-full max-w-full overflow-hidden text-ellipsis text-nowrap pl-2 underline group-hover:text-primary"
+                    href={`/?${new URLSearchParams({ starTitle, starSeriesAll })}`}
+                  >
+                    {starTitle}
+                  </Link>
+                  <Button
+                    className="shrink-0"
+                    variant="destructive"
+                    size="icon"
+                    onClick={() => onClickUnstar(starTitle)}
+                  >
+                    <TrashIcon size="small" />
+                  </Button>
+                </div>
+              ))
+            ) : (
+              <p className="pl-2">お気に入りがありません</p>
+            )}
+          </Suspense>
+        </section>
         <section className="w-full">
           <h2 className="mb-2 text-lg font-bold">📅 期間</h2>
           <Calendar
@@ -294,18 +359,21 @@ export default function Home() {
           <Input
             placeholder="グラフタイトル"
             onChange={(ev) => setTitle(!!ev.target.value ? ev.target.value : undefined)}
+            defaultValue={title}
             disabled={!seriesAll || seriesAll.length === 0}
           />
           <Button
             variant="outline"
             size="icon"
-            disabled={!seriesAll || seriesAll.length === 0 || dirty}
+            disabled={!seriesAll || seriesAll.length === 0}
+            onClick={onClickStar}
           >
             <StarIcon size="medium" />
           </Button>
         </div>
         {!dirty && data && Object.keys(data[0]).length > 1 ? (
           <ChartContainer
+            key={title}
             config={getChartConfig()}
             className="h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px_-_48px)] w-full flex-grow"
           >
@@ -335,18 +403,26 @@ export default function Home() {
                     dataKey={key}
                     stackId={id}
                     name={
-                      (seriesAll
+                      seriesAll
                         ? (() => {
                             const series = seriesAll.find((item) => item.id === id);
-                            return series ? (series.name ?? defaultSeriesName(series)) : undefined;
-                          })()
-                        : undefined) ?? id + (attributeKey ? `#${attributeKey}` : "")
+                            if (!series) return undefined;
+                            return series.name === undefined || series.name === ""
+                              ? defaultSeriesName(series)
+                              : series.name;
+                          })() + attributeKey
+                          ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
+                          : ""
+                        : key
                     }
                     fill={`hsl(var(--chart-${(i % 5) + 1}))`}
                     radius={id.split("#")[1] === "" ? 2 : 0}
                   />
                 ))}
-              <ChartTooltip cursor={false} content={<ChartTooltipContent className="bg-white" />} />
+              <ChartTooltip
+                cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
+                content={<ChartTooltipContent className="bg-white" />}
+              />
               {Object.keys(data[0]).length <= 10 ? (
                 <ChartLegend content={<ChartLegendContent />} />
               ) : undefined}
