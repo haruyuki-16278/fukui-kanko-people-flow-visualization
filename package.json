@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "submodule": "git submodule update --init --force --depth=1 --recursive",
+    "submodule": "git submodule update --init --force --depth=1 --recursive && cp -R data/people-flow-data/full/* public",
     "dev": "cp -R data/people-flow-data/full/* public && next dev",
     "build": "cp -R data/people-flow-data/full/* public && next build",
     "start": "pnpx serve@latest out",
