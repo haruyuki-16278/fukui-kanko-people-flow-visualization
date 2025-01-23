@@ -13,146 +13,87 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Placement, places } from "@/interfaces/place.interface";
+import { Placement, PLACEMENTS } from "@/interfaces/placement.interface";
 import {
-  ageRanges,
-  carCategories,
-  DetailAttributeKey,
-  DetailAttributes,
-  genders,
-  JapaneseAttributeName,
-  JapaneseObjectClass,
+  JAPANESE_ATTRIBUTE_NAME,
+  OBJECT_CLASS,
+  OBJECT_CLASS_ATTRIBUTES,
   ObjectClass,
-  prefectures,
+  ObjectClassAttribute,
 } from "@/interfaces/aggregated-data.interface";
-import { MouseEventHandler, useEffect, useState } from "react";
 import { TrashIcon } from "@primer/octicons-react";
-import { GraphType, GraphSeries } from "@/interfaces/graph-series.interface";
+import {
+  GraphType,
+  GraphSeries,
+  GRAPH_TYPES,
+  defaultSeriesName,
+  SERIES_PROPERTY_EFFECT_TO,
+} from "@/interfaces/graph-series.interface";
+import { MouseEventHandler } from "react";
 
-export function SeriesConfigCard(props: {
-  setShow: (show: boolean) => void;
-  setName: (name: string | undefined) => void;
-  setGraphType: (graphType: GraphType) => void;
-  setFocusedAttribute: (focusedAttribute: DetailAttributeKey | undefined) => void;
-  setPlacement: (placement: Placement | undefined) => void;
-  setObjectClass: (objectClass: ObjectClass | undefined) => void;
-  setExclude: (exclude: GraphSeries["exclude"]) => void;
+interface Props {
+  series: GraphSeries;
+  notify: (series: GraphSeries) => void;
   onRemoveClick: MouseEventHandler;
-}) {
-  // 親に流したい状態
-  const [show, setShow] = useState(true);
-  useEffect(() => props.setShow(show), [show]);
-  const [graphType, setGraphType] = useState<GraphType>("simple");
-  useEffect(() => props.setGraphType(graphType), [graphType]);
-  const [focusedAttributeIndex, setFocusedAttributeIndex] = useState<number | undefined>(undefined);
-  useEffect(() => {
-    if (filterCandidates)
-      props.setFocusedAttribute(
-        focusedAttributeIndex !== undefined
-          ? (Object.keys(filterCandidates)[focusedAttributeIndex] as DetailAttributeKey)
-          : undefined,
-      );
-  }, [focusedAttributeIndex]);
+}
 
-  const [placement, setPlacement] = useState<keyof typeof places | undefined>(undefined);
-  useEffect(() => {
-    props.setPlacement(placement ? places[placement].placement : undefined);
-    if (placement !== undefined) {
-      setObjectClasses(places[placement].targetObjects);
-    } else {
-      setObjectClasses(undefined);
-    }
-    setObjectClassIndex(undefined);
-    setFilterCandidates(undefined);
-    setGraphType("simple");
-    setFocusedAttributeIndex(undefined);
-    setExclude(undefined);
-  }, [placement]);
-  // 対象のオブジェクトクラスは間接的にカメラの設置場所に依存する
-  const [objectClassIndex, setObjectClassIndex] = useState<number | undefined>(undefined);
-  useEffect(() => {
-    if (objectClasses && objectClassIndex !== undefined) {
-      const objectClass = objectClasses[objectClassIndex];
-      props.setObjectClass(objectClass);
-      if (objectClass === "Face") {
-        setFilterCandidates({
-          genders,
-          ageRanges,
-        });
-      } else if (objectClass === "LicensePlate") {
-        setFilterCandidates({
-          carCategories,
-          prefectures,
-        });
-      } else {
-        setFilterCandidates(undefined);
-      }
-    }
-    setGraphType("simple");
-    setFocusedAttributeIndex(undefined);
-    setExclude(undefined);
-  }, [objectClassIndex]);
-  // フィルタで取り除く値は間接的に対象のオブジェクトクラスに依存する
-  const [exclude, setExclude] = useState<GraphSeries["exclude"]>(undefined);
-  useEffect(() => {
-    props.setExclude(exclude);
-  }, [exclude]);
-
-  // コンポーネント内のデータの管理に利用する状態
-  const [objectClasses, setObjectClasses] = useState<ObjectClass[] | undefined>(undefined);
-  const [filterCandidates, setFilterCandidates] = useState<
-    Partial<typeof DetailAttributes> | undefined
-  >(undefined);
-
-  const defaultSeriesName = () =>
-    `${placement ? places[placement].text : ""}${
-      objectClasses && objectClassIndex !== undefined
-        ? "の" + JapaneseObjectClass[objectClasses[objectClassIndex]]
-        : placement
-          ? "での"
-          : ""
-    }検出回数`;
-  const [name, setName] = useState<string | undefined>(undefined);
-  useEffect(
-    () => props.setName(name ?? defaultSeriesName()),
-    [name, placement, objectClasses, objectClassIndex],
+function updateSeriesProperty<Key extends keyof GraphSeries>(
+  [key, value]: [Key, GraphSeries[Key]],
+  series: GraphSeries,
+): GraphSeries {
+  const effectedProperties = SERIES_PROPERTY_EFFECT_TO[key]?.reduce(
+    (obj, propertyKey) => ({
+      ...obj,
+      [propertyKey]: propertyKey === "graphType" ? "simple" : undefined,
+    }),
+    {} as Partial<GraphSeries>,
   );
-
-  const onFilterCheckChenge = (k: DetailAttributeKey, v: string, s: boolean) => {
-    const newValues = { ...exclude };
-    if (s && newValues[k]) newValues[k] = newValues[k].filter((w) => w !== v);
-    else newValues[k] = newValues[k] ? [...newValues[k], v] : [v];
-    setExclude(newValues);
+  return {
+    ...series,
+    [key]: value,
+    ...effectedProperties,
   };
+}
 
+export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
   return (
     <Card className="flex w-full flex-col gap-y-4 p-4">
       <div className="flex justify-between">
         <label className="flex flex-row items-center gap-x-2">
-          <Checkbox onCheckedChange={(v) => setShow(!!v)} className="block" checked={show} />
+          <Checkbox
+            onCheckedChange={(v) => notify(updateSeriesProperty(["show", !!v], series))}
+            className="block"
+            checked={series.show}
+          />
           <span>表示する</span>
         </label>
-        <Button variant="destructive" size="icon" onClick={props.onRemoveClick}>
+        <Button variant="destructive" size="icon" onClick={onRemoveClick}>
           <TrashIcon size="medium" />
         </Button>
       </div>
       <div>
         <span>系統名</span>
         <Input
-          onChange={(v) => setName(!!v.target.value ? v.target.value : undefined)}
-          placeholder={defaultSeriesName()}
+          onChange={(v) =>
+            notify(
+              updateSeriesProperty(["name", !!v.target.value ? v.target.value : undefined], series),
+            )
+          }
+          placeholder={defaultSeriesName(series)}
         />
       </div>
       <div>
         <span>設置場所</span>
-        <Select onValueChange={(v) => setPlacement(v as keyof typeof places | undefined)}>
+        <Select
+          onValueChange={(v: Placement) => notify(updateSeriesProperty(["placement", v], series))}
+        >
           <SelectTrigger>
             <SelectValue placeholder="AIカメラの設置場所" />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(places).map(([k, v]) => (
-              <SelectItem key={k} value={k}>
-                {v.text}
+            {Object.entries(PLACEMENTS).map(([placement, { text }]) => (
+              <SelectItem key={placement} value={placement}>
+                {text}
               </SelectItem>
             ))}
           </SelectContent>
@@ -161,104 +102,135 @@ export function SeriesConfigCard(props: {
       <div>
         <span>検出対象</span>
         <Select
-          disabled={!placement}
-          onValueChange={(v) => setObjectClassIndex(Number(v.split("#").at(-1)))}
+          key={series.placement}
+          // 設置場所が未設定なら検出対象は選択できない
+          disabled={!series.placement}
+          defaultValue={series.objectClass}
+          onValueChange={(v: ObjectClass) =>
+            notify(updateSeriesProperty(["objectClass", v], series))
+          }
         >
           <SelectTrigger>
             <SelectValue placeholder="AIカメラの検出対象" />
           </SelectTrigger>
           <SelectContent>
-            {placement && objectClasses
-              ? objectClasses.map((objectClass, i) => (
-                  <SelectItem
-                    key={objectClass}
-                    value={`${placement}#${objectClass}#${i.toString()}`}
-                  >
-                    {JapaneseObjectClass[objectClass]}
+            {series.placement
+              ? PLACEMENTS[series.placement].targetObjects.map((objectClass) => (
+                  <SelectItem value={objectClass} key={`${series.placement}#${objectClass}`}>
+                    {OBJECT_CLASS[objectClass]}
                   </SelectItem>
                 ))
               : null}
           </SelectContent>
         </Select>
       </div>
-      {objectClasses &&
-      objectClassIndex !== undefined &&
-      objectClasses[objectClassIndex] !== "Person" ? (
-        <div>
-          <span>グラフ種類</span>
-          <RadioGroup
-            defaultValue="simple"
-            onValueChange={(v: "simple" | "stack" | "ratio") => setGraphType(v)}
-            className="mt-2 pl-2"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="simple" id="simple" />
-              <Label htmlFor="simple">単純棒グラフ</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="stack" id="stack" />
-              <Label htmlFor="stack">積み上げ棒グラフ</Label>
-            </div>
-            {graphType === "stack" ? (
-              <Select onValueChange={(v) => setFocusedAttributeIndex(Number(v))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="積み上げる属性" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filterCandidates
-                    ? Object.keys(filterCandidates).map((v, i) => (
-                        <SelectItem key={v} value={i.toString()}>
-                          {JapaneseAttributeName[v as DetailAttributeKey]}
-                        </SelectItem>
-                      ))
-                    : null}
-                </SelectContent>
-              </Select>
-            ) : undefined}
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="ratio" id="ratio" />
-              <Label htmlFor="ratio">割合棒グラフ</Label>
-            </div>
-            {graphType === "ratio" ? (
-              <Select onValueChange={(v) => setFocusedAttributeIndex(Number(v))}>
-                <SelectTrigger>
-                  <SelectValue placeholder="割合表示する属性" />
-                </SelectTrigger>
-                <SelectContent>
-                  {filterCandidates
-                    ? Object.keys(filterCandidates).map((v, i) => (
-                        <SelectItem key={v} value={i.toString()}>
-                          {JapaneseAttributeName[v as DetailAttributeKey]}
-                        </SelectItem>
-                      ))
-                    : null}
-                </SelectContent>
-              </Select>
-            ) : undefined}
-          </RadioGroup>
-        </div>
-      ) : undefined}
-      {filterCandidates ? (
-        <div>
-          <span>フィルタ</span>
-          {Object.entries(filterCandidates).map(([k, v]) => (
-            <div className="mt-2 pl-2" key={`${k}`}>
-              <span>{JapaneseAttributeName[k as DetailAttributeKey]}</span>
-              <div className="pl-2">
-                {Object.entries(v).map(([l, w]) => (
-                  <label key={l} className="flex flex-row items-center gap-x-2">
-                    <Checkbox
-                      onCheckedChange={(s) => onFilterCheckChenge(k as DetailAttributeKey, l, !!s)}
-                      className="block"
-                      checked={!exclude?.[k]?.includes(l)}
-                    />
-                    <span>{w}</span>
-                  </label>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+      {series.objectClass !== undefined && series.objectClass !== "Person" ? (
+        <>
+          <div>
+            <span>グラフ種類</span>
+            <RadioGroup
+              defaultValue={series.graphType}
+              onValueChange={(v: GraphType) =>
+                notify(updateSeriesProperty(["graphType", v], series))
+              }
+              className="mt-2 pl-2"
+            >
+              {Object.entries(GRAPH_TYPES).map(([graphType, graphTypeText]) => (
+                <div key={graphType + "radio"}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value={graphType} id={graphType} />
+                    <Label htmlFor="simple">{graphTypeText}棒グラフ</Label>
+                  </div>
+                  {graphType !== "simple" &&
+                  graphType === series.graphType &&
+                  series.objectClass !== undefined &&
+                  series.objectClass !== "Person" ? (
+                    <Select
+                      key={graphType}
+                      onValueChange={(v: ObjectClassAttribute) =>
+                        notify(updateSeriesProperty(["focusedAttribute", v], series))
+                      }
+                    >
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder={graphTypeText + "に使う属性"} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.keys(OBJECT_CLASS_ATTRIBUTES[series.objectClass]).map(
+                          (objectClassAttribute) => (
+                            <SelectItem key={objectClassAttribute} value={objectClassAttribute}>
+                              {
+                                JAPANESE_ATTRIBUTE_NAME[
+                                  objectClassAttribute as ObjectClassAttribute
+                                ]
+                              }
+                            </SelectItem>
+                          ),
+                        )}
+                      </SelectContent>
+                    </Select>
+                  ) : undefined}
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+          <div>
+            <span>フィルタ</span>
+            {Object.entries(OBJECT_CLASS_ATTRIBUTES[series.objectClass]).map(
+              ([objectClassAttribute, attributeValues]) => (
+                <div className="mt-2 pl-2" key={`${objectClassAttribute}`}>
+                  <span>
+                    {JAPANESE_ATTRIBUTE_NAME[objectClassAttribute as ObjectClassAttribute]}
+                  </span>
+                  <div className="pl-2">
+                    {Object.entries(attributeValues).map(([attributeValue, attributeValueText]) => (
+                      <label key={attributeValue} className="flex flex-row items-center gap-x-2">
+                        <Checkbox
+                          onCheckedChange={(v) =>
+                            notify(
+                              updateSeriesProperty(
+                                [
+                                  "exclude",
+                                  series.exclude !== undefined
+                                    ? v
+                                      ? // truthyなら表示する→excludeからは外す
+                                        {
+                                          ...series.exclude,
+                                          [objectClassAttribute]: [
+                                            ...series.exclude[objectClassAttribute].filter(
+                                              (excludeItem) => excludeItem !== attributeValue,
+                                            ),
+                                          ],
+                                        }
+                                      : // falsyなら表示しない→excludeに含める
+                                        {
+                                          ...series.exclude,
+                                          [objectClassAttribute]: [
+                                            ...series.exclude[objectClassAttribute],
+                                            attributeValue,
+                                          ],
+                                        }
+                                    : v
+                                      ? undefined
+                                      : { [objectClassAttribute]: [attributeValue] },
+                                ],
+                                series,
+                              ),
+                            )
+                          }
+                          className="block"
+                          checked={
+                            !series.exclude?.[objectClassAttribute]?.includes(attributeValue)
+                          }
+                        />
+                        <span>{String(attributeValueText)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ),
+            )}
+          </div>
+        </>
       ) : undefined}
     </Card>
   );
