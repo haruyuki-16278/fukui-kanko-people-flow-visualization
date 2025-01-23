@@ -30,6 +30,7 @@ import {
   SERIES_PROPERTY_EFFECT_TO,
 } from "@/interfaces/graph-series.interface";
 import { MouseEventHandler } from "react";
+import { cn } from "@/lib/utils";
 
 interface Props {
   series: GraphSeries;
@@ -89,8 +90,12 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
           onValueChange={(v: Placement) => notify(updateSeriesProperty(["placement", v], series))}
           defaultValue={series.placement}
         >
-          <SelectTrigger>
-            <SelectValue placeholder="AIカメラの設置場所" />
+          <SelectTrigger
+            className={cn(
+              `${series.placement !== undefined ? "text-foreground" : "text-gray-500"}`,
+            )}
+          >
+            <SelectValue placeholder="選択して下さい" />
           </SelectTrigger>
           <SelectContent>
             {Object.entries(PLACEMENTS).map(([placement, { text }]) => (
@@ -112,8 +117,12 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
             notify(updateSeriesProperty(["objectClass", v], series))
           }
         >
-          <SelectTrigger>
-            <SelectValue placeholder="AIカメラの検出対象" />
+          <SelectTrigger
+            className={cn(
+              `${series.objectClass !== undefined ? "text-foreground" : "text-gray-500"}`,
+            )}
+          >
+            <SelectValue placeholder="選択して下さい" />
           </SelectTrigger>
           <SelectContent>
             {series.placement
@@ -153,8 +162,12 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                         notify(updateSeriesProperty(["focusedAttribute", v], series))
                       }
                     >
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder={graphTypeText + "に使う属性"} />
+                      <SelectTrigger
+                        className={cn(
+                          `${series.focusedAttribute !== undefined ? "text-foreground" : "text-gray-500"} mt-2`,
+                        )}
+                      >
+                        <SelectValue placeholder={"属性を選択して下さい"} />
                       </SelectTrigger>
                       <SelectContent>
                         {Object.keys(OBJECT_CLASS_ATTRIBUTES[series.objectClass]).map(
