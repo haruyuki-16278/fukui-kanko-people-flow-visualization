@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "submodule": "git submodule update --init --force --depth=1 --recursive",
     "start": "pnpx serve@latest out",
     "lint": "next lint",
     "prepare": "husky"
