@@ -32,6 +32,7 @@ jobs:
           if [ $(git status -s | wc -l) -eq 0 ]; then
             echo "already updated."
           else
+            cp -R data/people-flow-data/full/* public
             git commit -m "🤖 Update submodules at $(date "+DATE: %Y-%m-%d TIME: %H:%M:%S")"
           fi
       - name: Push changes
