@@ -400,7 +400,9 @@ export default function Home() {
                     className="transition-all"
                     disabled={copied}
                     onClick={() => {
-                      navigator.clipboard.writeText(location.href);
+                      navigator.clipboard.writeText(
+                        `${location.origin}${location.pathname}?${new URLSearchParams({ starTitle: title ?? new Date().toString(), starSeriesAll: JSON.stringify(seriesAll) })}`,
+                      );
                       setCopied(true);
                       setTimeout(() => setCopied(false), 1000);
                     }}
