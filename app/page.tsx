@@ -33,7 +33,14 @@ import {
 } from "@/interfaces/aggregated-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { PartiallyRequired } from "@/lib/utils";
-import { GraphIcon, PlusIcon, ShareIcon, StarIcon, TrashIcon } from "@primer/octicons-react";
+import {
+  GraphIcon,
+  PlusIcon,
+  ShareIcon,
+  StarFillIcon,
+  StarIcon,
+  TrashIcon,
+} from "@primer/octicons-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import Papa from "papaparse";
@@ -381,14 +388,27 @@ export default function Home() {
             className="shrink-0"
             variant="outline"
             size="icon"
-            disabled={!seriesAll || seriesAll.length === 0}
+            disabled={
+              !seriesAll ||
+              seriesAll.length === 0 ||
+              (title !== undefined && title !== "" && Object.keys(stars).includes(title))
+            }
             onClick={onClickStar}
           >
-            <StarIcon size="medium" />
+            {title !== undefined && title !== "" && Object.keys(stars).includes(title) ? (
+              <StarFillIcon fill="hsl(var(--star))" size="medium" />
+            ) : (
+              <StarIcon fill="hsl(var(--star))" size="medium" />
+            )}
           </Button>
           <Dialog>
             <DialogTrigger asChild>
-              <Button className="shrink-0" variant="outline" size="icon">
+              <Button
+                disabled={!seriesAll || seriesAll.length === 0}
+                className="shrink-0"
+                variant="outline"
+                size="icon"
+              >
                 <ShareIcon size="medium" />
               </Button>
             </DialogTrigger>
