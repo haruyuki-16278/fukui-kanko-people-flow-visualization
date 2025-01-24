@@ -380,7 +380,7 @@ export default function Home() {
         <div className="flex h-12 w-full gap-x-2 pl-4">
           <Input
             placeholder="グラフタイトル"
-            onChange={(ev) => setTitle(!!ev.target.value ? ev.target.value : undefined)}
+            onChange={(ev) => setTitle(ev.target.value !== null ? ev.target.value : undefined)}
             defaultValue={title}
             disabled={!seriesAll || seriesAll.length === 0}
           />
