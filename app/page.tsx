@@ -343,7 +343,7 @@ export default function Home() {
         <section className="w-full flex-grow">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="text-lg font-bold">📈 系統</h2>
-            <Button variant="outline" size="icon" onClick={onClickAddSeries}>
+            <Button variant="default" size="icon" onClick={onClickAddSeries}>
               <PlusIcon size="medium" />
             </Button>
           </div>
