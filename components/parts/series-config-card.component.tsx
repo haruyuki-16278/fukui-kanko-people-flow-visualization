@@ -221,7 +221,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                         {
                                           ...series.exclude,
                                           [objectClassAttribute]: [
-                                            ...series.exclude[objectClassAttribute],
+                                            ...(series.exclude[objectClassAttribute] ?? []),
                                             attributeValue,
                                           ],
                                         }
