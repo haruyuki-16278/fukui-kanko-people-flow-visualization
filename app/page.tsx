@@ -85,16 +85,16 @@ const getChartConfig = (
   seriesAll: GraphSeries[],
   data: Record<string, string | number>[],
 ): ChartConfig => {
-  if (seriesAll && data && Object.keys(data[0]).length > 1) {
+  if (seriesAll && data && Object.keys(data.at(-1) ?? {}).length > 1) {
     const config: ChartConfig = {};
-    Object.keys(data[0]).forEach((k) => {
+    Object.keys(data.at(-1) ?? {}).forEach((k) => {
       if (k === "date") return;
       const [id, attributeKey] = k.split("#");
       const series = seriesAll.find((v) => v.id === id);
       if (series === undefined) return id;
       let label = series.name ?? defaultSeriesName(series);
       if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
-        label += attributeValueText(series.focusedAttribute, attributeKey);
+        label += " " + attributeValueText(series.focusedAttribute, attributeKey);
       config[k] = {
         label,
       };
@@ -157,11 +157,13 @@ export default function Home() {
       return;
     }
     let newData: (Record<string, string | number> & { date: string })[] = [];
+    // 期間指定分の日付一覧をデータに追加する
     for (const i = new Date(date.from); i <= date.to; i.setDate(i.getDate() + 1))
       newData.push({
         date: `${i.getFullYear()}-${(i.getMonth() + 1).toString().padStart(2, "0")}-${i.getDate().toString().padStart(2, "0")}`,
       });
 
+    // 実データを取得して処理する
     for await (const series of seriesAll.filter((v) => v.show)) {
       if (!series.placement && !series.objectClass) return;
       const csvStr = await (
@@ -204,16 +206,16 @@ export default function Home() {
       );
 
       if (series.graphType === "simple") {
-        newData = newData.map((newDataRow) => ({
-          ...newDataRow,
-          [series.id]:
-            Number(
-              rawData.find(
-                (rawDataRow) =>
-                  String(rawDataRow["aggregate from"]).slice(0, 10) === newDataRow.date,
-              )?.["total count"],
-            ) ?? 0,
-        }));
+        newData = newData.map((newDataRow) => {
+          const rawDataRowTheDay = rawData.find((rawDataRow) => {
+            return String(rawDataRow["aggregate from"].slice(0, 10)) === newDataRow.date;
+          });
+          const theDayCount = Number(rawDataRowTheDay?.["total count"]);
+          return {
+            ...newDataRow,
+            [series.id]: isNaN(theDayCount) ? 0 : theDayCount,
+          };
+        });
       } else if (series.focusedAttribute) {
         const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
           rawData.map((rawDataRow) => {
@@ -245,7 +247,11 @@ export default function Home() {
                   .map((key) => Number(rawDataRow[key]))
                   .reduce((sum, current) => (sum += current), 0),
               }))
-              .forEach((obj) => Object.entries(obj).forEach(([k, v]) => (data[k] = v)));
+              .forEach((obj) =>
+                Object.entries(obj).forEach(([k, v]) => {
+                  data[k] = v;
+                }),
+              );
             return data;
           });
         newData = newData.map((newDataRow) => ({
@@ -434,7 +440,7 @@ export default function Home() {
             </DialogContent>
           </Dialog>
         </div>
-        {!dirty && data && Object.keys(data[0] ?? {}).length > 1 ? (
+        {!dirty && data && Object.keys(data.at(-1) ?? {}).length > 1 ? (
           <ChartContainer
             key={title}
             config={chartConfig}
@@ -456,7 +462,7 @@ export default function Home() {
                 tickCount={10}
                 domain={[0, (dataMax: number) => Math.floor(dataMax)]}
               />
-              {Object.keys(data[0])
+              {Object.keys(data.at(-1) ?? {})
                 .filter((key) => key !== "date")
                 .map((key) => [key, ...key.split("#")])
                 .map(([key, id, attributeKey], i) => (
