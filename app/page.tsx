@@ -240,6 +240,11 @@ export default function Home() {
               "aggregate from": rawDataRow["aggregate from"],
             };
             Object.keys(list)
+              .filter((listitem) => {
+                if (!series.exclude || !series.focusedAttribute) return true;
+                if (!series.exclude[series.focusedAttribute]) return true;
+                return !series.exclude[series.focusedAttribute].includes(listitem);
+              })
               .map((listitem) => ({
                 [`${series.id}#${listitem}`]: Object.keys(rawDataRow)
                   // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
