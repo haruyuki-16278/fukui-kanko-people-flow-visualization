@@ -32,7 +32,7 @@ import {
   PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
-import { PartiallyRequired } from "@/lib/utils";
+import { digest, PartiallyRequired } from "@/lib/utils";
 import {
   GraphIcon,
   PlusIcon,
@@ -115,6 +115,7 @@ export default function Home() {
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [copied, setCopied] = useState(false);
   const [chartConfig, setChartConfig] = useState<ChartConfig>({});
+  const [dataDigest, setDataDigest] = useState<string | undefined>(undefined);
 
   const setSeries = (series: GraphSeries) => {
     if (seriesAll === undefined || seriesAll.length === 0)
@@ -307,6 +308,10 @@ export default function Home() {
     setStars(starsLocal);
   }, [searchParams]);
 
+  useEffect(() => {
+    digest(JSON.stringify(data)).then(setDataDigest);
+  }, [data]);
+
   return (
     <>
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
@@ -447,7 +452,7 @@ export default function Home() {
         </div>
         {!dirty && data && Object.keys(data.at(-1) ?? {}).length > 1 ? (
           <ChartContainer
-            key={title}
+            key={dataDigest}
             config={chartConfig}
             className="h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px_-_48px)] w-full flex-grow"
           >
