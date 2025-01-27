@@ -167,11 +167,13 @@ export default function Home() {
     // 実データを取得して処理する
     for await (const series of seriesAll.filter((v) => v.show)) {
       if (!series.placement && !series.objectClass) return;
-      const csvStr = await (
-        await fetch(
-          `${location.origin}${location.pathname}${series.placement}/${series.objectClass}.csv`,
-        )
-      ).text();
+      const csvStr = (
+        await (
+          await fetch(
+            `${location.origin}${location.pathname}${series.placement}/${series.objectClass}.csv`,
+          )
+        ).text()
+      ).replaceAll(/\n{2,}/g, "\n");
 
       const rawData = Papa.parse<AggregatedData>(csvStr, { header: true }).data.map(
         (rawDataRow) => {
