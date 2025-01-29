@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   DatabaseIcon,
   FileCodeIcon,
@@ -6,7 +6,7 @@ import {
   MarkGithubIcon,
   ThreeBarsIcon,
 } from "@primer/octicons-react";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Image from "next/image";
 
 export function ExternalNavigaton() {
   return (

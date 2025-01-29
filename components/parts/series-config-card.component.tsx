@@ -1,7 +1,11 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -9,11 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Placement, PLACEMENTS } from "@/interfaces/placement.interface";
 import {
   JAPANESE_ATTRIBUTE_NAME,
   OBJECT_CLASS,
@@ -21,16 +20,17 @@ import {
   ObjectClass,
   ObjectClassAttribute,
 } from "@/interfaces/aggregated-data.interface";
-import { TrashIcon } from "@primer/octicons-react";
 import {
-  GraphType,
-  GraphSeries,
-  GRAPH_TYPES,
   defaultSeriesName,
+  GRAPH_TYPES,
+  GraphSeries,
+  GraphType,
   SERIES_PROPERTY_EFFECT_TO,
 } from "@/interfaces/graph-series.interface";
-import { MouseEventHandler } from "react";
+import { Placement, PLACEMENTS } from "@/interfaces/placement.interface";
 import { cn } from "@/lib/utils";
+import { TrashIcon } from "@primer/octicons-react";
+import { MouseEventHandler } from "react";
 
 interface Props {
   series: GraphSeries;

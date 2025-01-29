@@ -1,9 +1,9 @@
 import { ExternalNavigaton } from "@/components/parts/external-navigation.component";
-import "./globals.css";
 import { GraphIcon } from "@primer/octicons-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "福井県 観光オープンデータグラフ",
