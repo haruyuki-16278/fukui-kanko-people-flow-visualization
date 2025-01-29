@@ -59,7 +59,11 @@ function isSeriesValid(
 
 function getDefaultDateRange(): DateRange {
   return {
-    from: floorDate(new Date()),
+    from: (() => {
+      const from = floorDate(new Date());
+      from.setDate(from.getDate() - 14);
+      return from;
+    })(),
     to: (() => {
       const to = floorDate(new Date());
       to.setDate(to.getDate() - 1);
