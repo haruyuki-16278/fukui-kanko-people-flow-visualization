@@ -32,6 +32,7 @@ import {
   PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
+import { floorDate } from "@/lib/date";
 import { digest, PartiallyRequired } from "@/lib/utils";
 import {
   GraphIcon,
@@ -60,21 +61,9 @@ function isSeriesValid(
 
 function getDefaultDateRange(): DateRange {
   return {
-    from: (() => {
-      const from = new Date();
-      from.setMilliseconds(0);
-      from.setSeconds(0);
-      from.setMinutes(0);
-      from.setHours(0);
-      from.setDate(from.getDate() - 14);
-      return from;
-    })(),
+    from: floorDate(new Date()),
     to: (() => {
-      const to = new Date();
-      to.setMilliseconds(0);
-      to.setSeconds(0);
-      to.setMinutes(0);
-      to.setHours(0);
+      const to = floorDate(new Date());
       to.setDate(to.getDate() - 1);
       return to;
     })(),
