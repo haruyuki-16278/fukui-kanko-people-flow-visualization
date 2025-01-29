@@ -14,6 +14,13 @@ export type AggregatedDataBase = {
   "aggregate to": string;
   "total count": number;
 };
+export const KEYOF_AGGREGATED_DATA_BASE = [
+  "placement",
+  "object class",
+  "aggregate from",
+  " aggregate to",
+  "total count",
+] as (keyof AggregatedDataBase)[];
 export type AggregatedData = AggregatedDataBase & Record<string, string | number>;
 
 export const OBJECT_CLASS_ATTRIBUTES = {

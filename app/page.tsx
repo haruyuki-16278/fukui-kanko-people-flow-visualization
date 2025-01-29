@@ -23,7 +23,6 @@ import {
 
 import {
   AGE_RANGES,
-  AggregatedData,
   attributeValueText,
   CAR_CATEGORIES,
   GENDERS,
@@ -32,6 +31,7 @@ import {
   PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
+import { getData } from "@/lib/data/csv";
 import { floorDate } from "@/lib/date";
 import { digest, PartiallyRequired } from "@/lib/utils";
 import {
@@ -44,7 +44,6 @@ import {
 } from "@primer/octicons-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import Papa from "papaparse";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
@@ -142,7 +141,12 @@ export default function Home() {
 
   const onClickApply = useCallback(async () => {
     setDirty(false);
-    if (!date || !date.from || !date.to || !seriesAll) {
+    if (
+      date === undefined ||
+      date.from === undefined ||
+      date.to === undefined ||
+      seriesAll === undefined
+    ) {
       setData(undefined);
       return;
     }
@@ -155,46 +159,13 @@ export default function Home() {
 
     // 実データを取得して処理する
     for await (const series of seriesAll.filter((v) => v.show)) {
-      if (!series.placement && !series.objectClass) return;
-      const csvStr = (
-        await (
-          await fetch(
-            `${location.origin}${location.pathname}${series.placement}/${series.objectClass}.csv`,
-          )
-        ).text()
-      ).replaceAll(/\n{2,}/g, "\n");
+      if (series.placement === undefined || series.objectClass === undefined) return;
 
-      const rawData = Papa.parse<AggregatedData>(csvStr, { header: true }).data.map(
-        (rawDataRow) => {
-          if (series.exclude === undefined) return rawDataRow;
-
-          const filteredRow = { ...rawDataRow };
-          Object.keys(filteredRow).forEach((key) => {
-            const isKeyMatch = key
-              .split(" ")
-              .some((keyPart) =>
-                series.exclude
-                  ? Object.values(series.exclude).some((exclude) =>
-                      exclude.some((excludeItem) => keyPart === excludeItem),
-                    )
-                  : false,
-              );
-            if (isKeyMatch) delete filteredRow[key];
-          });
-          filteredRow["total count"] = Object.entries(filteredRow)
-            .filter(
-              ([k]) =>
-                ![
-                  "placement",
-                  "object class",
-                  "aggregate from",
-                  "aggregate to",
-                  "total count",
-                ].includes(k),
-            )
-            .reduce((sum, current) => (sum += Number(current[1])), 0);
-          return filteredRow;
-        },
+      const rawData = await getData(
+        series.placement,
+        series.objectClass,
+        date as { from: Date; to: Date },
+        series.exclude,
       );
 
       if (series.graphType === "simple") {
