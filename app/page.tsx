@@ -1,6 +1,7 @@
 "use client";
 
 import { SeriesConfigCard } from "@/components/parts/series-config-card.component";
+import { ShareDialogTrigger } from "@/components/parts/share-dialog.component";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -11,14 +12,6 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
   ATTRIBUTES,
@@ -30,14 +23,7 @@ import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interf
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
 import { digest, PartiallyRequired } from "@/lib/utils";
-import {
-  GraphIcon,
-  PlusIcon,
-  ShareIcon,
-  StarFillIcon,
-  StarIcon,
-  TrashIcon,
-} from "@primer/octicons-react";
+import { GraphIcon, PlusIcon, StarFillIcon, StarIcon, TrashIcon } from "@primer/octicons-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -101,7 +87,6 @@ export default function Home() {
   const [isSeriesAllValid, setIsSeriesAllValid] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
-  const [copied, setCopied] = useState(false);
   const [chartConfig, setChartConfig] = useState<ChartConfig>({});
   const [dataDigest, setDataDigest] = useState<string | undefined>(undefined);
 
@@ -362,38 +347,11 @@ export default function Home() {
               <StarIcon fill="hsl(var(--star))" size="medium" />
             )}
           </Button>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                disabled={!seriesAll || seriesAll.length === 0}
-                className="shrink-0"
-                variant="outline"
-                size="icon"
-              >
-                <ShareIcon size="medium" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>グラフを共有する</DialogTitle>
-                <DialogDescription className="flex justify-center">
-                  <Button
-                    className="transition-all"
-                    disabled={copied}
-                    onClick={() => {
-                      navigator.clipboard.writeText(
-                        `${location.origin}${location.pathname}?${new URLSearchParams({ starTitle: title ?? new Date().toString(), starSeriesAll: JSON.stringify(seriesAll) })}`,
-                      );
-                      setCopied(true);
-                      setTimeout(() => setCopied(false), 1000);
-                    }}
-                  >
-                    {copied ? "コピーしました!" : "URLをコピーする"}
-                  </Button>
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
+          <ShareDialogTrigger
+            disabled={!seriesAll || seriesAll.length === 0}
+            title={title}
+            seriesAll={seriesAll ?? []}
+          />
         </div>
         {!dirty && data && Object.keys(data.at(-1) ?? {}).length > 1 ? (
           <ChartContainer
