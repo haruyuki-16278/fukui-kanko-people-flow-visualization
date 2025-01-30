@@ -1,7 +1,12 @@
 import { OBJECT_CLASS, ObjectClass, ObjectClassAttribute } from "./aggregated-data.interface";
 import { Placement, PLACEMENTS } from "./placement.interface";
 
-export const GRAPH_TYPES = { simple: "単純", stack: "積み上げ", ratio: "100%積み上げ" } as const;
+export const GRAPH_TYPES = {
+  simpleBar: "単純棒グラフ",
+  stackBar: "積み上げ棒グラフ",
+  ratioBar: "100%積み上げ棒グラフ",
+  simplePie: "円グラフ",
+} as const;
 export type GraphType = keyof typeof GRAPH_TYPES;
 
 export interface GraphSeries {
@@ -14,6 +19,10 @@ export interface GraphSeries {
   objectClass?: ObjectClass;
   exclude?: Record<string, string[]>;
 }
+
+export const isCartesian = (series: GraphSeries) =>
+  ["simpleBar", "stackBar", "ratioBar"].includes(series.graphType);
+export const isProportional = (series: GraphSeries) => ["simplePie"].includes(series.graphType);
 
 export const SERIES_PROPERTY_EFFECT_TO: Record<
   keyof GraphSeries,

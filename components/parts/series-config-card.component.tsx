@@ -150,9 +150,9 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                 <div key={graphType + "radio"}>
                   <div className="flex items-center space-x-2">
                     <RadioGroupItem value={graphType} id={graphType} />
-                    <Label htmlFor="simple">{graphTypeText}棒グラフ</Label>
+                    <Label htmlFor={graphType}>{graphTypeText}</Label>
                   </div>
-                  {graphType !== "simple" &&
+                  {graphType !== "simpleBar" &&
                   graphType === series.graphType &&
                   series.objectClass !== undefined &&
                   series.objectClass !== "Person" ? (

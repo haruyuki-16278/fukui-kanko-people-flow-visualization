@@ -50,7 +50,7 @@ function isSeriesValid(
   return (
     series.placement !== undefined &&
     series.objectClass !== undefined &&
-    (series.graphType === "simple" ? true : series.focusedAttribute !== undefined)
+    (series.graphType === "simpleBar" ? true : series.focusedAttribute !== undefined)
   );
 }
 
@@ -117,7 +117,7 @@ export default function Home() {
   };
   const onClickAddSeries = () => {
     const newSeriesAll = seriesAll ? [...seriesAll] : [];
-    newSeriesAll.push({ id: crypto.randomUUID(), graphType: "simple", show: true });
+    newSeriesAll.push({ id: crypto.randomUUID(), graphType: "simpleBar", show: true });
     setSeriesAll(newSeriesAll);
     setIsSeriesAllValid(newSeriesAll.every(isSeriesValid));
   };
@@ -165,7 +165,7 @@ export default function Home() {
         series.exclude,
       );
 
-      if (series.graphType === "simple") {
+      if (series.graphType === "simpleBar") {
         newData = newData.map((newDataRow) => {
           const rawDataRowTheDay = rawData.find((rawDataRow) => {
             return String(rawDataRow["aggregate from"].slice(0, 10)) === newDataRow.date;
@@ -404,7 +404,7 @@ export default function Home() {
             <BarChart
               data={data}
               stackOffset={
-                seriesAll && seriesAll.every((item) => item.graphType === "ratio")
+                seriesAll && seriesAll.every((item) => item.graphType === "ratioBar")
                   ? "expand"
                   : "none"
               }
