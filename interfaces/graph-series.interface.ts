@@ -1,11 +1,12 @@
 import { OBJECT_CLASS, ObjectClass, ObjectClassAttribute } from "./aggregated-data.interface";
 import { Placement, PLACEMENTS } from "./placement.interface";
 
+// keyを変更すると後方互換性が失われるので注意
 export const GRAPH_TYPES = {
-  simpleBar: "単純棒グラフ",
-  stackBar: "積み上げ棒グラフ",
-  ratioBar: "100%積み上げ棒グラフ",
-  simplePie: "円グラフ",
+  simple: "単純棒グラフ",
+  stack: "積み上げ棒グラフ",
+  ratio: "100%積み上げ棒グラフ",
+  pie: "円グラフ",
 } as const;
 export type GraphType = keyof typeof GRAPH_TYPES;
 

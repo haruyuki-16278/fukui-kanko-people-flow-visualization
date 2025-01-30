@@ -152,7 +152,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                     <RadioGroupItem value={graphType} id={graphType} />
                     <Label htmlFor={graphType}>{graphTypeText}</Label>
                   </div>
-                  {graphType !== "simpleBar" &&
+                  {graphType !== "simple" &&
                   graphType === series.graphType &&
                   series.objectClass !== undefined &&
                   series.objectClass !== "Person" ? (
