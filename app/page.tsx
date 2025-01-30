@@ -102,7 +102,7 @@ export default function Home() {
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [seriesAll, setSeriesAll] = useState<GraphSeries[] | undefined>(undefined);
   const [isSeriesAllValid, setIsSeriesAllValid] = useState(false);
-  const [date, setDate] = useState<DateRange | undefined>(getDefaultDateRange());
+  const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [copied, setCopied] = useState(false);
   const [chartConfig, setChartConfig] = useState<ChartConfig>({});
@@ -145,9 +145,9 @@ export default function Home() {
   const onClickApply = useCallback(async () => {
     setDirty(false);
     if (
-      date === undefined ||
-      date.from === undefined ||
-      date.to === undefined ||
+      dateRange === undefined ||
+      dateRange.from === undefined ||
+      dateRange.to === undefined ||
       seriesAll === undefined
     ) {
       setData(undefined);
@@ -155,7 +155,7 @@ export default function Home() {
     }
     let newData: (Record<string, string | number> & { date: string })[] = [];
     // 期間指定分の日付一覧をデータに追加する
-    for (const i = new Date(date.from); i <= date.to; i.setDate(i.getDate() + 1))
+    for (const i = new Date(dateRange.from); i <= dateRange.to; i.setDate(i.getDate() + 1))
       newData.push({
         date: `${i.getFullYear()}-${(i.getMonth() + 1).toString().padStart(2, "0")}-${i.getDate().toString().padStart(2, "0")}`,
       });
@@ -167,7 +167,7 @@ export default function Home() {
       const rawData = await getData(
         series.placement,
         series.objectClass,
-        date as { from: Date; to: Date },
+        dateRange as { from: Date; to: Date },
         series.exclude,
       );
 
@@ -242,7 +242,7 @@ export default function Home() {
     }
     setData(newData);
     setChartConfig(getChartConfig(seriesAll, newData));
-  }, [date, seriesAll]);
+  }, [dateRange, seriesAll]);
 
   const onClickStar = () => {
     const newStars = JSON.parse(localStorage.getItem("stars") ?? "{}");
@@ -312,9 +312,9 @@ export default function Home() {
           <h2 className="mb-2 text-lg font-bold">📅 期間</h2>
           <Calendar
             mode="range"
-            selected={date}
+            selected={dateRange}
             onSelect={(v) => {
-              setDate(v);
+              setDateRange(v);
               setDirty(true);
             }}
             disabled={{
