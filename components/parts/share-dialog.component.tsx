@@ -8,6 +8,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { GraphSeries } from "@/interfaces/graph-series.interface";
+import { getDateTimeString } from "@/lib/date";
 import { ShareIcon } from "@primer/octicons-react";
 import { useState } from "react";
 
@@ -22,7 +23,7 @@ export function ShareDialogTrigger({ disabled, title, seriesAll }: Props) {
 
   const onClickCopyUrl = () => {
     navigator.clipboard.writeText(
-      `${location.origin}${location.pathname}?${new URLSearchParams({ starTitle: title ?? new Date().toString(), starSeriesAll: JSON.stringify(seriesAll) })}`,
+      `${location.origin}${location.pathname}?${new URLSearchParams({ starTitle: title ?? getDateTimeString(new Date()), starSeriesAll: JSON.stringify(seriesAll) })}`,
     );
     setCopied(true);
     setTimeout(() => setCopied(false), 1000);
