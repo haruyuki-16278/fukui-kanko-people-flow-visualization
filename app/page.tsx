@@ -22,6 +22,7 @@ import {
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
+import { useLocalStars } from "@/lib/hooks/local-stars";
 import { digest, PartiallyRequired } from "@/lib/utils";
 import { GraphIcon, PlusIcon, StarFillIcon, StarIcon, TrashIcon } from "@primer/octicons-react";
 import Link from "next/link";
@@ -80,7 +81,7 @@ const getChartConfig = (
 export default function Home() {
   const searchParams = useSearchParams();
 
-  const [stars, setStars] = useState<Record<string, string>>({});
+  const { stars, appendStar, removeStar } = useLocalStars();
   const [dirty, setDirty] = useState(false);
   const [title, setTitle] = useState<string | undefined>(undefined);
   const [seriesAll, setSeriesAll] = useState<GraphSeries[] | undefined>(undefined);
@@ -209,19 +210,6 @@ export default function Home() {
     setChartConfig(getChartConfig(seriesAll, newData));
   }, [dateRange, seriesAll]);
 
-  const onClickStar = () => {
-    const newStars = JSON.parse(localStorage.getItem("stars") ?? "{}");
-    newStars[title ?? new Date().toLocaleString()] = JSON.stringify(seriesAll);
-    localStorage.setItem("stars", JSON.stringify(newStars));
-    setStars(newStars);
-  };
-  const onClickUnstar = (title: string) => {
-    const newStars = { ...stars };
-    delete newStars[title];
-    localStorage.setItem("stars", JSON.stringify(newStars));
-    setStars(newStars);
-  };
-
   useEffect(() => {
     const titleFromQuery = searchParams.get("starTitle");
     setTitle(titleFromQuery ?? undefined);
@@ -234,8 +222,6 @@ export default function Home() {
       setSeriesAll(undefined);
       setIsSeriesAllValid(false);
     }
-    const starsLocal = JSON.parse(localStorage.getItem("stars") ?? "{}");
-    setStars(starsLocal);
   }, [searchParams]);
 
   useEffect(() => {
@@ -263,7 +249,7 @@ export default function Home() {
                   className="shrink-0"
                   variant="destructive"
                   size="icon"
-                  onClick={() => onClickUnstar(starTitle)}
+                  onClick={() => removeStar(starTitle)}
                 >
                   <TrashIcon size="small" />
                 </Button>
@@ -339,7 +325,7 @@ export default function Home() {
               seriesAll.length === 0 ||
               (title !== undefined && title !== "" && Object.keys(stars).includes(title))
             }
-            onClick={onClickStar}
+            onClick={() => appendStar(title, seriesAll)}
           >
             {title !== undefined && title !== "" && Object.keys(stars).includes(title) ? (
               <StarFillIcon fill="hsl(var(--star))" size="medium" />
