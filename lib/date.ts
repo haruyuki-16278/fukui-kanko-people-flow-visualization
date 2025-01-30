@@ -36,6 +36,14 @@ export function getDateTimeString(date: Date) {
   return `${getDateString(date)} ${getTimeString(date)}`;
 }
 
+export function getDateStringRange({ from, to }: { from: Date; to: Date }): string[] {
+  const result: string[] = [];
+  for (let i = new Date(from); i <= to; i.setDate(i.getDate() + 1)) {
+    result.push(getDateString(i));
+  }
+  return result;
+}
+
 export function isDateIncludedInRange(date: Date, range: { from: Date; to: Date }) {
   return date >= range.from && date <= range.to;
 }

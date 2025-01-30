@@ -21,17 +21,14 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import {
-  AGE_RANGES,
+  ATTRIBUTES,
   attributeValueText,
-  CAR_CATEGORIES,
-  GENDERS,
   JAPANESE_ATTRIBUTE_NAME,
   ObjectClassAttribute,
-  PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
-import { floorDate } from "@/lib/date";
+import { floorDate, getDateStringRange } from "@/lib/date";
 import { digest, PartiallyRequired } from "@/lib/utils";
 import {
   GraphIcon,
@@ -153,12 +150,9 @@ export default function Home() {
       setData(undefined);
       return;
     }
-    let newData: (Record<string, string | number> & { date: string })[] = [];
-    // 期間指定分の日付一覧をデータに追加する
-    for (const i = new Date(dateRange.from); i <= dateRange.to; i.setDate(i.getDate() + 1))
-      newData.push({
-        date: `${i.getFullYear()}-${(i.getMonth() + 1).toString().padStart(2, "0")}-${i.getDate().toString().padStart(2, "0")}`,
-      });
+    let newData: (Record<string, string | number> & { date: string })[] = getDateStringRange(
+      dateRange as { from: Date; to: Date },
+    ).map((v) => ({ date: v }));
 
     // 実データを取得して処理する
     for await (const series of seriesAll.filter((v) => v.show)) {
@@ -185,23 +179,9 @@ export default function Home() {
       } else if (series.focusedAttribute) {
         const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
           rawData.map((rawDataRow) => {
-            let list;
-            switch (series.focusedAttribute) {
-              case "ageRanges":
-                list = AGE_RANGES;
-                break;
-              case "genders":
-                list = GENDERS;
-                break;
-              case "prefectures":
-                list = PREFECTURES;
-                break;
-              case "carCategories":
-                list = CAR_CATEGORIES;
-                break;
-              default:
-                throw new Error("invalid focuced attribute");
-            }
+            if (series.focusedAttribute === undefined)
+              throw new Error("invalid focused attribute value.");
+            const list = ATTRIBUTES[series.focusedAttribute];
             const data: Record<string, string | number> & { "aggregate from": string } = {
               "aggregate from": rawDataRow["aggregate from"],
             };

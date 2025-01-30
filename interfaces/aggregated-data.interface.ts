@@ -126,6 +126,13 @@ type AttributeValue<Attribute extends ObjectClassAttribute> = Attribute extends 
         ? keyof (typeof OBJECT_CLASS_ATTRIBUTES)["LicensePlate"][Attribute]
         : never;
 
+export const ATTRIBUTES = {
+  ageRanges: AGE_RANGES,
+  genders: GENDERS,
+  prefectures: PREFECTURES,
+  carCategories: CAR_CATEGORIES,
+} as const;
+
 function isValueOf<Attribute extends ObjectClassAttribute>(
   attribute: Attribute,
   value: string,
