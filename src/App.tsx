@@ -147,7 +147,7 @@ export default function App() {
             [id]: isNaN(theDayCount) ? 0 : theDayCount,
           };
         });
-      } else if (series.focusedAttribute) {
+      } else if (series.graphType === "stack" || series.graphType === "ratio") {
         const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
           rawData.map((rawDataRow) => {
             if (series.focusedAttribute === undefined)
