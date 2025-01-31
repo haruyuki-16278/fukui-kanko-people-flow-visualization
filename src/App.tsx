@@ -26,7 +26,7 @@ import { useRecord } from "@/lib/hooks/record";
 import { digest, PartiallyRequired } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { GraphIcon, PlusIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
+import { PlusIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 function isSeriesValid(
@@ -78,7 +78,6 @@ const getChartConfig = (
 
 export default function App() {
   const { stars, appendStar, removeStar } = useLocalStars();
-  const [dirty, setDirty] = useState(false);
   const [title, setTitle] = useState<string | undefined>(
     new URL(location.href).searchParams.get("starTitle") ?? undefined,
   );
@@ -88,7 +87,6 @@ export default function App() {
       return starSeriesAll !== null ? JSON.parse(starSeriesAll) : undefined;
     })(),
   );
-  const [isSeriesAllValid, setIsSeriesAllValid] = useState(false);
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [chartConfig, setChartConfig] = useState<ChartConfig>({});
@@ -113,8 +111,7 @@ export default function App() {
     setData(newData);
   };
 
-  const onClickApply = useCallback(async () => {
-    setDirty(false);
+  const apply = useCallback(async () => {
     if (
       dateRange === undefined ||
       dateRange.from === undefined ||
@@ -200,13 +197,9 @@ export default function App() {
 
   useEffect(() => {
     if (Object.values(seriesAll).every(isSeriesValid)) {
-      setIsSeriesAllValid(true);
-      onClickApply();
-    } else {
-      setDirty(true);
-      setIsSeriesAllValid(false);
+      apply();
     }
-  }, [seriesAll]);
+  }, [seriesAll, dateRange]);
 
   useEffect(() => {
     digest(JSON.stringify(data)).then(setDataDigest);
@@ -215,8 +208,8 @@ export default function App() {
   return (
     <>
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
-        <section className="min-h-fit w-full overflow-x-hidden">
-          <h2 className="text-lg font-bold">⭐️ お気に入り</h2>
+        <section className="min-h-44 max-h-44 overflow-y-auto w-full overflow-x-hidden">
+          <h2 className="text-lg font-bold sticky top-0 bg-background">⭐️ お気に入り</h2>
           {Object.keys(stars).length > 0 ? (
             Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
               <OpenStar
@@ -227,7 +220,7 @@ export default function App() {
               />
             ))
           ) : (
-            <p className="pl-2">お気に入りがありません</p>
+            <p className="pl-2 mx-auto my-auto">お気に入りがありません</p>
           )}
         </section>
         <section className="w-full">
@@ -237,7 +230,6 @@ export default function App() {
             selected={dateRange}
             onSelect={(v) => {
               setDateRange(v);
-              setDirty(true);
             }}
             disabled={{
               before: new Date("2024-10-17"),
@@ -267,16 +259,6 @@ export default function App() {
               />
             ))}
           </div>
-        </section>
-        <section className="sticky bottom-0 flex w-full justify-center bg-[rgb(from_hsl(var(--background))_r_g_b_/_0.8)] py-4 backdrop-blur-sm">
-          <Button
-            onClick={() => onClickApply()}
-            className="mx-auto"
-            disabled={!(dirty && isSeriesAllValid)}
-          >
-            <GraphIcon size="medium" />
-            グラフに反映
-          </Button>
         </section>
       </aside>
       <article className="flex-glow flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-[calc(100%_-_288px)] flex-col items-center justify-center">
@@ -309,7 +291,7 @@ export default function App() {
             seriesAll={seriesAll}
           />
         </div>
-        {!dirty && data && Object.keys(data.at(-1) ?? {}).length > 1 ? (
+        {data && Object.keys(data.at(-1) ?? {}).length > 1 ? (
           <ChartContainer
             key={dataDigest}
             config={chartConfig}
