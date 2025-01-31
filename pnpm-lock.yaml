@@ -79,6 +79,9 @@ importers:
       "@types/node":
         specifier: ^22.12.0
         version: 22.12.0
+      "@types/papaparse":
+        specifier: ^5.3.15
+        version: 5.3.15
       "@types/react":
         specifier: ^18.3.18
         version: 18.3.18
@@ -1403,6 +1406,12 @@ packages:
     resolution:
       {
         integrity: sha512-Fll2FZ1riMjNmlmJOdAyY5pUbkftXslB5DgEzlIuNaiWhXd00FhWxVC/r4yV/4wBb9JfImTu+jiSvXTkJ7F/gA==,
+      }
+
+  "@types/papaparse@5.3.15":
+    resolution:
+      {
+        integrity: sha512-JHe6vF6x/8Z85nCX4yFdDslN11d+1pr12E526X8WAfhadOeaOTx5AuIkvDKIBopfvlzpzkdMx4YyvSKCM9oqtw==,
       }
 
   "@types/prop-types@15.7.14":
@@ -4270,6 +4279,10 @@ snapshots:
   "@types/node@22.12.0":
     dependencies:
       undici-types: 6.20.0
+
+  "@types/papaparse@5.3.15":
+    dependencies:
+      "@types/node": 22.12.0
 
   "@types/prop-types@15.7.14": {}
 
