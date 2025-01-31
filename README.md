@@ -1,50 +1,27 @@
-# React + TypeScript + Vite
+# 福井県観光DX AIカメラオープンデータ 可視化ウェブアプリケーション
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+福井県観光DXで収集したAIカメラのオープンデータを元に、データの可視化をするウェブアプリケーション
 
-Currently, two official plugins are available:
+[アプリを開く](https://code4fukui.github.io/fukui-kanko-people-flow-visualization/)(毎朝1時頃　更新)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[<img src="pagelink-qr.png" alt="GitHub Pages へのQR" width="200"/>](https://code4fukui.github.io/fukui-kanko-people-flow-visualization/)
 
-## Expanding the ESLint configuration
+## 開発者向け資料
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+このプロジェクトは [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) を利用して作成された [Next.js](https://nextjs.org) プロジェクトです。
 
-- Configure the top-level `parserOptions` property like this:
+### 開発サーバーの起動
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+pnpm dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+ブラウザで [http://localhost:3000](http://localhost:3000) を開くことで起動された開発サーバーのビルド結果を閲覧できます。
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### gitサブモジュールの更新
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+手元で最新データに更新したいときはサブモジュールで利用しているデータをupdateする必要があります。
+
+```bash
+git submodule update --remote
 ```

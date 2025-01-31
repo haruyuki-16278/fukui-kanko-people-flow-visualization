@@ -1,10 +1,14 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./app";
+import { Header } from "./components/parts/header.component";
+import "./index.css";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <Header />
+    <main className="flex h-full w-full max-w-full flex-grow items-center pt-4">
+      <App />
+    </main>
   </StrictMode>,
-)
+);
