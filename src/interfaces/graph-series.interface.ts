@@ -1,3 +1,4 @@
+import { PartiallyRequired } from "@/lib/utils";
 import { OBJECT_CLASS, ObjectClass, ObjectClassAttribute } from "./aggregated-data.interface";
 import { Placement, PLACEMENTS } from "./placement.interface";
 
@@ -47,4 +48,14 @@ export function defaultSeriesName(series: GraphSeries): string {
         ? "での"
         : ""
   }検出回数`;
+}
+
+export function isSeriesValid(
+  series: GraphSeries,
+): series is PartiallyRequired<GraphSeries, "placement" | "objectClass"> {
+  return (
+    series.placement !== undefined &&
+    series.objectClass !== undefined &&
+    (series.graphType === "simple" ? true : series.focusedAttribute !== undefined)
+  );
 }
