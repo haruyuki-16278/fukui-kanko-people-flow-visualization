@@ -4,6 +4,7 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: process.env.PAGES ? "fukui-kanko-people-flow-visualization" : "./",
   plugins: [react()],
   resolve: {
     alias: {
