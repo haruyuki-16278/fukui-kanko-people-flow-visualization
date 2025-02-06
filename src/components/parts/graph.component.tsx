@@ -70,7 +70,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
             chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 1,
         )
         .map((chartId) => (
-          <div className="h-full w-full first:col-span-2 flex flex-col items-center">
+          <div key={chartId} className="h-full w-full first:col-span-2 flex flex-col items-center">
             {seriesAll && chartId !== "cartesian" ? (
               <p className="-mb-4 pt-4">
                 {(() => {
@@ -83,7 +83,6 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               </p>
             ) : undefined}
             <ChartContainer
-              key={chartId}
               config={getChartConfig(seriesAll, chartGroup[chartId], chartId)}
               className="h-full w-full"
             >
