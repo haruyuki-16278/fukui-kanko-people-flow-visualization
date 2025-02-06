@@ -183,7 +183,9 @@ const ChartTooltipContent = React.forwardRef<
       >
         {!nestLabel ? tooltipLabel : null}
         <div className="grid gap-1.5">
-          {payload.map((item, index) => {
+          {payload
+            .filter((item) => (payload.length < 10 ? true : item.value !== 0))
+            .map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
@@ -233,7 +235,7 @@ const ChartTooltipContent = React.forwardRef<
                       <div className="grid gap-1.5">
                         {nestLabel ? tooltipLabel : null}
                         <span className="text-muted-foreground">
-                          {itemConfig?.label || item.name}
+                          {itemConfig?.label || item.name}{": "}
                         </span>
                       </div>
                       {item.value && (
@@ -247,6 +249,13 @@ const ChartTooltipContent = React.forwardRef<
               </div>
             )
           })}
+          {payload.length >= 10 ? (
+            <p className="mx-auto mt-1 text-muted-foreground">
+              ⚠️ 値が0の系統は
+              <br />
+              表示していません
+            </p>
+          ) : undefined}
         </div>
       </div>
     )
