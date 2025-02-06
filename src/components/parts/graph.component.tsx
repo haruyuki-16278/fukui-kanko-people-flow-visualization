@@ -70,16 +70,11 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
           (chartId) =>
             chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 1,
         )
-        // .map((chartId) => {
-        //   console.log(chartId, chartGroup[chartId]);
-        //   console.log(getChartConfig(seriesAll, chartGroup[chartId]));
-        //   return chartId;
-        // })
         .map((chartId) => (
           <ChartContainer
             key={chartId}
             config={getChartConfig(seriesAll, chartGroup[chartId], chartId)}
-            className="w-full h-full"
+            className="w-full h-full first:col-span-2"
           >
             {chartId === "cartesian" ? (
               <BarChart data={chartGroup[chartId]}>
