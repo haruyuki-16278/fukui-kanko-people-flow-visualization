@@ -39,7 +39,7 @@ const CustomizedLabel = (props: {
   name: string;
 }) => {
   const attributeKey = props.name.split("#").at(-1);
-  const radius = props.innerRadius + (props.outerRadius - props.innerRadius) * 0.5;
+  const radius = props.innerRadius + (props.outerRadius - props.innerRadius) * 0.3;
   const x = props.cx + radius * Math.cos(-props.midAngle * RADIAN);
   const y = props.cy + radius * Math.sin(-props.midAngle * RADIAN);
 
