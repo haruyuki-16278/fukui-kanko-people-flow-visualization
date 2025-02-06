@@ -19,7 +19,7 @@ function MultiChartContainer(props: { children: ReactNode; className?: string })
   return (
     <div
       className={cn(
-        `grid overflow-hidden grid-cols-[repeat(auto-fill,_minmax(50%,_1fr))] w-full h-full ${props.className}`,
+        `grid overflow-x-hidden overflow-y-auto grid-cols-[repeat(auto-fit,_minmax(50%,_1fr))] grid-rows-1 w-full h-full`,
       )}
     >
       {props.children}
@@ -74,7 +74,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
           <ChartContainer
             key={chartId}
             config={getChartConfig(seriesAll, chartGroup[chartId], chartId)}
-            className="w-full h-full first:col-span-2"
+            className="h-full w-full first:col-span-2"
           >
             {chartId === "cartesian" ? (
               <BarChart data={chartGroup[chartId]}>
