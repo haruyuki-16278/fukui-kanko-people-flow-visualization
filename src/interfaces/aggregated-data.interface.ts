@@ -154,6 +154,7 @@ export function attributeValueText(
   objectClassAttribute: ObjectClassAttribute,
   attributeValue: string,
 ): string {
+  if (attributeValue === "total") return "合計";
   if (objectClassAttribute === "genders" && isValueOf(objectClassAttribute, attributeValue))
     return OBJECT_CLASS_ATTRIBUTES["Face"][objectClassAttribute][attributeValue];
   if (objectClassAttribute === "ageRanges" && isValueOf(objectClassAttribute, attributeValue))

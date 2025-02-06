@@ -3,41 +3,18 @@ import { SeriesConfigCard } from "@/components/parts/series-config-card.componen
 import { ShareDialogTrigger } from "@/components/parts/share-dialog.component";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-  type ChartConfig,
-} from "@/components/ui/chart";
 import { Input } from "@/components/ui/input";
-import {
-  ATTRIBUTES,
-  attributeValueText,
-  JAPANESE_ATTRIBUTE_NAME,
-  ObjectClassAttribute,
-} from "@/interfaces/aggregated-data.interface";
-import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
+import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
+import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
 import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
-import { digest, PartiallyRequired } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { PlusIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-
-function isSeriesValid(
-  series: GraphSeries,
-): series is PartiallyRequired<GraphSeries, "placement" | "objectClass"> {
-  return (
-    series.placement !== undefined &&
-    series.objectClass !== undefined &&
-    (series.graphType === "simple" ? true : series.focusedAttribute !== undefined)
-  );
-}
+import { Graph } from "./components/parts/graph.component";
+import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
 
 function getDefaultDateRange(): DateRange {
   return {
@@ -53,29 +30,6 @@ function getDefaultDateRange(): DateRange {
     })(),
   };
 }
-
-const getChartConfig = (
-  seriesAll: { [id: string]: GraphSeries },
-  data: Record<string, string | number>[],
-): ChartConfig => {
-  if (seriesAll && data && Object.keys(data.at(-1) ?? {}).length > 1) {
-    const config: ChartConfig = {};
-    Object.keys(data.at(-1) ?? {}).forEach((k) => {
-      if (k === "date") return;
-      const [id, attributeKey] = k.split("#");
-      const series = seriesAll[id];
-      if (series === undefined) return id;
-      let label = series.name ?? defaultSeriesName(series);
-      if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
-        label += " " + attributeValueText(series.focusedAttribute, attributeKey);
-      config[k] = {
-        label,
-      };
-    });
-    return config;
-  } else return {};
-};
-
 export default function App() {
   const { stars, appendStar, removeStar } = useLocalStars();
   const [title, setTitle] = useState<string | undefined>(
@@ -89,8 +43,7 @@ export default function App() {
   );
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
-  const [chartConfig, setChartConfig] = useState<ChartConfig>({});
-  const [dataDigest, setDataDigest] = useState<string | undefined>(undefined);
+  const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
 
   const onClickAddSeries = () => {
     setSeries({ graphType: "simple", show: true });
@@ -191,8 +144,8 @@ export default function App() {
         }));
       }
     }
+    setChartGroup(await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }));
     setData(newData);
-    setChartConfig(getChartConfig(seriesAll, newData));
   }, [dateRange, seriesAll]);
 
   useEffect(() => {
@@ -200,10 +153,6 @@ export default function App() {
       apply();
     }
   }, [seriesAll, dateRange]);
-
-  useEffect(() => {
-    digest(JSON.stringify(data)).then(setDataDigest);
-  }, [data]);
 
   return (
     <>
@@ -291,63 +240,14 @@ export default function App() {
             seriesAll={seriesAll}
           />
         </div>
-        {data && Object.keys(data.at(-1) ?? {}).length > 1 ? (
-          <ChartContainer
-            key={dataDigest}
-            config={chartConfig}
-            className="h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px_-_48px)] w-full flex-grow"
-          >
-            <BarChart
-              data={data}
-              stackOffset={
-                Object.values(seriesAll).every((item) => item.graphType === "ratio")
-                  ? "expand"
-                  : "none"
-              }
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis dataKey="date" tickLine={false} tickMargin={7} axisLine={false} />
-              <YAxis
-                type="number"
-                tickLine={true}
-                tickCount={10}
-                domain={[0, (dataMax: number) => Math.floor(dataMax)]}
-              />
-              {Object.keys(data.at(-1) ?? {})
-                .filter((key) => key !== "date")
-                .map((key) => [key, ...key.split("#")])
-                .map(([key, id, attributeKey], i) => (
-                  <Bar
-                    type="linear"
-                    key={key}
-                    dataKey={key}
-                    stackId={id}
-                    name={
-                      seriesAll
-                        ? (() => {
-                            const series = seriesAll[id];
-                            if (!series) return undefined;
-                            return series.name === undefined || series.name === ""
-                              ? defaultSeriesName(series)
-                              : series.name;
-                          })() + attributeKey
-                          ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
-                          : ""
-                        : key
-                    }
-                    fill={`hsl(var(--chart-${(i % 5) + 1}))`}
-                    radius={id.split("#")[1] === "" ? 2 : 0}
-                  />
-                ))}
-              <ChartTooltip
-                cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
-                content={<ChartTooltipContent className="bg-white" />}
-              />
-              {Object.keys(data[0]).length <= 10 ? (
-                <ChartLegend content={<ChartLegendContent />} />
-              ) : undefined}
-            </BarChart>
-          </ChartContainer>
+        {chartGroup !== undefined &&
+        (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > 1 ||
+          Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
+          <Graph
+            className="flex-grow h-[calc(100svh_-_96px_-_48px)] min-h-[calc(100svh_-_96px_-_48px)]"
+            chartGroup={chartGroup}
+            seriesAll={seriesAll}
+          />
         ) : (
           <p className="flex-glow my-auto">グラフに表示するデータをサイドバーで設定して下さい</p>
         )}
