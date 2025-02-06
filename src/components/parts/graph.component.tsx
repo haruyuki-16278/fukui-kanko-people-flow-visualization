@@ -38,8 +38,7 @@ const CustomizedLabel = (props: {
   index: number;
   name: string;
 }) => {
-  const attributeKey = props.name.split("#").at(-1);
-  const radius = props.innerRadius + (props.outerRadius - props.innerRadius) * 0.3;
+  const radius = props.innerRadius + (props.outerRadius - props.innerRadius) * 0.7;
   const x = props.cx + radius * Math.cos(-props.midAngle * RADIAN);
   const y = props.cy + radius * Math.sin(-props.midAngle * RADIAN);
 
@@ -48,11 +47,11 @@ const CustomizedLabel = (props: {
       x={x}
       y={y}
       fill="white"
-      textAnchor={x > props.cx ? "start" : "end"}
+      textAnchor="middle"
       dominantBaseline="central"
       className="font-bold drop-shadow"
     >
-      {props.percent > 0.05 ? `${attributeKey} ${(props.percent * 100).toFixed(1)}%` : undefined}
+      {props.percent > 0.05 ? `${(props.percent * 100).toFixed(1)}%` : undefined}
     </text>
   );
 };
@@ -71,76 +70,89 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
             chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 1,
         )
         .map((chartId) => (
-          <ChartContainer
-            key={chartId}
-            config={getChartConfig(seriesAll, chartGroup[chartId], chartId)}
-            className="h-full w-full first:col-span-2"
-          >
-            {chartId === "cartesian" ? (
-              <BarChart data={chartGroup[chartId]}>
-                <CartesianGrid vertical={false} />
-                <XAxis dataKey={"date"} tickLine={false} tickMargin={7} axisLine={false} />
-                <YAxis type="number" tickLine={true} tickCount={10} />
-                {Object.keys(chartGroup[chartId].at(-1) ?? {})
-                  .filter((key) => key !== "date")
-                  .map((key) => [key, ...key.split("#")])
-                  .map(([key, id, attributeKey], i) => (
-                    <Bar
-                      type="linear"
-                      key={key}
-                      dataKey={key}
-                      stackId={id}
-                      name={
-                        seriesAll
-                          ? (() => {
-                              const series = seriesAll[id];
-                              if (!series) return undefined;
-                              return series.name === undefined || series.name === ""
-                                ? defaultSeriesName(series)
-                                : series.name;
-                            })() + attributeKey
-                            ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
-                            : ""
-                          : key
-                      }
-                      fill={`hsl(var(--chart-${(i % 5) + 1}))`}
-                      radius={id.split("#")[1] === "" ? 2 : 0}
-                    />
-                  ))}
-                <ChartTooltip
-                  cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
-                  content={<ChartTooltipContent className="bg-white" />}
-                />
-                {Object.keys(chartGroup[chartId][0]).length <= 10 ? (
-                  <ChartLegend content={<ChartLegendContent />} />
-                ) : undefined}
-              </BarChart>
-            ) : (
-              <PieChart>
-                <Pie
-                  dataKey="value"
-                  isAnimationActive={false}
-                  data={chartGroup[chartId]}
-                  cx="50%"
-                  cy="50%"
-                  fill="#8884d8"
-                  labelLine={false}
-                  label={CustomizedLabel}
-                >
-                  {chartGroup[chartId].map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${(index % 5) + 1}))`} />
-                  ))}
-                </Pie>
-                <ChartTooltip
-                  cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
-                  content={<ChartTooltipContent className="bg-white" />}
-                />
-                {Object.keys(chartGroup[chartId]).length <= 10 ? (
-                  <ChartLegend content={<ChartLegendContent />} />
-                ) : undefined}
-              </PieChart>
-            )}
-          </ChartContainer>
+          <div className="h-full w-full first:col-span-2 flex flex-col items-center">
+            {seriesAll && chartId !== "cartesian" ? (
+              <p className="-mb-4 pt-4">
+                {(() => {
+                  const series = seriesAll[chartId];
+                  if (!series) return undefined;
+                  return series.name === undefined || series.name === ""
+                    ? defaultSeriesName(series)
+                    : series.name;
+                })()}
+              </p>
+            ) : undefined}
+            <ChartContainer
+              key={chartId}
+              config={getChartConfig(seriesAll, chartGroup[chartId], chartId)}
+              className="h-full w-full"
+            >
+              {chartId === "cartesian" ? (
+                <BarChart data={chartGroup[chartId]}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis dataKey={"date"} tickLine={false} tickMargin={7} axisLine={false} />
+                  <YAxis type="number" tickLine={true} tickCount={10} />
+                  {Object.keys(chartGroup[chartId].at(-1) ?? {})
+                    .filter((key) => key !== "date")
+                    .map((key) => [key, ...key.split("#")])
+                    .map(([key, id, attributeKey], i) => (
+                      <Bar
+                        type="linear"
+                        key={key}
+                        dataKey={key}
+                        stackId={id}
+                        name={
+                          seriesAll
+                            ? (() => {
+                                const series = seriesAll[id];
+                                if (!series) return undefined;
+                                return series.name === undefined || series.name === ""
+                                  ? defaultSeriesName(series)
+                                  : series.name;
+                              })() + attributeKey
+                              ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
+                              : ""
+                            : key
+                        }
+                        fill={`hsl(var(--chart-${(i % 5) + 1}))`}
+                        radius={id.split("#")[1] === "" ? 2 : 0}
+                      />
+                    ))}
+                  <ChartTooltip
+                    cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
+                    content={<ChartTooltipContent className="bg-white" />}
+                  />
+                  {Object.keys(chartGroup[chartId][0]).length <= 10 ? (
+                    <ChartLegend content={<ChartLegendContent />} />
+                  ) : undefined}
+                </BarChart>
+              ) : (
+                <PieChart>
+                  <Pie
+                    dataKey="value"
+                    isAnimationActive={false}
+                    data={chartGroup[chartId]}
+                    cx="50%"
+                    cy="50%"
+                    fill="#8884d8"
+                    labelLine={false}
+                    label={CustomizedLabel}
+                  >
+                    {chartGroup[chartId].map((_, index) => (
+                      <Cell key={`cell-${index}`} fill={`hsl(var(--chart-${(index % 5) + 1}))`} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip
+                    cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
+                    content={<ChartTooltipContent className="bg-white" />}
+                  />
+                  {Object.keys(chartGroup[chartId]).length <= 10 ? (
+                    <ChartLegend content={<ChartLegendContent />} />
+                  ) : undefined}
+                </PieChart>
+              )}
+            </ChartContainer>
+          </div>
         ))}
     </MultiChartContainer>
   );

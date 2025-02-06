@@ -41,7 +41,7 @@ export const getChartConfig = (
         if (series === undefined) return id;
         let label = series.name ?? defaultSeriesName(series);
         if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
-          label += " " + attributeValueText(series.focusedAttribute, attributeKey);
+          label = attributeValueText(series.focusedAttribute, attributeKey);
         config[v.name] = {
           label,
         };

@@ -154,7 +154,6 @@ export function attributeValueText(
   objectClassAttribute: ObjectClassAttribute,
   attributeValue: string,
 ): string {
-  if (attributeValue === "total") return "合計";
   if (objectClassAttribute === "genders" && isValueOf(objectClassAttribute, attributeValue))
     return OBJECT_CLASS_ATTRIBUTES["Face"][objectClassAttribute][attributeValue];
   if (objectClassAttribute === "ageRanges" && isValueOf(objectClassAttribute, attributeValue))
@@ -163,5 +162,5 @@ export function attributeValueText(
     return OBJECT_CLASS_ATTRIBUTES["LicensePlate"][objectClassAttribute][attributeValue];
   if (objectClassAttribute === "carCategories" && isValueOf(objectClassAttribute, attributeValue))
     return OBJECT_CLASS_ATTRIBUTES["LicensePlate"][objectClassAttribute][attributeValue];
-  throw new Error(`invalid arguments: (${objectClassAttribute}, ${attributeValue})`);
+  return "";
 }
