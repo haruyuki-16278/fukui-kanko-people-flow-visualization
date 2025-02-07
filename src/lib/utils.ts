@@ -17,3 +17,9 @@ export async function digest(value: string): Promise<string> {
   const hashHex = hashArray.map((b) => b.toString(16).padStart(2, "0")).join(""); // バイト列を 16 進文字列に変換する
   return hashHex;
 }
+
+export function linkPath(path: string) {
+  return location.host.endsWith("github.io")
+    ? `/${location.pathname.slice(1).split("/").at(0)}/${path.at(0) === "/" ? path.slice(1) : path}`
+    : path;
+}

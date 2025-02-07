@@ -1,3 +1,4 @@
+import { linkPath } from "@/lib/utils";
 import { TrashIcon } from "@primer/octicons-react";
 import { Button } from "../ui/button";
 
@@ -12,7 +13,7 @@ export function OpenStar({ title, seriesAll, removeStar }: Props) {
     <div className="group mt-2 flex max-w-full items-center gap-x-2">
       <a
         className="block w-full max-w-full cursor-pointer overflow-hidden text-ellipsis text-nowrap pl-2 underline group-hover:text-primary"
-        href={`/?${new URLSearchParams({ starTitle: title, starSeriesAll: seriesAll })}`}
+        href={linkPath(`/?${new URLSearchParams({ starTitle: title, starSeriesAll: seriesAll })}`)}
       >
         {title}
       </a>

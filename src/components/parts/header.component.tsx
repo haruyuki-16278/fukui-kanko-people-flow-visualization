@@ -1,3 +1,4 @@
+import { linkPath } from "@/lib/utils";
 import { GraphIcon } from "@primer/octicons-react";
 import { ExternalNavigaton } from "./external-navigation.component";
 
@@ -6,7 +7,7 @@ export function Header() {
     <header className="border-separator flex h-12 w-full items-center justify-between gap-x-2 border-b-2 pb-2">
       <a
         className="group flex h-fit w-fit items-center justify-start gap-x-2 no-underline"
-        href="/"
+        href={linkPath("/")}
         rel="noopener noreferrer"
       >
         <GraphIcon
