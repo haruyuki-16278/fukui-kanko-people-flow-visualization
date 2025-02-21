@@ -96,11 +96,13 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
             <SelectValue placeholder="選択して下さい" />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(PLACEMENTS).map(([placement, { text }]) => (
-              <SelectItem key={placement} value={placement}>
-                {text}
-              </SelectItem>
-            ))}
+            {Object.entries(PLACEMENTS)
+              .filter(([v]) => v.includes("rainbow"))
+              .map(([placement, { text }]) => (
+                <SelectItem key={placement} value={placement}>
+                  {text}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
