@@ -49,7 +49,9 @@ export function OpenStar({
               ページの初期表示に設定
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem onClick={() => removeStar(title)}>お気に入りから削除</DropdownMenuItem>
+          <DropdownMenuItem className="text-red-500" onClick={() => removeStar(title)}>
+            お気に入りから削除
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
