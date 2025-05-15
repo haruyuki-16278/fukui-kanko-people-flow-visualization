@@ -26,6 +26,9 @@ export function useLocalStars() {
     delete nextStars[title];
     window.localStorage.setItem(STAR_KEY, JSON.stringify(nextStars));
     setStars(nextStars);
+    if (title === getDefaultTitle()) {
+      removedefaultStar();
+    }
   };
 
   const defaultStar = (title: string) => {
