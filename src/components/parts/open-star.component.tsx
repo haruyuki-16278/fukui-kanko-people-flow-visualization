@@ -13,9 +13,10 @@ interface Props {
   seriesAll: string;
   removeStar: (title: string) => void;
   defaultStar: (title: string) => void;
+  getDefaultTitle: () => string;
 }
 
-export function OpenStar({ title, seriesAll, removeStar, defaultStar }: Props) {
+export function OpenStar({ title, seriesAll, removeStar, defaultStar, getDefaultTitle }: Props) {
   return (
     <div className="group mt-2 flex max-w-full items-center gap-x-2">
       <a
@@ -31,7 +32,15 @@ export function OpenStar({ title, seriesAll, removeStar, defaultStar }: Props) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuItem onClick={() => defaultStar(title)}>ページの初期表示</DropdownMenuItem>
+          {title === getDefaultTitle() ? (
+            <DropdownMenuItem onClick={() => defaultStar(title)}>
+              ページの初期表示を解除
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem onClick={() => defaultStar(title)}>
+              ページの初期表示に設定
+            </DropdownMenuItem>
+          )}
           <DropdownMenuItem onClick={() => removeStar(title)}>お気に入りから削除</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

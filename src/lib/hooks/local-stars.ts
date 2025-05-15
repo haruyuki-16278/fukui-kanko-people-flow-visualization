@@ -38,5 +38,12 @@ export function useLocalStars() {
     return stars[title];
   };
 
-  return { stars, appendStar, removeStar, defaultStar };
+  const getDefaultTitle = () => {
+    const defaultItem = window.localStorage.getItem("default");
+    const defaultData = JSON.parse(defaultItem ?? "{}");
+    const defaultTitle = defaultData.title;
+    return defaultTitle;
+  };
+
+  return { stars, appendStar, removeStar, defaultStar, getDefaultTitle };
 }
