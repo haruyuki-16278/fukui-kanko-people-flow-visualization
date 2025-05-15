@@ -31,14 +31,19 @@ function getDefaultDateRange(): DateRange {
   };
 }
 export default function App() {
-  const { stars, appendStar, removeStar } = useLocalStars();
+  const { stars, appendStar, removeStar, defaultStar } = useLocalStars();
+  const defaultItem = window.localStorage.getItem("default");
+  const defaultData = JSON.parse(defaultItem ?? "{}");
+  const defaultTitle = defaultData.title;
+  const defaultSeries = defaultData.starSeries;
+
   const [title, setTitle] = useState<string | undefined>(
-    new URL(location.href).searchParams.get("starTitle") ?? undefined,
+    new URL(location.href).searchParams.get("starTitle") ?? defaultTitle,
   );
   const [seriesAll, setSeries, removeSeries] = useRecord<GraphSeries>(
     (() => {
       const starSeriesAll = new URL(location.href).searchParams.get("starSeriesAll");
-      return starSeriesAll !== null ? JSON.parse(starSeriesAll) : undefined;
+      return starSeriesAll !== null ? JSON.parse(starSeriesAll) : JSON.parse(defaultSeries ?? "{}");
     })(),
   );
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
@@ -166,6 +171,7 @@ export default function App() {
                 title={starTitle}
                 seriesAll={starSeriesAll}
                 removeStar={removeStar}
+                defaultStar={defaultStar}
               />
             ))
           ) : (

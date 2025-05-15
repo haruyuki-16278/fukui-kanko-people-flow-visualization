@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getDateTimeString } from "../date";
 
 export const STAR_KEY = "stars";
+export const DAFAULT_KEY = "default";
 
 export function useLocalStars() {
   const [stars, setStars] = useState<{ [title: string]: string }>({});
@@ -27,5 +28,15 @@ export function useLocalStars() {
     setStars(nextStars);
   };
 
-  return { stars, appendStar, removeStar };
+  const defaultStar = (title: string) => {
+    const starSeries = getStarData(title);
+    const defaultStar = { title, starSeries };
+    window.localStorage.setItem(DAFAULT_KEY, JSON.stringify(defaultStar));
+  };
+
+  const getStarData = (title: string) => {
+    return stars[title];
+  };
+
+  return { stars, appendStar, removeStar, defaultStar };
 }
