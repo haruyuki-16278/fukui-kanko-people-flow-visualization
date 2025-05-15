@@ -1,5 +1,11 @@
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { linkPath } from "@/lib/utils";
-import { TrashIcon } from "@primer/octicons-react";
+import { KebabHorizontalIcon } from "@primer/octicons-react";
 import { Button } from "../ui/button";
 
 interface Props {
@@ -17,14 +23,17 @@ export function OpenStar({ title, seriesAll, removeStar }: Props) {
       >
         {title}
       </a>
-      <Button
-        className="shrink-0"
-        variant="destructive"
-        size="icon"
-        onClick={() => removeStar(title)}
-      >
-        <TrashIcon size="small" />
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger>
+          <Button className="shrink-0" variant="secondary" size="icon">
+            <KebabHorizontalIcon size="small" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuItem>ページの初期表示</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => removeStar(title)}>お気に入りから削除</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 }
