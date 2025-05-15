@@ -13,10 +13,18 @@ interface Props {
   seriesAll: string;
   removeStar: (title: string) => void;
   defaultStar: (title: string) => void;
+  removedefaultStar: () => void;
   getDefaultTitle: () => string;
 }
 
-export function OpenStar({ title, seriesAll, removeStar, defaultStar, getDefaultTitle }: Props) {
+export function OpenStar({
+  title,
+  seriesAll,
+  removeStar,
+  defaultStar,
+  removedefaultStar,
+  getDefaultTitle,
+}: Props) {
   return (
     <div className="group mt-2 flex max-w-full items-center gap-x-2">
       <a
@@ -33,7 +41,7 @@ export function OpenStar({ title, seriesAll, removeStar, defaultStar, getDefault
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {title === getDefaultTitle() ? (
-            <DropdownMenuItem onClick={() => defaultStar(title)}>
+            <DropdownMenuItem onClick={() => removedefaultStar()}>
               ページの初期表示を解除
             </DropdownMenuItem>
           ) : (
