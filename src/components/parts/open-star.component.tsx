@@ -1,4 +1,4 @@
-// import { DeleteDialogTrigger } from "@/components/parts/delete-dialog.component";
+import { DeleteDialogTrigger } from "@/components/parts/delete-dialog.component";
 // import {
 //   DropdownMenu,
 //   DropdownMenuContent,
@@ -6,8 +6,6 @@
 //   DropdownMenuTrigger,
 // } from "@/components/ui/dropdown-menu";
 import { linkPath } from "@/lib/utils";
-import { TrashIcon } from "@primer/octicons-react";
-import { Button } from "../ui/button";
 
 interface Props {
   title: string;
@@ -34,14 +32,12 @@ export function OpenStar({
       >
         {title}
       </a>
-      <Button
+      <DeleteDialogTrigger title={title} removeStar={removeStar} />
+      {/* <Button
         className="shrink-0"
-        variant="destructive"
+        variant="outline"
         size="icon"
-        onClick={() => removeStar(title)}
-      >
-        <TrashIcon size="small" />
-      </Button>
+        onClick={() => defaultStar(title)}
       {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <KebabHorizontalIcon size="small" />

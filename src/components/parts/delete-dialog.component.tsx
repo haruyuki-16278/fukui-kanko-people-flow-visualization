@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { TrashIcon } from "@primer/octicons-react";
 
 interface Props {
   title: string;
@@ -18,16 +18,15 @@ export function DeleteDialogTrigger({ title, removeStar }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <DropdownMenuItem className="text-red-500" onSelect={(e) => e.preventDefault()}>
-          お気に入りから削除
-        </DropdownMenuItem>
+        <Button className="shrink-0" variant="destructive" size="icon">
+          <TrashIcon size="small" />
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex justify-center">{title}</DialogTitle>
-          <DialogDescription className="flex justify-center text-black">
-            本当に削除しますか？
-          </DialogDescription>
+          <DialogTitle className="flex justify-center">
+            "{title}"をお気に入りから削除しますか？
+          </DialogTitle>
           <DialogDescription className="flex justify-center">
             <Button
               className="transition-all"
