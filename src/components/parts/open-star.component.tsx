@@ -35,7 +35,7 @@ export function OpenStar({
         {title}
       </a>
       <DropdownMenu>
-        <DropdownMenuTrigger>
+        <DropdownMenuTrigger asChild>
           <Button className="shrink-0" variant="secondary" size="icon">
             <KebabHorizontalIcon size="small" />
           </Button>
