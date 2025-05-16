@@ -1,30 +1,30 @@
-import { DeleteDialogTrigger } from "@/components/parts/delete-dialog.component";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import { DeleteDialogTrigger } from "@/components/parts/delete-dialog.component";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import { linkPath } from "@/lib/utils";
-import { KebabHorizontalIcon } from "@primer/octicons-react";
+import { TrashIcon } from "@primer/octicons-react";
 import { Button } from "../ui/button";
 
 interface Props {
   title: string;
   seriesAll: string;
   removeStar: (title: string) => void;
-  defaultStar: (title: string) => void;
-  removedefaultStar: () => void;
-  getDefaultTitle: () => string;
+  // defaultStar: (title: string) => void;
+  // removeDefaultStar: () => void;
+  // getDefaultTitle: () => string;
 }
 
 export function OpenStar({
   title,
   seriesAll,
   removeStar,
-  defaultStar,
-  removedefaultStar,
-  getDefaultTitle,
+  // defaultStar,
+  // removeDefaultStar,
+  // getDefaultTitle,
 }: Props) {
   return (
     <div className="group mt-2 flex max-w-full items-center gap-x-2">
@@ -34,15 +34,21 @@ export function OpenStar({
       >
         {title}
       </a>
-      <DropdownMenu>
+      <Button
+        className="shrink-0"
+        variant="destructive"
+        size="icon"
+        onClick={() => removeStar(title)}
+      >
+        <TrashIcon size="small" />
+      </Button>
+      {/* <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button className="shrink-0" variant="secondary" size="icon">
-            <KebabHorizontalIcon size="small" />
-          </Button>
+          <KebabHorizontalIcon size="small" />
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           {title === getDefaultTitle() ? (
-            <DropdownMenuItem onClick={() => removedefaultStar()}>
+            <DropdownMenuItem onClick={() => removeDefaultStar()}>
               ページの初期表示を解除
             </DropdownMenuItem>
           ) : (
@@ -50,9 +56,11 @@ export function OpenStar({
               ページの初期表示に設定
             </DropdownMenuItem>
           )}
-          <DeleteDialogTrigger title={title} removeStar={removeStar} />
+          <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            <DeleteDialogTrigger title={title} removeStar={removeStar} />
+          </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+      </DropdownMenu> */}
     </div>
   );
 }

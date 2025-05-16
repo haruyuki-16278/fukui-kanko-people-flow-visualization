@@ -31,8 +31,9 @@ function getDefaultDateRange(): DateRange {
   };
 }
 export default function App() {
-  const { stars, appendStar, removeStar, defaultStar, removedefaultStar, getDefaultTitle } =
-    useLocalStars();
+  // const { stars, appendStar, removeStar, defaultStar, removedefaultStar, getDefaultTitle } =
+  //   useLocalStars();
+  const { stars, appendStar, removeStar, getDefaultTitle } = useLocalStars();
   const defaultItem = window.localStorage.getItem("default");
   const defaultData = JSON.parse(defaultItem ?? "{}");
   const defaultSeries = defaultData.starSeries;
@@ -171,9 +172,9 @@ export default function App() {
                 title={starTitle}
                 seriesAll={starSeriesAll}
                 removeStar={removeStar}
-                defaultStar={defaultStar}
-                removedefaultStar={removedefaultStar}
-                getDefaultTitle={getDefaultTitle}
+                // defaultStar={defaultStar}
+                // removedefaultStar={removedefaultStar}
+                // getDefaultTitle={getDefaultTitle}
               />
             ))
           ) : (
