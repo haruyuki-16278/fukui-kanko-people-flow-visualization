@@ -1,3 +1,4 @@
+import { DeleteDialogTrigger } from "@/components/parts/delete-dialog.component";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,9 +50,7 @@ export function OpenStar({
               ページの初期表示に設定
             </DropdownMenuItem>
           )}
-          <DropdownMenuItem className="text-red-500" onClick={() => removeStar(title)}>
-            お気に入りから削除
-          </DropdownMenuItem>
+          <DeleteDialogTrigger title={title} removeStar={removeStar} />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
