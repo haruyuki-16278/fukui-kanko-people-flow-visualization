@@ -4,6 +4,7 @@ import { ShareDialogTrigger } from "@/components/parts/share-dialog.component";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
@@ -33,7 +34,7 @@ function getDefaultDateRange(): DateRange {
 export default function App() {
   // const { stars, appendStar, removeStar, defaultStar, removedefaultStar, getDefaultTitle } =
   //   useLocalStars();
-  const { stars, appendStar, removeStar, getDefaultTitle } = useLocalStars();
+  const { stars, appendStar, removeStar, defaultStar, getDefaultTitle } = useLocalStars();
   const defaultItem = window.localStorage.getItem("default");
   const defaultData = JSON.parse(defaultItem ?? "{}");
   const defaultSeries = defaultData.starSeries;
@@ -166,17 +167,25 @@ export default function App() {
         <section className="min-h-44 max-h-44 overflow-y-auto w-full overflow-x-hidden">
           <h2 className="text-lg font-bold sticky top-0 bg-background">⭐️ お気に入り</h2>
           {Object.keys(stars).length > 0 ? (
-            Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
-              <OpenStar
-                key={`${i}${starTitle}`}
-                title={starTitle}
-                seriesAll={starSeriesAll}
-                removeStar={removeStar}
-                // defaultStar={defaultStar}
-                // removedefaultStar={removedefaultStar}
-                // getDefaultTitle={getDefaultTitle}
-              />
-            ))
+            <RadioGroup
+              onValueChange={(starTitle) => {
+                defaultStar(starTitle);
+              }}
+            >
+              {Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
+                <div className="flex items-center mt-2" key={`${i}${starTitle}`}>
+                  <RadioGroupItem value={starTitle} />
+                  <OpenStar
+                    title={starTitle}
+                    seriesAll={starSeriesAll}
+                    removeStar={removeStar}
+                    // defaultStar={defaultStar}
+                    // removedefaultStar={removedefaultStar}
+                    // getDefaultTitle={getDefaultTitle}
+                  />
+                </div>
+              ))}
+            </RadioGroup>
           ) : (
             <p className="pl-2 mx-auto my-auto">お気に入りがありません</p>
           )}

@@ -25,7 +25,7 @@ export function OpenStar({
   // getDefaultTitle,
 }: Props) {
   return (
-    <div className="group mt-2 flex max-w-full items-center gap-x-2">
+    <div className="group flex max-w-full items-center gap-x-2">
       <a
         className="block w-full max-w-full cursor-pointer overflow-hidden text-ellipsis text-nowrap pl-2 underline group-hover:text-primary"
         href={linkPath(`/?${new URLSearchParams({ starTitle: title, starSeriesAll: seriesAll })}`)}
@@ -33,6 +33,7 @@ export function OpenStar({
         {title}
       </a>
       <DeleteDialogTrigger title={title} removeStar={removeStar} />
+
       {/* <Button
         className="shrink-0"
         variant="outline"
