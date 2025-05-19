@@ -1,16 +1,16 @@
-export const DAFAULT_KEY = "default";
+export const DEFAULT_KEY = "default";
 
 export function useLocalDefaultStars() {
-  const defaultItem = window.localStorage.getItem(DAFAULT_KEY);
+  const defaultItem = window.localStorage.getItem(DEFAULT_KEY);
   const defaultData = JSON.parse(defaultItem ?? "{}");
 
   const defaultStar = (title: string, starSeries: string) => {
     const defaultStar = { title, starSeries };
-    window.localStorage.setItem(DAFAULT_KEY, JSON.stringify(defaultStar));
+    window.localStorage.setItem(DEFAULT_KEY, JSON.stringify(defaultStar));
   };
 
   const removeDefaultStar = () => {
-    window.localStorage.removeItem(DAFAULT_KEY);
+    window.localStorage.removeItem(DEFAULT_KEY);
   };
 
   const getDefaultTitle = () => {
