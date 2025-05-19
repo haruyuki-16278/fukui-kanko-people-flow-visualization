@@ -3,8 +3,8 @@ import { SeriesConfigCard } from "@/components/parts/series-config-card.componen
 import { ShareDialogTrigger } from "@/components/parts/share-dialog.component";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
@@ -35,7 +35,8 @@ function getDefaultDateRange(): DateRange {
 export default function App() {
   // const { stars, appendStar, removeStar, defaultStar, removedefaultStar, getDefaultTitle } =
   //   useLocalStars();
-  const { stars, appendStar, removeStar, defaultStar, getDefaultTitle } = useLocalStars();
+  const { stars, appendStar, removeStar, defaultStar, removedefaultStar, getDefaultTitle } =
+    useLocalStars();
   const defaultItem = window.localStorage.getItem("default");
   const defaultData = JSON.parse(defaultItem ?? "{}");
   const defaultSeries = defaultData.starSeries;
@@ -52,10 +53,9 @@ export default function App() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
-  const [selectedStarTitle, setSelectedStarTitle] = useState<string | undefined>(() => {
+  const [checkedKey, setCheckedKey] = useState<string | undefined>(() => {
     return defaultData.title ?? undefined;
   });
-
   const onClickAddSeries = () => {
     setSeries({ graphType: "simple", show: true });
   };
@@ -183,27 +183,30 @@ export default function App() {
             </TooltipProvider>
           </h2>
           {Object.keys(stars).length > 0 ? (
-            <RadioGroup
-              value={selectedStarTitle}
-              onValueChange={(starTitle) => {
-                setSelectedStarTitle(starTitle);
-                defaultStar(starTitle);
-              }}
-            >
-              {Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
-                <div className="flex items-center mt-2" key={`${i}${starTitle}`}>
-                  <RadioGroupItem value={starTitle} />
-                  <OpenStar
-                    title={starTitle}
-                    seriesAll={starSeriesAll}
-                    removeStar={removeStar}
-                    // defaultStar={defaultStar}
-                    // removedefaultStar={removedefaultStar}
-                    // getDefaultTitle={getDefaultTitle}
-                  />
-                </div>
-              ))}
-            </RadioGroup>
+            Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
+              <div className="flex items-center mt-2" key={`${i}${starTitle}`}>
+                <Checkbox
+                  checked={checkedKey === starTitle}
+                  onCheckedChange={() => {
+                    if (starTitle === checkedKey) {
+                      setCheckedKey(undefined);
+                      removedefaultStar();
+                    } else {
+                      setCheckedKey(starTitle);
+                      defaultStar(starTitle);
+                    }
+                  }}
+                />
+                <OpenStar
+                  title={starTitle}
+                  seriesAll={starSeriesAll}
+                  removeStar={removeStar}
+                  // defaultStar={defaultStar}
+                  // removedefaultStar={removedefaultStar}
+                  // getDefaultTitle={getDefaultTitle}
+                />
+              </div>
+            ))
           ) : (
             <p className="pl-2 mx-auto my-auto">お気に入りがありません</p>
           )}
