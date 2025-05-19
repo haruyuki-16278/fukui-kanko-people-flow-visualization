@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useLocalDefaultStars } from "@/lib/hooks/local-default-stars";
 import { TrashIcon } from "@primer/octicons-react";
 
 interface Props {
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function DeleteDialogTrigger({ title, removeStar }: Props) {
+  const { removeDefaultStar, getDefaultTitle } = useLocalDefaultStars();
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -31,7 +33,12 @@ export function DeleteDialogTrigger({ title, removeStar }: Props) {
             <Button
               className="transition-all"
               variant="destructive"
-              onClick={() => removeStar(title)}
+              onClick={() => {
+                if (title === getDefaultTitle()) {
+                  removeDefaultStar();
+                }
+                removeStar(title);
+              }}
             >
               削除する
             </Button>

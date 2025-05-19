@@ -10,6 +10,7 @@ import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
+import { useLocalDefaultStars } from "@/lib/hooks/local-default-stars";
 import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
 import { useCallback, useEffect, useState } from "react";
@@ -33,11 +34,9 @@ function getDefaultDateRange(): DateRange {
   };
 }
 export default function App() {
-  const { stars, appendStar, removeStar, defaultStar, removedefaultStar, getDefaultTitle } =
-    useLocalStars();
-  const defaultItem = window.localStorage.getItem("default");
-  const defaultData = JSON.parse(defaultItem ?? "{}");
-  const defaultSeries = defaultData.starSeries;
+  const { stars, appendStar, removeStar } = useLocalStars();
+  const { defaultStar, removeDefaultStar, getDefaultTitle, getDefaultSeries } =
+    useLocalDefaultStars();
 
   const [title, setTitle] = useState<string | undefined>(
     new URL(location.href).searchParams.get("starTitle") ?? getDefaultTitle(),
@@ -45,14 +44,16 @@ export default function App() {
   const [seriesAll, setSeries, removeSeries] = useRecord<GraphSeries>(
     (() => {
       const starSeriesAll = new URL(location.href).searchParams.get("starSeriesAll");
-      return starSeriesAll !== null ? JSON.parse(starSeriesAll) : JSON.parse(defaultSeries ?? "{}");
+      return starSeriesAll !== null
+        ? JSON.parse(starSeriesAll)
+        : JSON.parse(getDefaultSeries() ?? "{}");
     })(),
   );
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
   const [checkedKey, setCheckedKey] = useState<string | undefined>(() => {
-    return defaultData.title ?? undefined;
+    return getDefaultTitle() ?? undefined;
   });
   const onClickAddSeries = () => {
     setSeries({ graphType: "simple", show: true });
@@ -188,10 +189,10 @@ export default function App() {
                   onCheckedChange={() => {
                     if (starTitle === checkedKey) {
                       setCheckedKey(undefined);
-                      removedefaultStar();
+                      removeDefaultStar();
                     } else {
                       setCheckedKey(starTitle);
-                      defaultStar(starTitle);
+                      defaultStar(starTitle, starSeriesAll);
                     }
                   }}
                 />
