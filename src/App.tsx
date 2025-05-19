@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
@@ -13,7 +14,7 @@ import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { PlusIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
+import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
 import { Graph } from "./components/parts/graph.component";
 import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
 
@@ -169,6 +170,16 @@ export default function App() {
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
         <section className="min-h-44 max-h-44 overflow-y-auto w-full overflow-x-hidden">
           <h2 className="text-lg font-bold sticky top-0 bg-background">⭐️ お気に入り</h2>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <QuestionIcon size="small" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>ラジオボタンを選択すると、そのグラフが初期表示として設定されます。</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           {Object.keys(stars).length > 0 ? (
             <RadioGroup
               value={selectedStarTitle}
