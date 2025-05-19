@@ -25,7 +25,7 @@ export function OpenStar({
   // getDefaultTitle,
 }: Props) {
   return (
-    <div className="group flex max-w-full items-center gap-x-2">
+    <div className="group flex w-full max-w-full items-center gap-x-2">
       <a
         className="block w-full max-w-full cursor-pointer overflow-hidden text-ellipsis text-nowrap pl-2 underline group-hover:text-primary"
         href={linkPath(`/?${new URLSearchParams({ starTitle: title, starSeriesAll: seriesAll })}`)}
