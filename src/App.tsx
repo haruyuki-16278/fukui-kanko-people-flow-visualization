@@ -168,19 +168,19 @@ export default function App() {
     <>
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
         <section className="min-h-44 max-h-44 overflow-y-auto w-full overflow-x-hidden">
-          <h2 className="text-lg font-bold sticky top-0 bg-background">
-            ⭐️ お気に入り{" "}
+          <div className="flex items-center gap-x-2">
+            <h2 className="text-lg font-bold sticky top-0 bg-background">⭐️ お気に入り </h2>
             <TooltipProvider delayDuration={0} skipDelayDuration={0}>
               <Tooltip>
                 <TooltipTrigger>
                   <QuestionIcon className="text-gray-400" size="small" />
                 </TooltipTrigger>
                 <TooltipContent className="bg-gray-300 text-black">
-                  <p>チェックボックスで選択したグラフが初期表示として設定されます。</p>
+                  <p>チェックを入れたグラフが初期表示として設定されます</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-          </h2>
+          </div>
           {Object.keys(stars).length > 0 ? (
             Object.entries(stars).map(([starTitle, starSeriesAll], i) => (
               <div className="flex items-center mt-2" key={`${i}${starTitle}`}>
