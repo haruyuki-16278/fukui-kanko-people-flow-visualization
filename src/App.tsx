@@ -169,17 +169,19 @@ export default function App() {
     <>
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
         <section className="min-h-44 max-h-44 overflow-y-auto w-full overflow-x-hidden">
-          <h2 className="text-lg font-bold sticky top-0 bg-background">⭐️ お気に入り</h2>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <QuestionIcon size="small" />
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>ラジオボタンを選択すると、そのグラフが初期表示として設定されます。</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <h2 className="text-lg font-bold sticky top-0 bg-background">
+            ⭐️ お気に入り{" "}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <QuestionIcon size="small" />
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>ラジオボタンを選択すると、そのグラフが初期表示として設定されます。</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </h2>
           {Object.keys(stars).length > 0 ? (
             <RadioGroup
               value={selectedStarTitle}
