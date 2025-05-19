@@ -51,6 +51,9 @@ export default function App() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
+  const [selectedStarTitle, setSelectedStarTitle] = useState<string | undefined>(() => {
+    return defaultData.title ?? undefined;
+  });
 
   const onClickAddSeries = () => {
     setSeries({ graphType: "simple", show: true });
@@ -168,7 +171,9 @@ export default function App() {
           <h2 className="text-lg font-bold sticky top-0 bg-background">⭐️ お気に入り</h2>
           {Object.keys(stars).length > 0 ? (
             <RadioGroup
+              value={selectedStarTitle}
               onValueChange={(starTitle) => {
+                setSelectedStarTitle(starTitle);
                 defaultStar(starTitle);
               }}
             >
