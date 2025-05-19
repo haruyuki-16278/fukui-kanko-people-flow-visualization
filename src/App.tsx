@@ -177,7 +177,7 @@ export default function App() {
                   <QuestionIcon size="small" />
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>ラジオボタンを選択すると、そのグラフが初期表示として設定されます。</p>
+                  <p>チェックボックスで選択したグラフが初期表示として設定されます。</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
