@@ -170,12 +170,12 @@ export default function App() {
         <section className="min-h-44 max-h-44 overflow-y-auto w-full overflow-x-hidden">
           <h2 className="text-lg font-bold sticky top-0 bg-background">
             ⭐️ お気に入り{" "}
-            <TooltipProvider>
+            <TooltipProvider delayDuration={0} skipDelayDuration={0}>
               <Tooltip>
                 <TooltipTrigger>
-                  <QuestionIcon size="small" />
+                  <QuestionIcon className="text-gray-400" size="small" />
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="bg-gray-300 text-black">
                   <p>チェックボックスで選択したグラフが初期表示として設定されます。</p>
                 </TooltipContent>
               </Tooltip>
