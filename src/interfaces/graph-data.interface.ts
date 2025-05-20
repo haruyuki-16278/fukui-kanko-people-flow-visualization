@@ -114,7 +114,8 @@ export async function dataFromSeriesAll(
   let data: Data = {};
   const dateStrings = getDateStringRange(dateRange);
 
-  for await (const [id, series] of Object.entries(seriesAll).filter(([, series]) => series.show)) {
+  const visibleSeries = Object.entries(seriesAll).filter(([, series]) => series.show);
+  for await (const [id, series] of visibleSeries) {
     if (!isSeriesValid(series)) continue;
 
     const rawData = await getData(series.placement, series.objectClass, dateRange, series.exclude);
