@@ -83,15 +83,17 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="flex justify-center">
-                系統名"{series.name ?? defaultSeriesName(series)}"のグラフを削除しますか？
-              </DialogTitle>
-              <DialogDescription className="flex justify-center text-red-500">
-                この操作は取り消せません。
-              </DialogDescription>
+              <DialogTitle className="flex justify-center">系統の削除</DialogTitle>
             </DialogHeader>
-            <DialogFooter className="sm:justify-center">
-              <Button className="transition-all" variant="destructive" onClick={onRemoveClick}>
+            <DialogDescription className="text-center text-black">
+              系統名「{series.name ?? defaultSeriesName(series)}」のグラフを削除しますか？
+            </DialogDescription>
+            <DialogFooter>
+              <Button
+                className="transition-all mx-auto w-fit"
+                variant="destructive"
+                onClick={onRemoveClick}
+              >
                 削除する
               </Button>
             </DialogFooter>
