@@ -27,9 +27,5 @@ export function useLocalStars() {
     setStars(nextStars);
   };
 
-  const getStarData = (title: string) => {
-    return stars[title];
-  };
-
-  return { stars, appendStar, removeStar, getStarData };
+  return { stars, appendStar, removeStar};
 }
