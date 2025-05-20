@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -26,24 +27,25 @@ export function DeleteDialogTrigger({ title, removeStar }: Props) {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex justify-center">
-            "{title}"をお気に入りから削除しますか？
-          </DialogTitle>
-          <DialogDescription className="flex justify-center">
-            <Button
-              className="transition-all"
-              variant="destructive"
-              onClick={() => {
-                if (title === getDefaultTitle()) {
-                  removeDefaultStar();
-                }
-                removeStar(title);
-              }}
-            >
-              削除する
-            </Button>
+          <DialogTitle className="flex justify-center">お気に入りの削除</DialogTitle>
+          <DialogDescription className="text-center text-black">
+            「{title}」をお気に入りから削除しますか？
           </DialogDescription>
         </DialogHeader>
+        <DialogFooter>
+          <Button
+            className="transition-all mx-auto w-fit"
+            variant="destructive"
+            onClick={() => {
+              if (title === getDefaultTitle()) {
+                removeDefaultStar();
+              }
+              removeStar(title);
+            }}
+          >
+            削除する
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
