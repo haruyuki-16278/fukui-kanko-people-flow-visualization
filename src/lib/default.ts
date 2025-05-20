@@ -1,6 +1,6 @@
 export const DEFAULT_KEY = "default";
 
-export function useLocalDefaultStars() {
+export function localDefaultStars() {
   const defaultItem = window.localStorage.getItem(DEFAULT_KEY);
   const defaultData = JSON.parse(defaultItem ?? "{}");
 

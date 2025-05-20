@@ -10,7 +10,7 @@ import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
-import { useLocalDefaultStars } from "@/lib/hooks/local-default-stars";
+import { localDefaultStars } from "@/lib/default";
 import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
 import { useCallback, useEffect, useState } from "react";
@@ -35,8 +35,7 @@ function getDefaultDateRange(): DateRange {
 }
 export default function App() {
   const { stars, appendStar, removeStar } = useLocalStars();
-  const { defaultStar, removeDefaultStar, getDefaultTitle, getDefaultSeries } =
-    useLocalDefaultStars();
+  const { defaultStar, removeDefaultStar, getDefaultTitle, getDefaultSeries } = localDefaultStars();
 
   const [title, setTitle] = useState<string | undefined>(
     new URL(location.href).searchParams.get("starTitle") ?? getDefaultTitle(),
