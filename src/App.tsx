@@ -10,7 +10,7 @@ import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
-import { localDefaultStars } from "@/lib/default";
+import { useLocalDefaultStar } from "@/lib/hooks/local-default-star";
 import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
 import { useCallback, useEffect, useState } from "react";
@@ -35,24 +35,23 @@ function getDefaultDateRange(): DateRange {
 }
 export default function App() {
   const { stars, appendStar, removeStar } = useLocalStars();
-  const { defaultStar, removeDefaultStar, getDefaultTitle, getDefaultSeries } = localDefaultStars();
-
+  const { defaultStarKey, setDefaultStar, removeDefaultStar } = useLocalDefaultStar();
   const [title, setTitle] = useState<string | undefined>(
-    new URL(location.href).searchParams.get("starTitle") ?? getDefaultTitle(),
+    new URL(location.href).searchParams.get("starTitle") ?? defaultStarKey,
   );
   const [seriesAll, setSeries, removeSeries] = useRecord<GraphSeries>(
     (() => {
       const starSeriesAll = new URL(location.href).searchParams.get("starSeriesAll");
       return starSeriesAll !== null
         ? JSON.parse(starSeriesAll)
-        : JSON.parse(getDefaultSeries() ?? "{}");
+        : JSON.parse(stars[defaultStarKey] ?? "{}");
     })(),
   );
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
   const [checkedKey, setCheckedKey] = useState<string | undefined>(() => {
-    return getDefaultTitle() ?? undefined;
+    return defaultStarKey ?? undefined;
   });
   const onClickAddSeries = () => {
     setSeries({ graphType: "simple", show: true });
@@ -191,11 +190,17 @@ export default function App() {
                       removeDefaultStar();
                     } else {
                       setCheckedKey(starTitle);
-                      defaultStar(starTitle, starSeriesAll);
+                      setDefaultStar(starTitle);
                     }
                   }}
                 />
-                <OpenStar title={starTitle} seriesAll={starSeriesAll} removeStar={removeStar} />
+                <OpenStar
+                  title={starTitle}
+                  seriesAll={starSeriesAll}
+                  removeStar={removeStar}
+                  defaultStarKey={defaultStarKey}
+                  removeDefaultStar={removeDefaultStar}
+                />
               </div>
             ))
           ) : (

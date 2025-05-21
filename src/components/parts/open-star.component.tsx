@@ -5,9 +5,17 @@ interface Props {
   title: string;
   seriesAll: string;
   removeStar: (title: string) => void;
+  defaultStarKey: string;
+  removeDefaultStar: () => void;
 }
 
-export function OpenStar({ title, seriesAll, removeStar }: Props) {
+export function OpenStar({
+  title,
+  seriesAll,
+  removeStar,
+  defaultStarKey,
+  removeDefaultStar,
+}: Props) {
   return (
     <div className="group flex w-full max-w-full items-center gap-x-2">
       <a
@@ -16,7 +24,12 @@ export function OpenStar({ title, seriesAll, removeStar }: Props) {
       >
         {title}
       </a>
-      <DeleteDialogTrigger title={title} removeStar={removeStar} />
+      <DeleteDialogTrigger
+        title={title}
+        removeStar={removeStar}
+        defaultStarKey={defaultStarKey}
+        removeDefaultStar={removeDefaultStar}
+      />
     </div>
   );
 }

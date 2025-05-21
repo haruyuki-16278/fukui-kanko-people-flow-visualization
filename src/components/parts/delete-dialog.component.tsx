@@ -8,16 +8,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { localDefaultStars } from "@/lib/default";
 import { TrashIcon } from "@primer/octicons-react";
 
 interface Props {
   title: string;
   removeStar: (title: string) => void;
+  defaultStarKey: string;
+  removeDefaultStar: () => void;
 }
 
-export function DeleteDialogTrigger({ title, removeStar }: Props) {
-  const { removeDefaultStar, getDefaultTitle } = localDefaultStars();
+export function DeleteDialogTrigger({
+  title,
+  removeStar,
+  defaultStarKey,
+  removeDefaultStar,
+}: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -37,7 +42,7 @@ export function DeleteDialogTrigger({ title, removeStar }: Props) {
             className="transition-all mx-auto w-fit"
             variant="destructive"
             onClick={() => {
-              if (title === getDefaultTitle()) {
+              if (title === defaultStarKey) {
                 removeDefaultStar();
               }
               removeStar(title);
