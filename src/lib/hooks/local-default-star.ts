@@ -8,7 +8,7 @@ export function useLocalDefaultStar() {
   );
 
   useEffect(() => {
-    const res = localStorage.getItem(DEFAULT_KEY) ?? "{}";
+    const res = localStorage.getItem(DEFAULT_KEY) ?? "";
     setDefaultStarKey(res);
   }, []);
 
