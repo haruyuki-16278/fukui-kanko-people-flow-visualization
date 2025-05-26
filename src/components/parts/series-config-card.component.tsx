@@ -7,6 +7,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -81,23 +82,25 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
               <TrashIcon size="medium" />
             </Button>
           </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle className="flex justify-center">系統の削除</DialogTitle>
-            </DialogHeader>
-            <DialogDescription className="text-center text-foreground">
-              系統名「{series.name ?? defaultSeriesName(series)}」のグラフを削除しますか？
-            </DialogDescription>
-            <DialogFooter>
-              <Button
-                className="transition-all mx-auto w-fit"
-                variant="destructive"
-                onClick={onRemoveClick}
-              >
-                削除する
-              </Button>
-            </DialogFooter>
-          </DialogContent>
+          <DialogPortal>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle className="flex justify-center">系統の削除</DialogTitle>
+              </DialogHeader>
+              <DialogDescription className="text-center text-foreground">
+                系統名「{series.name ?? defaultSeriesName(series)}」のグラフを削除しますか？
+              </DialogDescription>
+              <DialogFooter>
+                <Button
+                  className="transition-all mx-auto w-fit"
+                  variant="destructive"
+                  onClick={onRemoveClick}
+                >
+                  削除する
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </DialogPortal>
         </Dialog>
       </div>
       <div>
