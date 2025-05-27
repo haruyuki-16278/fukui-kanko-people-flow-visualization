@@ -105,16 +105,22 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     tick={(props: XAxisTickProps) => {
                       const { x, y, payload } = props;
                       const dateRow = chartGroup[chartId].find((row) => row.date === payload.value);
-                      const holidayName = dateRow?.holidayName;
+                      const dayOfWeek = dateRow?.dayOfWeek;
+                      // const holidayName = dateRow?.holidayName;
                       return (
                         <g transform={`translate(${x},${y})`}>
                           <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
                             <tspan x={0} dy={0}>
                               {payload.value}
                             </tspan>
-                            {holidayName && holidayName !== "" && (
+                            {/* {holidayName && holidayName !== "" && (
                               <tspan x={0} dy={16} fill="red" fontSize={10}>
                                 {holidayName}
+                              </tspan>
+                            )} */}
+                            {dayOfWeek && dayOfWeek !== "" && (
+                              <tspan x={0} dy={16} fill="red" fontSize={10}>
+                                {dayOfWeek}
                               </tspan>
                             )}
                           </text>
@@ -124,7 +130,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                   />
                   <YAxis type="number" tickLine={true} tickCount={10} />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
-                    .filter((key) => key !== "date" && key !== "holidayName")
+                    .filter((key) => key !== "date" && key !== "holidayName" && key !== "dayOfWeek")
                     .map((key) => [key, ...key.split("#")])
                     .map(([key, id, attributeKey], i) => (
                       <Bar

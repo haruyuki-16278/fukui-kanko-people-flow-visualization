@@ -114,6 +114,7 @@ export async function dataFromSeriesAll(
 ): Promise<ChartGroup> {
   let data: Data = {};
   const dateStrings = getDateStringRange(dateRange);
+  const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
   const holidayMap = new Map(holidays.map((h) => [h.date.toISOString().slice(0, 10), h.name]));
 
   for (const [id, series] of Object.entries(seriesAll)) {
@@ -231,6 +232,7 @@ export async function dataFromSeriesAll(
   const result: ChartGroup = {
     cartesian: getDateStringRange(dateRange).map((v) => ({
       date: v,
+      dayOfWeek: weekDays[new Date(v).getDay()],
       holidayName: holidayMap.get(v) ?? "",
     })),
   };

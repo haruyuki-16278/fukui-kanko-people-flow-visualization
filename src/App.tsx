@@ -283,7 +283,7 @@ export default function App() {
           />
         </div>
         {chartGroup !== undefined &&
-        (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > 2 ||
+        (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > 3 ||
           Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
           <Graph
             className="flex-grow h-[calc(100svh_-_96px_-_48px)] min-h-[calc(100svh_-_96px_-_48px)]"
