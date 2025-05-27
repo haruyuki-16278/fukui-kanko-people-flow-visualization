@@ -5,6 +5,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -30,28 +31,30 @@ export function DeleteDialogTrigger({
           <TrashIcon size="small" />
         </Button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle className="flex justify-center">お気に入りの削除</DialogTitle>
-          <DialogDescription className="text-center text-black break-words max-w-md mx-auto">
-            「{title}」をお気に入りから削除しますか？
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
-          <Button
-            className="transition-all mx-auto w-fit"
-            variant="destructive"
-            onClick={() => {
-              if (title === defaultStarKey) {
-                removeDefaultStar();
-              }
-              removeStar(title);
-            }}
-          >
-            削除する
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+      <DialogPortal>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex justify-center">お気に入りの削除</DialogTitle>
+            <DialogDescription className="text-center text-foreground break-words max-w-md mx-auto">
+              「{title}」をお気に入りから削除しますか？
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              className="transition-all mx-auto w-fit"
+              variant="destructive"
+              onClick={() => {
+                if (title === defaultStarKey) {
+                  removeDefaultStar();
+                }
+                removeStar(title);
+              }}
+            >
+              削除する
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </DialogPortal>
     </Dialog>
   );
 }
