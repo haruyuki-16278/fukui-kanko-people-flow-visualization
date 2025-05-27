@@ -33,7 +33,7 @@ export function DeleteDialogTrigger({
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex justify-center">お気に入りの削除</DialogTitle>
-          <DialogDescription className="text-center text-black">
+          <DialogDescription className="text-center text-black break-words max-w-md mx-auto">
             「{title}」をお気に入りから削除しますか？
           </DialogDescription>
         </DialogHeader>
