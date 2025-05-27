@@ -119,7 +119,12 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                               </tspan>
                             )} */}
                             {dayOfWeek && dayOfWeek !== "" && (
-                              <tspan x={0} dy={16} fill="red" fontSize={10}>
+                              <tspan
+                                x={0}
+                                dy={16}
+                                fill={dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : ""}
+                                fontSize={10}
+                              >
                                 {dayOfWeek}
                               </tspan>
                             )}
