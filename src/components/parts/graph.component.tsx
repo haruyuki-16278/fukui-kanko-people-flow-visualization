@@ -89,10 +89,32 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               {chartId === "cartesian" ? (
                 <BarChart data={chartGroup[chartId]}>
                   <CartesianGrid vertical={false} />
-                  <XAxis dataKey={"date"} tickLine={false} tickMargin={7} axisLine={false} />
+                  <XAxis
+                    dataKey={"date"}
+                    tickLine={false}
+                    tickMargin={7}
+                    axisLine={false}
+                    tick={({ x, y, payload, index }) => {
+                      const d = chartGroup[chartId][index];
+                      return (
+                        <g transform={`translate(${x},${y})`}>
+                          <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
+                            <tspan x={0} dy={0}>
+                              {payload.value}
+                            </tspan>
+                            {d.holidayName && d.holidayName !== "" && (
+                              <tspan x={0} dy={16} fill="red" fontSize={10}>
+                                {d.holidayName}
+                              </tspan>
+                            )}
+                          </text>
+                        </g>
+                      );
+                    }}
+                  />
                   <YAxis type="number" tickLine={true} tickCount={10} />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
-                    .filter((key) => key !== "date")
+                    .filter((key) => key !== "date" && key !== "holidayName")
                     .map((key) => [key, ...key.split("#")])
                     .map(([key, id, attributeKey], i) => (
                       <Bar

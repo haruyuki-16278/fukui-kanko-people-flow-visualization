@@ -15,6 +15,7 @@ import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
 import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
+import * as holiday_jp from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
 import { Graph } from "./components/parts/graph.component";
 import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
@@ -48,6 +49,10 @@ export default function App() {
     })(),
   );
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
+  const holidays =
+    dateRange && dateRange.from && dateRange.to
+      ? holiday_jp.between(dateRange.from, dateRange.to)
+      : [];
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
   const [checkedKey, setCheckedKey] = useState<string | undefined>(() => {
@@ -152,7 +157,9 @@ export default function App() {
         }));
       }
     }
-    setChartGroup(await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }));
+    setChartGroup(
+      await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
+    );
     setData(newData);
   }, [dateRange, seriesAll]);
 
