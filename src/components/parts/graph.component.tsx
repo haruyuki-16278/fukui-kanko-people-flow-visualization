@@ -56,6 +56,14 @@ const CustomizedLabel = (props: {
   );
 };
 
+type XAxisTickProps = {
+  x: number;
+  y: number;
+  payload: {
+    value: string;
+  };
+};
+
 interface Props {
   chartGroup: ChartGroup;
   seriesAll: Record<string, GraphSeries>;
@@ -94,17 +102,19 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     tickLine={false}
                     tickMargin={7}
                     axisLine={false}
-                    tick={({ x, y, payload, index }) => {
-                      const d = chartGroup[chartId][index];
+                    tick={(props: XAxisTickProps) => {
+                      const { x, y, payload } = props;
+                      const dateRow = chartGroup[chartId].find((row) => row.date === payload.value);
+                      const holidayName = dateRow?.holidayName;
                       return (
                         <g transform={`translate(${x},${y})`}>
                           <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
                             <tspan x={0} dy={0}>
                               {payload.value}
                             </tspan>
-                            {d.holidayName && d.holidayName !== "" && (
+                            {holidayName && holidayName !== "" && (
                               <tspan x={0} dy={16} fill="red" fontSize={10}>
-                                {d.holidayName}
+                                {holidayName}
                               </tspan>
                             )}
                           </text>

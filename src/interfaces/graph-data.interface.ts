@@ -110,7 +110,7 @@ const flatData = <T extends Record<string, unknown>>(
 export async function dataFromSeriesAll(
   seriesAll: { [id: string]: GraphSeries },
   dateRange: { from: Date; to: Date },
-  holidays: { date: Date; name: string }[] = [],
+  holidays: { date: Date; name: string }[],
 ): Promise<ChartGroup> {
   let data: Data = {};
   const dateStrings = getDateStringRange(dateRange);
@@ -231,7 +231,6 @@ export async function dataFromSeriesAll(
   const result: ChartGroup = {
     cartesian: getDateStringRange(dateRange).map((v) => ({
       date: v,
-      // isHoliday: holidayMap.has(v) ? 1 : 0,
       holidayName: holidayMap.get(v) ?? "",
     })),
   };
