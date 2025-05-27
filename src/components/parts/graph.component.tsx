@@ -106,27 +106,31 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                       const { x, y, payload } = props;
                       const dateRow = chartGroup[chartId].find((row) => row.date === payload.value);
                       const dayOfWeek = dateRow?.dayOfWeek;
-                      // const holidayName = dateRow?.holidayName;
+                      const holidayName = dateRow?.holidayName;
                       return (
                         <g transform={`translate(${x},${y})`}>
                           <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
                             <tspan x={0} dy={0}>
                               {payload.value}
                             </tspan>
-                            {/* {holidayName && holidayName !== "" && (
+                            {holidayName && holidayName !== "" ? (
                               <tspan x={0} dy={16} fill="red" fontSize={10}>
                                 {holidayName}
                               </tspan>
-                            )} */}
-                            {dayOfWeek && dayOfWeek !== "" && (
-                              <tspan
-                                x={0}
-                                dy={16}
-                                fill={dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : ""}
-                                fontSize={10}
-                              >
-                                {dayOfWeek}
-                              </tspan>
+                            ) : (
+                              dayOfWeek &&
+                              dayOfWeek !== "" && (
+                                <tspan
+                                  x={0}
+                                  dy={16}
+                                  fill={
+                                    dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : ""
+                                  }
+                                  fontSize={10}
+                                >
+                                  {dayOfWeek}
+                                </tspan>
+                              )
                             )}
                           </text>
                         </g>
