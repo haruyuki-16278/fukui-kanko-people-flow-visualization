@@ -87,7 +87,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
               <DialogHeader>
                 <DialogTitle className="flex justify-center">系統の削除</DialogTitle>
               </DialogHeader>
-              <DialogDescription className="text-center text-foreground">
+              <DialogDescription className="text-center text-foreground break-words max-w-md mx-auto">
                 系統名「{series.name ?? defaultSeriesName(series)}」のグラフを削除しますか？
               </DialogDescription>
               <DialogFooter>
