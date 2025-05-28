@@ -187,7 +187,7 @@ const ChartTooltipContent = React.forwardRef<
           className
         )}
       >
-        {!nestLabel ? (
+        {!nestLabel && tooltipLabel ? (
           <div className="flex">
             {tooltipLabel}
             {row.holidayName && row.holidayName !== "" ? (
