@@ -62,6 +62,39 @@ type XAxisTickProps = {
   payload: {
     value: string;
   };
+  data: Record<string, string | number>[];
+};
+
+const CustomizedXAxisTick = ({ x, y, payload, data }: XAxisTickProps) => {
+  const dateRow = data.find((row) => row.date === payload.value);
+  const dayOfWeek = dateRow?.dayOfWeek;
+  const holidayName = dateRow?.holidayName;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
+        <tspan x={0} dy={0}>
+          {payload.value}
+        </tspan>
+        {holidayName && holidayName !== "" ? (
+          <tspan x={0} dy={16} fill="red" fontSize={10}>
+            {holidayName}
+          </tspan>
+        ) : (
+          dayOfWeek &&
+          dayOfWeek !== "" && (
+            <tspan
+              x={0}
+              dy={16}
+              fill={dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : ""}
+              fontSize={10}
+            >
+              {dayOfWeek}
+            </tspan>
+          )
+        )}
+      </text>
+    </g>
+  );
 };
 
 interface Props {
@@ -102,40 +135,9 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     tickLine={false}
                     tickMargin={7}
                     axisLine={false}
-                    tick={(props: XAxisTickProps) => {
-                      const { x, y, payload } = props;
-                      const dateRow = chartGroup[chartId].find((row) => row.date === payload.value);
-                      const dayOfWeek = dateRow?.dayOfWeek;
-                      const holidayName = dateRow?.holidayName;
-                      return (
-                        <g transform={`translate(${x},${y})`}>
-                          <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
-                            <tspan x={0} dy={0}>
-                              {payload.value}
-                            </tspan>
-                            {holidayName && holidayName !== "" ? (
-                              <tspan x={0} dy={16} fill="red" fontSize={10}>
-                                {holidayName}
-                              </tspan>
-                            ) : (
-                              dayOfWeek &&
-                              dayOfWeek !== "" && (
-                                <tspan
-                                  x={0}
-                                  dy={16}
-                                  fill={
-                                    dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : ""
-                                  }
-                                  fontSize={10}
-                                >
-                                  {dayOfWeek}
-                                </tspan>
-                              )
-                            )}
-                          </text>
-                        </g>
-                      );
-                    }}
+                    tick={(props: XAxisTickProps) => (
+                      <CustomizedXAxisTick {...props} data={chartGroup[chartId]} />
+                    )}
                   />
                   <YAxis type="number" tickLine={true} tickCount={10} />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
