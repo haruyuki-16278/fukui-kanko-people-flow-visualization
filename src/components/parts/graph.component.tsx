@@ -108,7 +108,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
       {Object.keys(chartGroup)
         .filter(
           (chartId) =>
-            chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 1,
+            chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 3,
         )
         .map((chartId) => (
           <div key={chartId} className="h-full w-full first:col-span-2 flex flex-col items-center">
