@@ -100,6 +100,11 @@ ${colorConfig
 
 const ChartTooltip = RechartsPrimitive.Tooltip
 
+type ChartTooltipRow = {
+  holidayName?: string
+  dayOfWeek?: string
+}
+
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
@@ -171,6 +176,7 @@ const ChartTooltipContent = React.forwardRef<
       return null
     }
 
+    const row = payload[0]?.payload as ChartTooltipRow
     const nestLabel = payload.length === 1 && indicator !== "dot"
 
     return (
@@ -181,7 +187,17 @@ const ChartTooltipContent = React.forwardRef<
           className
         )}
       >
-        {!nestLabel ? tooltipLabel : null}
+        {!nestLabel ? (
+          <div className="flex">
+            {tooltipLabel}
+            {row.holidayName && row.holidayName !== "" ? (
+              <span className="text-red-500">（{row.holidayName}）</span>
+            ) : row.dayOfWeek && row.dayOfWeek !== "" ? (
+              <span>（{row.dayOfWeek}）</span>
+            ) : null}
+          </div>
+        ) : null}
+
         <div className="grid gap-1.5">
           {payload
             .filter((item) => (payload.length < 10 ? true : item.value !== 0))
@@ -363,10 +379,8 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
+  ChartContainer, ChartLegend,
   ChartLegendContent,
-  ChartStyle,
+  ChartStyle, ChartTooltip,
+  ChartTooltipContent
 }
