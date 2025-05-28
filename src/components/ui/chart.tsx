@@ -191,9 +191,17 @@ const ChartTooltipContent = React.forwardRef<
           <div className="flex">
             {tooltipLabel}
             {row.holidayName && row.holidayName !== "" ? (
-              <span className="text-red-500">（{row.holidayName}）</span>
+              <span className="text-red-500 ml-2">{row.holidayName}</span>
             ) : row.dayOfWeek && row.dayOfWeek !== "" ? (
-              <span>（{row.dayOfWeek}）</span>
+              <span
+                className={cn(
+                  "ml-2",
+                  row.dayOfWeek === "土" && "text-blue-600",
+                  row.dayOfWeek === "日" && "text-red-500"
+                )}
+              >
+                {row.dayOfWeek}
+              </span>
             ) : null}
           </div>
         ) : null}
