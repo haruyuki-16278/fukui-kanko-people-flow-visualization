@@ -71,8 +71,8 @@ const CustomizedXAxisTick = ({ x, y, payload, data }: XAxisTickProps) => {
   const holidayName = dateRow?.holidayName;
   return (
     <g transform={`translate(${x},${y})`}>
-      <text x={0} y={0} dy={16} textAnchor="middle" fill="#666" fontSize={12}>
-        <tspan x={0} dy={0}>
+      <text x={0} y={0} dy={0} textAnchor="middle" fill="#666" fontSize={12}>
+        <tspan x={0} dy={5}>
           {payload.value}
         </tspan>
         {holidayName && holidayName !== "" ? (
