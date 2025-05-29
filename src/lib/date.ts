@@ -1,6 +1,6 @@
 type DateUnit = "year" | "month" | "day" | "hour" | "minute" | "second";
 
-export const weekDays = ["日", "月", "火", "水", "木", "金", "土"];
+export const WEEK_DAYS = ["日", "月", "火", "水", "木", "金", "土"] as const;
 
 export function floorDate(date: Date, unit: DateUnit = "day") {
   const work = new Date(date);

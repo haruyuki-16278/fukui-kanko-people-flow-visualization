@@ -1,6 +1,6 @@
 import { ChartConfig } from "@/components/ui/chart";
 import { getData } from "@/lib/data/csv";
-import { getDateStringRange, weekDays } from "@/lib/date";
+import { getDateStringRange, WEEK_DAYS } from "@/lib/date";
 import {
   AGE_RANGES,
   ATTRIBUTES,
@@ -231,7 +231,7 @@ export async function dataFromSeriesAll(
   const result: ChartGroup = {
     cartesian: getDateStringRange(dateRange).map((v) => ({
       date: v,
-      dayOfWeek: weekDays[new Date(v).getDay()],
+      dayOfWeek: WEEK_DAYS[new Date(v).getDay()],
       holidayName: holidayMap.get(v) ?? "",
     })),
   };
