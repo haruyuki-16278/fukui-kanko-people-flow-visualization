@@ -2,8 +2,7 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 /**
- * グラフを表示するためのデータ項目数の閾値。
- * 例: データのキー数がこの値を超えた場合のみグラフを表示する。
+ * グラフを表示するためのデータ項目数がこの値を超えた場合のみグラフを表示する。
  */
 export const CARTESIAN_RENDER_THRESHOLD = 3;
 
