@@ -190,9 +190,7 @@ const ChartTooltipContent = React.forwardRef<
         {!nestLabel && tooltipLabel ? (
           <div className="flex">
             {tooltipLabel}
-            {row.holidayName && row.holidayName !== "" ? (
-              <span className="text-red-500 ml-2">{row.holidayName}</span>
-            ) : row.dayOfWeek && row.dayOfWeek !== "" ? (
+            {row.dayOfWeek && row.dayOfWeek !== "" ? (
               <span
                 className={cn(
                   "ml-2",
@@ -202,9 +200,12 @@ const ChartTooltipContent = React.forwardRef<
               >
                 {row.dayOfWeek}
               </span>
-            ) : null}
+            ) : undefined}
+            {row.holidayName && row.holidayName !== "" ? (
+              <span className="text-red-500 ml-2">{row.holidayName}</span>
+            ) : undefined}
           </div>
-        ) : null}
+        ) : undefined}
 
         <div className="grid gap-1.5">
           {payload
