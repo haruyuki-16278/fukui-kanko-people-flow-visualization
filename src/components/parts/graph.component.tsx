@@ -4,7 +4,7 @@ import {
 } from "@/interfaces/aggregated-data.interface";
 import { ChartGroup, getChartConfig } from "@/interfaces/graph-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
-import { cn } from "@/lib/utils";
+import { CARTESIAN_RENDER_THRESHOLD, cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
 import {
@@ -108,9 +108,8 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
       {Object.keys(chartGroup)
         .filter(
           (chartId) =>
-            // chartGroup["cartesian"].at(-1)に{data, dayOfWeek, holidayName}が初めから入るので閾値が3
-            // 4つ以上キーがあれば、グラフとして表示
-            chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 3,
+            chartId !== "cartesian" ||
+            Object.keys(chartGroup[chartId].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD,
         )
         .map((chartId) => (
           <div key={chartId} className="h-full w-full first:col-span-2 flex flex-col items-center">

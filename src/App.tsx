@@ -19,6 +19,7 @@ import * as holiday_jp from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
 import { Graph } from "./components/parts/graph.component";
 import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
+import { CARTESIAN_RENDER_THRESHOLD } from "./lib/utils";
 
 function getDefaultDateRange(): DateRange {
   return {
@@ -283,9 +284,7 @@ export default function App() {
           />
         </div>
         {chartGroup !== undefined &&
-        // chartGroup["cartesian"].at(-1)に{data, dayOfWeek, holidayName}が初めから入るので閾値が3
-        // 4つ以上キーがあれば、グラフとして表示
-        (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > 3 ||
+        (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD ||
           Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
           <Graph
             className="flex-grow h-[calc(100svh_-_96px_-_48px)] min-h-[calc(100svh_-_96px_-_48px)]"
