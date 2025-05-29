@@ -283,6 +283,8 @@ export default function App() {
           />
         </div>
         {chartGroup !== undefined &&
+        // chartGroup["cartesian"].at(-1)に{data, dayOfWeek, holidayName}が初めから入るので閾値が3
+        // 4つ以上キーがあれば、グラフとして表示
         (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > 3 ||
           Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
           <Graph

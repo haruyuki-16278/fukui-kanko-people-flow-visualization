@@ -108,6 +108,8 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
       {Object.keys(chartGroup)
         .filter(
           (chartId) =>
+            // chartGroup["cartesian"].at(-1)に{data, dayOfWeek, holidayName}が初めから入るので閾値が3
+            // 4つ以上キーがあれば、グラフとして表示
             chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 3,
         )
         .map((chartId) => (
