@@ -85,7 +85,7 @@ const CustomizedXAxisTick = ({ x, y, payload, data }: XAxisTickProps) => {
             <tspan
               x={0}
               dy={16}
-              fill={dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : ""}
+              fill={dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : undefined}
               fontSize={10}
             >
               {dayOfWeek}
