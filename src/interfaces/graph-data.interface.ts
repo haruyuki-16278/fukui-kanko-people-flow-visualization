@@ -229,7 +229,7 @@ export async function dataFromSeriesAll(
 
   const flatten = flatData(data);
   const result: ChartGroup = {
-    cartesian: getDateStringRange(dateRange).map((v) => ({
+    cartesian: dateStrings.map((v) => ({
       date: v,
       dayOfWeek: WEEK_DAYS[new Date(v).getDay()],
       holidayName: holidayMap.get(v) ?? "",
