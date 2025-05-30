@@ -4,7 +4,7 @@ import {
 } from "@/interfaces/aggregated-data.interface";
 import { ChartGroup, getChartConfig } from "@/interfaces/graph-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
-import { cn } from "@/lib/utils";
+import { CARTESIAN_RENDER_THRESHOLD, cn } from "@/lib/utils";
 import { ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
 import {
@@ -56,6 +56,47 @@ const CustomizedLabel = (props: {
   );
 };
 
+type XAxisTickProps = {
+  x: number;
+  y: number;
+  payload: {
+    value: string;
+  };
+  data: Record<string, string | number>[];
+};
+
+const CustomizedXAxisTick = ({ x, y, payload, data }: XAxisTickProps) => {
+  const dateRow = data.find((row) => row.date === payload.value);
+  const dayOfWeek = dateRow?.dayOfWeek;
+  const holidayName = dateRow?.holidayName;
+  return (
+    <g transform={`translate(${x},${y})`}>
+      <text x={0} y={0} dy={0} textAnchor="middle" fill="#666" fontSize={12}>
+        <tspan x={0} dy={5}>
+          {payload.value}
+        </tspan>
+        {holidayName && holidayName !== "" ? (
+          <tspan x={0} dy={16} fill="red" fontSize={10}>
+            {holidayName}
+          </tspan>
+        ) : (
+          dayOfWeek &&
+          dayOfWeek !== "" && (
+            <tspan
+              x={0}
+              dy={16}
+              fill={dayOfWeek === "土" ? "blue" : dayOfWeek === "日" ? "red" : undefined}
+              fontSize={10}
+            >
+              {dayOfWeek}
+            </tspan>
+          )
+        )}
+      </text>
+    </g>
+  );
+};
+
 interface Props {
   chartGroup: ChartGroup;
   seriesAll: Record<string, GraphSeries>;
@@ -67,7 +108,8 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
       {Object.keys(chartGroup)
         .filter(
           (chartId) =>
-            chartId !== "cartesian" || Object.keys(chartGroup[chartId].at(-1) ?? {}).length > 1,
+            chartId !== "cartesian" ||
+            Object.keys(chartGroup[chartId].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD,
         )
         .map((chartId) => (
           <div key={chartId} className="h-full w-full first:col-span-2 flex flex-col items-center">
@@ -89,10 +131,18 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               {chartId === "cartesian" ? (
                 <BarChart data={chartGroup[chartId]}>
                   <CartesianGrid vertical={false} />
-                  <XAxis dataKey={"date"} tickLine={false} tickMargin={7} axisLine={false} />
+                  <XAxis
+                    dataKey={"date"}
+                    tickLine={false}
+                    tickMargin={7}
+                    axisLine={false}
+                    tick={(props: XAxisTickProps) => (
+                      <CustomizedXAxisTick {...props} data={chartGroup[chartId]} />
+                    )}
+                  />
                   <YAxis type="number" tickLine={true} tickCount={10} />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
-                    .filter((key) => key !== "date")
+                    .filter((key) => key !== "date" && key !== "holidayName" && key !== "dayOfWeek")
                     .map((key) => [key, ...key.split("#")])
                     .map(([key, id, attributeKey], i) => (
                       <Bar
