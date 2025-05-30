@@ -110,6 +110,7 @@ export const OBJECT_CLASS_ATTRIBUTES = {
 
       OkinawaRegion: "沖縄地方",
       Okinawa: "沖縄県",
+      OtherRegion: "その他",
       Other: "その他",
     } as const,
     carCategories: {
@@ -155,7 +156,7 @@ export const REGIONS_PREFS = {
   ShikokuRegion: ["Tokushima", "Kagawa", "Ehime", "Kochi"],
   KyushuRegion: ["Fukuoka", "Saga", "Nagasaki", "Oita", "Kumamoto", "Miyazaki", "Kagoshima"],
   OkinawaRegion: ["Okinawa"],
-  Other: ["Other"],
+  OtherRegion: ["Other"],
 };
 
 type AttributeValue<Attribute extends ObjectClassAttribute> = Attribute extends "genders"

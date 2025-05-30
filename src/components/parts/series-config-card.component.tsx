@@ -232,6 +232,9 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                   <div className="pl-2">
                     {Object.entries(attributeValues).map(([attributeValue, attributeValueText]) => {
                       const isRegion = attributeValue.endsWith("Region");
+                      {
+                        /* 〇〇地方の表示 */
+                      }
                       if (isRegion) {
                         const regionPrefs =
                           REGIONS_PREFS[attributeValue as keyof typeof REGIONS_PREFS];
@@ -255,7 +258,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                         [objectClassAttribute]: v
                                           ? // チェック→地方の全県を「表示」＝excludeから外す
                                             (series.exclude?.[objectClassAttribute] ?? []).filter(
-                                              (item) => !regionPrefs.includes(item),
+                                              (pref) => !regionPrefs.includes(pref),
                                             )
                                           : // アンチェック→地方の全県を「非表示」＝excludeに追加
                                             [
@@ -279,7 +282,10 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                         );
                       }
                       return (
-                        <label key={attributeValue} className="flex flex-row items-center gap-x-2">
+                        <label
+                          key={attributeValue}
+                          className="flex flex-row items-center gap-x-2 ml-5"
+                        >
                           <Checkbox
                             onCheckedChange={(v) =>
                               notify(
