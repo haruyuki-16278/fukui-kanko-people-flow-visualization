@@ -1,6 +1,6 @@
 import { ChartConfig } from "@/components/ui/chart";
 import { getData } from "@/lib/data/csv";
-import { getDateStringRange } from "@/lib/date";
+import { getDateStringRange, WEEK_DAYS } from "@/lib/date";
 import {
   AGE_RANGES,
   ATTRIBUTES,
@@ -110,9 +110,11 @@ const flatData = <T extends Record<string, unknown>>(
 export async function dataFromSeriesAll(
   seriesAll: { [id: string]: GraphSeries },
   dateRange: { from: Date; to: Date },
+  holidays: { date: Date; name: string }[],
 ): Promise<ChartGroup> {
   let data: Data = {};
   const dateStrings = getDateStringRange(dateRange);
+  const holidayMap = new Map(holidays.map((h) => [h.date.toISOString().slice(0, 10), h.name]));
 
   for (const [id, series] of Object.entries(seriesAll)) {
     if (!series.show) continue;
@@ -227,7 +229,11 @@ export async function dataFromSeriesAll(
 
   const flatten = flatData(data);
   const result: ChartGroup = {
-    cartesian: getDateStringRange(dateRange).map((v) => ({ date: v })),
+    cartesian: dateStrings.map((v) => ({
+      date: v,
+      dayOfWeek: WEEK_DAYS[new Date(v).getDay()],
+      holidayName: holidayMap.get(v) ?? "",
+    })),
   };
 
   for (const [key, value] of Object.entries(flatten)) {
