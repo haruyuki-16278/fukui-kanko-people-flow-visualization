@@ -1,3 +1,9 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,7 +33,7 @@ import {
   OBJECT_CLASS_ATTRIBUTES,
   ObjectClass,
   ObjectClassAttribute,
-  REGIONS_PREFS,
+  REGIONS_PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import {
   defaultSeriesName,
@@ -230,104 +236,173 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                     {JAPANESE_ATTRIBUTE_NAME[objectClassAttribute as ObjectClassAttribute]}
                   </span>
                   <div className="pl-2">
-                    {Object.entries(attributeValues).map(([attributeValue, attributeValueText]) => {
-                      const isRegion = attributeValue.endsWith("Region");
-                      {
-                        /* 〇〇地方の表示 */
-                      }
-                      if (isRegion) {
-                        const regionPrefs =
-                          REGIONS_PREFS[attributeValue as keyof typeof REGIONS_PREFS];
-                        const allChecked = regionPrefs.every(
-                          (pref) => !series.exclude?.[objectClassAttribute]?.includes(pref),
-                        );
-                        return (
-                          <label
-                            key={attributeValue}
-                            className="flex flex-row items-center gap-x-2 font-bold"
-                          >
-                            <Checkbox
-                              checked={allChecked}
-                              onCheckedChange={(v) => {
-                                notify(
-                                  updateSeriesProperty(
-                                    [
-                                      "exclude",
-                                      {
-                                        ...series.exclude,
-                                        [objectClassAttribute]: v
-                                          ? // チェック→地方の全県を「表示」＝excludeから外す
-                                            (series.exclude?.[objectClassAttribute] ?? []).filter(
-                                              (pref) => !regionPrefs.includes(pref),
-                                            )
-                                          : // アンチェック→地方の全県を「非表示」＝excludeに追加
-                                            [
-                                              ...(series.exclude?.[objectClassAttribute] ?? []),
-                                              ...regionPrefs.filter(
-                                                (pref) =>
-                                                  !series.exclude?.[objectClassAttribute]?.includes(
-                                                    pref,
+                    {objectClassAttribute === "prefectures"
+                      ? // 都道府県
+                        Object.entries(attributeValues).map(
+                          ([attributeValue, attributeValueText]) => {
+                            const isRegion = attributeValue.endsWith("Region");
+                            if (isRegion) {
+                              const regionPrefectures =
+                                REGIONS_PREFECTURES[
+                                  attributeValue as keyof typeof REGIONS_PREFECTURES
+                                ];
+                              const allChecked = regionPrefectures.every(
+                                (prefectureKey) =>
+                                  !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
+                              );
+                              return (
+                                <Accordion type="multiple">
+                                  <AccordionItem value={attributeValue} key={attributeValue}>
+                                    <AccordionTrigger>
+                                      <Checkbox
+                                        checked={allChecked}
+                                        onCheckedChange={(v) => {
+                                          notify(
+                                            updateSeriesProperty(
+                                              [
+                                                "exclude",
+                                                {
+                                                  ...series.exclude,
+                                                  [objectClassAttribute]: v
+                                                    ? (
+                                                        series.exclude?.[objectClassAttribute] ?? []
+                                                      ).filter(
+                                                        (prefectureKey) =>
+                                                          !regionPrefectures.includes(
+                                                            prefectureKey,
+                                                          ),
+                                                      )
+                                                    : [
+                                                        ...(series.exclude?.[
+                                                          objectClassAttribute
+                                                        ] ?? []),
+                                                        ...regionPrefectures.filter(
+                                                          (prefectureKey) =>
+                                                            !series.exclude?.[
+                                                              objectClassAttribute
+                                                            ]?.includes(prefectureKey),
+                                                        ),
+                                                      ],
+                                                },
+                                              ],
+                                              series,
+                                            ),
+                                          );
+                                        }}
+                                      />
+                                      <span>{String(attributeValueText)}</span>
+                                    </AccordionTrigger>
+                                    <AccordionContent>
+                                      {regionPrefectures.map((prefectureKey) => (
+                                        <label
+                                          key={prefectureKey}
+                                          className="flex flex-row items-center gap-x-2 ml-5"
+                                        >
+                                          <Checkbox
+                                            onCheckedChange={(v) =>
+                                              notify(
+                                                updateSeriesProperty(
+                                                  [
+                                                    "exclude",
+                                                    series.exclude !== undefined
+                                                      ? v
+                                                        ? // truthyなら表示する→excludeからは外す
+                                                          {
+                                                            ...series.exclude,
+                                                            [objectClassAttribute]: [
+                                                              ...series.exclude[
+                                                                objectClassAttribute
+                                                              ].filter(
+                                                                (excludeItem) =>
+                                                                  excludeItem !== prefectureKey,
+                                                              ),
+                                                            ],
+                                                          }
+                                                        : // falsyなら表示しない→excludeに含める
+                                                          {
+                                                            ...series.exclude,
+                                                            [objectClassAttribute]: [
+                                                              ...(series.exclude[
+                                                                objectClassAttribute
+                                                              ] ?? []),
+                                                              prefectureKey,
+                                                            ],
+                                                          }
+                                                      : v
+                                                        ? undefined
+                                                        : {
+                                                            [objectClassAttribute]: [prefectureKey],
+                                                          },
+                                                  ],
+                                                  series,
+                                                ),
+                                              )
+                                            }
+                                            className="block"
+                                            checked={
+                                              !series.exclude?.[objectClassAttribute]?.includes(
+                                                prefectureKey,
+                                              )
+                                            }
+                                          />
+                                          <span>{attributeValues[prefectureKey]}</span>
+                                        </label>
+                                      ))}
+                                    </AccordionContent>
+                                  </AccordionItem>
+                                </Accordion>
+                              );
+                            }
+                          },
+                        )
+                      : Object.entries(attributeValues).map(
+                          ([attributeValue, attributeValueText]) => (
+                            <label
+                              key={attributeValue}
+                              className="flex flex-row items-center gap-x-2"
+                            >
+                              <Checkbox
+                                onCheckedChange={(v) =>
+                                  notify(
+                                    updateSeriesProperty(
+                                      [
+                                        "exclude",
+                                        series.exclude !== undefined
+                                          ? v
+                                            ? // truthyなら表示する→excludeからは外す
+                                              {
+                                                ...series.exclude,
+                                                [objectClassAttribute]: [
+                                                  ...series.exclude[objectClassAttribute].filter(
+                                                    (excludeItem) => excludeItem !== attributeValue,
                                                   ),
-                                              ),
-                                            ],
-                                      },
-                                    ],
-                                    series,
-                                  ),
-                                );
-                              }}
-                            />
-                            <span>{String(attributeValueText)}</span>
-                          </label>
-                        );
-                      }
-                      return (
-                        <label
-                          key={attributeValue}
-                          className="flex flex-row items-center gap-x-2 ml-5"
-                        >
-                          <Checkbox
-                            onCheckedChange={(v) =>
-                              notify(
-                                updateSeriesProperty(
-                                  [
-                                    "exclude",
-                                    series.exclude !== undefined
-                                      ? v
-                                        ? // truthyなら表示する→excludeからは外す
-                                          {
-                                            ...series.exclude,
-                                            [objectClassAttribute]: [
-                                              ...series.exclude[objectClassAttribute].filter(
-                                                (excludeItem) => excludeItem !== attributeValue,
-                                              ),
-                                            ],
-                                          }
-                                        : // falsyなら表示しない→excludeに含める
-                                          {
-                                            ...series.exclude,
-                                            [objectClassAttribute]: [
-                                              ...(series.exclude[objectClassAttribute] ?? []),
-                                              attributeValue,
-                                            ],
-                                          }
-                                      : v
-                                        ? undefined
-                                        : { [objectClassAttribute]: [attributeValue] },
-                                  ],
-                                  series,
-                                ),
-                              )
-                            }
-                            className="block"
-                            checked={
-                              !series.exclude?.[objectClassAttribute]?.includes(attributeValue)
-                            }
-                          />
-                          <span>{String(attributeValueText)}</span>
-                        </label>
-                      );
-                    })}
+                                                ],
+                                              }
+                                            : // falsyなら表示しない→excludeに含める
+                                              {
+                                                ...series.exclude,
+                                                [objectClassAttribute]: [
+                                                  ...(series.exclude[objectClassAttribute] ?? []),
+                                                  attributeValue,
+                                                ],
+                                              }
+                                          : v
+                                            ? undefined
+                                            : { [objectClassAttribute]: [attributeValue] },
+                                      ],
+                                      series,
+                                    ),
+                                  )
+                                }
+                                className="block"
+                                checked={
+                                  !series.exclude?.[objectClassAttribute]?.includes(attributeValue)
+                                }
+                              />
+                              <span>{String(attributeValueText)}</span>
+                            </label>
+                          ),
+                        )}
                   </div>
                 </div>
               ),
