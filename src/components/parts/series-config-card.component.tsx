@@ -286,10 +286,23 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                 REGIONS_PREFECTURES[
                                   attributeValue as keyof typeof REGIONS_PREFECTURES
                                 ];
+                              // 地方に属する都道府県が全て表示されているかチェック
                               const allChecked = regionPrefectures.every(
                                 (prefectureKey) =>
                                   !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
                               );
+                              // 地方に属する都道府県が一つでも表示されているかチェック
+                              const anyChecked = regionPrefectures.some(
+                                (prefectureKey) =>
+                                  !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
+                              );
+                              // チェックボックスの状態を決定
+                              const checkState = allChecked
+                                ? true
+                                : anyChecked
+                                  ? "indeterminate"
+                                  : false;
+
                               return (
                                 <Accordion
                                   type="multiple"
@@ -300,7 +313,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   <AccordionItem value={attributeValue} className="border-none">
                                     <div className="flex items-center gap-x-2">
                                       <Checkbox
-                                        checked={allChecked}
+                                        checked={checkState}
                                         onCheckedChange={(v) =>
                                           notify(
                                             updateSeriesProperty(
