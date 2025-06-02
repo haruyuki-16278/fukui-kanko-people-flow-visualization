@@ -44,10 +44,8 @@ export const OBJECT_CLASS_ATTRIBUTES = {
   } as const,
   LicensePlate: {
     prefectures: {
-      HokkaidoRegion: "北海道地方",
+      HokkaidoTohokuRegion: "北海道・東北地方",
       Hokkaido: "北海道",
-
-      TohokuRegion: "東北地方",
       Aomori: "青森県",
       Iwate: "岩手県",
       Akita: "秋田県",
@@ -99,7 +97,7 @@ export const OBJECT_CLASS_ATTRIBUTES = {
       Ehime: "愛媛県",
       Kochi: "高知県",
 
-      KyushuRegion: "九州地方",
+      KyushuOkinawaRegion: "九州・沖縄地方",
       Fukuoka: "福岡県",
       Saga: "佐賀県",
       Nagasaki: "長崎県",
@@ -107,9 +105,8 @@ export const OBJECT_CLASS_ATTRIBUTES = {
       Kumamoto: "熊本県",
       Miyazaki: "宮崎県",
       Kagoshima: "鹿児島県",
-
-      OkinawaRegion: "沖縄地方",
       Okinawa: "沖縄県",
+
       OtherRegion: "その他",
       Other: "その他",
       All: "全選択",
@@ -137,8 +134,7 @@ export const JAPANESE_ATTRIBUTE_NAME: Record<ObjectClassAttribute, string> = {
   carCategories: "車両分類",
 } as const;
 export const REGIONS_PREFECTURES = {
-  HokkaidoRegion: ["Hokkaido"],
-  TohokuRegion: ["Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima"],
+  HokkaidoTohokuRegion: ["Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima"],
   KantoRegion: [
     "Ibaraki",
     "Tochigi",
@@ -155,8 +151,16 @@ export const REGIONS_PREFECTURES = {
   KinkiRegion: ["Shiga", "Kyoto", "Nara", "Wakayama", "Osaka", "Hyogo"],
   ChugokuRegion: ["Tottori", "Shimane", "Okayama", "Hiroshima", "Yamaguchi"],
   ShikokuRegion: ["Tokushima", "Kagawa", "Ehime", "Kochi"],
-  KyushuRegion: ["Fukuoka", "Saga", "Nagasaki", "Oita", "Kumamoto", "Miyazaki", "Kagoshima"],
-  OkinawaRegion: ["Okinawa"],
+  KyushuOkinawaRegion: [
+    "Fukuoka",
+    "Saga",
+    "Nagasaki",
+    "Oita",
+    "Kumamoto",
+    "Miyazaki",
+    "Kagoshima",
+    "Okinawa",
+  ],
   OtherRegion: ["Other"],
 };
 
