@@ -258,14 +258,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   className="flex flex-row items-center gap-x-2"
                                 >
                                   <Checkbox
-                                    onCheckedChange={(v) => {
-                                      if (v) {
-                                        // 全アコーディオンを開く
-                                        setOpenRegions(Object.keys(REGIONS_PREFECTURES));
-                                      } else {
-                                        // 全アコーディオンを閉じる
-                                        setOpenRegions([]);
-                                      }
+                                    onCheckedChange={(v) =>
                                       notify(
                                         updateSeriesProperty(
                                           [
@@ -279,8 +272,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                           ],
                                           series,
                                         ),
-                                      );
-                                    }}
+                                      )
+                                    }
                                     className="block"
                                     checked={!series.exclude?.[objectClassAttribute]?.length}
                                   />
@@ -308,21 +301,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                     <div className="flex items-center gap-x-2">
                                       <Checkbox
                                         checked={allChecked}
-                                        onCheckedChange={(v) => {
-                                          if (v) {
-                                            // チェックONならアコーディオンを開く
-                                            setOpenRegions((currentOpenRegions) => [
-                                              ...currentOpenRegions,
-                                              attributeValue,
-                                            ]);
-                                          } else {
-                                            // チェックOFFならアコーディオンを閉じる
-                                            setOpenRegions((currentOpenRegions) =>
-                                              currentOpenRegions.filter(
-                                                (item) => item !== attributeValue,
-                                              ),
-                                            );
-                                          }
+                                        onCheckedChange={(v) =>
                                           notify(
                                             updateSeriesProperty(
                                               [
@@ -353,8 +332,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                               ],
                                               series,
                                             ),
-                                          );
-                                        }}
+                                          )
+                                        }
                                       />
                                       <AccordionTrigger className="text-base py-0">
                                         <span>{String(attributeValueText)}</span>
