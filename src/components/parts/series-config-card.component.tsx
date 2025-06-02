@@ -352,6 +352,45 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   </AccordionItem>
                                 </Accordion>
                               );
+                            } else if (attributeValue === "All") {
+                              // 全選択
+                              // 全ての地方の都道府県キーを取得
+                              const allRegionPrefectureKeys = Object.entries(attributeValues)
+                                .filter(([attributeValue]) => attributeValue.endsWith("Region"))
+                                .flatMap(
+                                  ([attributeValue]) =>
+                                    REGIONS_PREFECTURES[
+                                      attributeValue as keyof typeof REGIONS_PREFECTURES
+                                    ],
+                                );
+                              return (
+                                <label
+                                  key={attributeValue}
+                                  className="flex flex-row items-center gap-x-2"
+                                >
+                                  <Checkbox
+                                    onCheckedChange={(v) =>
+                                      notify(
+                                        updateSeriesProperty(
+                                          [
+                                            "exclude",
+                                            v
+                                              ? { ...series.exclude, [objectClassAttribute]: [] } // 全表示
+                                              : {
+                                                  ...series.exclude,
+                                                  [objectClassAttribute]: allRegionPrefectureKeys,
+                                                }, // 全て非表示
+                                          ],
+                                          series,
+                                        ),
+                                      )
+                                    }
+                                    className="block"
+                                    checked={series.exclude?.[objectClassAttribute]?.length === 0}
+                                  />
+                                  <span>{String(attributeValueText)}</span>
+                                </label>
+                              );
                             }
                           },
                         )

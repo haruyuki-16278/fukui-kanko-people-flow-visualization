@@ -112,6 +112,7 @@ export const OBJECT_CLASS_ATTRIBUTES = {
       Okinawa: "沖縄県",
       OtherRegion: "その他",
       Other: "その他",
+      All: "全選択",
     } as const,
     carCategories: {
       PassengerCars: "自家用車",
