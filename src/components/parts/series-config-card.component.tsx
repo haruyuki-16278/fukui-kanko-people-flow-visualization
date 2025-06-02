@@ -72,7 +72,7 @@ function updateSeriesProperty<Key extends keyof GraphSeries>(
 }
 
 export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
-  const [openItems, setOpenItems] = useState<string[]>(Object.keys(REGIONS_PREFECTURES));
+  const [openRegions, setOpenRegions] = useState<string[]>(Object.keys(REGIONS_PREFECTURES));
   return (
     <Card className="flex w-full flex-col gap-y-4 p-4">
       <div className="flex justify-between">
@@ -231,8 +231,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
           <div>
             <span>フィルタ</span>
             {Object.entries(OBJECT_CLASS_ATTRIBUTES[series.objectClass]).map(
-              ([objectClassAttribute, attributeValues]) => (
-                <div className="mt-2 pl-2" key={`${objectClassAttribute}`}>
+              ([objectClassAttribute, attributeValues]: [string, Record<string, string>]) => (
+                <div className="mt-2 pl-2" key={objectClassAttribute}>
                   <span>
                     {JAPANESE_ATTRIBUTE_NAME[objectClassAttribute as ObjectClassAttribute]}
                   </span>
@@ -254,8 +254,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                               return (
                                 <Accordion
                                   type="multiple"
-                                  value={openItems}
-                                  onValueChange={setOpenItems}
+                                  value={openRegions}
+                                  onValueChange={setOpenRegions}
                                   key={attributeValue}
                                 >
                                   <AccordionItem value={attributeValue}>
@@ -264,16 +264,17 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                         checked={allChecked}
                                         onCheckedChange={(v) => {
                                           if (v) {
-                                            // チェックONなら開く
-                                            setOpenItems((prev) =>
-                                              prev.includes(attributeValue)
-                                                ? prev
-                                                : [...prev, attributeValue],
-                                            );
+                                            // チェックONならアコーディオンを開く
+                                            setOpenRegions((currentOpenRegions) => [
+                                              ...currentOpenRegions,
+                                              attributeValue,
+                                            ]);
                                           } else {
-                                            // チェックOFFなら閉じる
-                                            setOpenItems((prev) =>
-                                              prev.filter((item) => item !== attributeValue),
+                                            // チェックOFFならアコーディオンを閉じる
+                                            setOpenRegions((currentOpenRegions) =>
+                                              currentOpenRegions.filter(
+                                                (item) => item !== attributeValue,
+                                              ),
                                             );
                                           }
                                           notify(
@@ -392,22 +393,22 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   <Checkbox
                                     onCheckedChange={(v) => {
                                       if (v) {
-                                        // 全表示
-                                        setOpenItems(Object.keys(REGIONS_PREFECTURES));
+                                        // 全アコーディオンを開く
+                                        setOpenRegions(Object.keys(REGIONS_PREFECTURES));
                                       } else {
-                                        // 全非表示
-                                        setOpenItems([]);
+                                        // 全アコーディオンを閉じる
+                                        setOpenRegions([]);
                                       }
                                       notify(
                                         updateSeriesProperty(
                                           [
                                             "exclude",
                                             v
-                                              ? { ...series.exclude, [objectClassAttribute]: [] } // 全表示
+                                              ? { ...series.exclude, [objectClassAttribute]: [] } // 全チェックON
                                               : {
                                                   ...series.exclude,
                                                   [objectClassAttribute]: allRegionPrefectureKeys,
-                                                }, // 全て非表示
+                                                }, // 全チェックOFF
                                           ],
                                           series,
                                         ),
