@@ -251,9 +251,9 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
                               );
                               return (
-                                <Accordion type="multiple">
-                                  <AccordionItem value={attributeValue} key={attributeValue}>
-                                    <AccordionTrigger>
+                                <Accordion type="multiple" key={attributeValue}>
+                                  <AccordionItem value={attributeValue}>
+                                    <div className="flex items-center">
                                       <Checkbox
                                         checked={allChecked}
                                         onCheckedChange={(v) => {
@@ -290,8 +290,10 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                           );
                                         }}
                                       />
-                                      <span>{String(attributeValueText)}</span>
-                                    </AccordionTrigger>
+                                      <AccordionTrigger>
+                                        <span>{String(attributeValueText)}</span>
+                                      </AccordionTrigger>
+                                    </div>
                                     <AccordionContent>
                                       {regionPrefectures.map((prefectureKey) => (
                                         <label
