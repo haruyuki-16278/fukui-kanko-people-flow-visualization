@@ -253,11 +253,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                     ],
                                 );
                               return (
-                                <div className="flex">
-                                  <label
-                                    key={attributeValue}
-                                    className="flex flex-row items-center gap-x-2"
-                                  >
+                                <div key={attributeValue} className="flex">
+                                  <label className="flex flex-row items-center gap-x-2">
                                     <Checkbox
                                       onCheckedChange={(v) =>
                                         notify(
@@ -313,11 +310,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   key={attributeValue}
                                 >
                                   <AccordionItem value={attributeValue} className="border-none">
-                                    <div className="flex">
-                                      <label
-                                        key={attributeValue}
-                                        className="flex flex-row items-center"
-                                      >
+                                    <div key={attributeValue} className="flex">
+                                      <label className="flex flex-row items-center">
                                         <Checkbox
                                           checked={checkState}
                                           onCheckedChange={(v) =>
@@ -364,11 +358,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                     {/* その地方に属した都道府県 */}
                                     <AccordionContent className="text-base pb-2">
                                       {regionPrefectures.map((prefectureKey) => (
-                                        <div className="flex">
-                                          <label
-                                            key={prefectureKey}
-                                            className="flex flex-row items-center gap-x-2 ml-5 mt-0"
-                                          >
+                                        <div key={prefectureKey} className="flex">
+                                          <label className="flex flex-row items-center gap-x-2 ml-5 mt-0">
                                             <Checkbox
                                               onCheckedChange={(v) =>
                                                 notify(
@@ -431,11 +422,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                         )
                       : Object.entries(attributeValues).map(
                           ([attributeValue, attributeValueText]) => (
-                            <div className="flex">
-                              <label
-                                key={attributeValue}
-                                className="flex flex-row items-center gap-x-2"
-                              >
+                            <div key={attributeValue} className="flex">
+                              <label className="flex flex-row items-center gap-x-2">
                                 <Checkbox
                                   onCheckedChange={(v) =>
                                     notify(
