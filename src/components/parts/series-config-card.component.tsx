@@ -44,7 +44,7 @@ import {
 } from "@/interfaces/graph-series.interface";
 import { Placement, PLACEMENTS } from "@/interfaces/placement.interface";
 import { cn } from "@/lib/utils";
-import { MouseEventHandler } from "react";
+import { MouseEventHandler, useState } from "react";
 import { TrashIcon } from "@primer/octicons-react";
 
 interface Props {
@@ -72,6 +72,7 @@ function updateSeriesProperty<Key extends keyof GraphSeries>(
 }
 
 export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
+  const [openItems, setOpenItems] = useState<string[]>(Object.keys(REGIONS_PREFECTURES));
   return (
     <Card className="flex w-full flex-col gap-y-4 p-4">
       <div className="flex justify-between">
@@ -251,12 +252,30 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
                               );
                               return (
-                                <Accordion type="multiple" key={attributeValue}>
+                                <Accordion
+                                  type="multiple"
+                                  value={openItems}
+                                  onValueChange={setOpenItems}
+                                  key={attributeValue}
+                                >
                                   <AccordionItem value={attributeValue}>
                                     <div className="flex items-center">
                                       <Checkbox
                                         checked={allChecked}
                                         onCheckedChange={(v) => {
+                                          if (v) {
+                                            // チェックONなら開く
+                                            setOpenItems((prev) =>
+                                              prev.includes(attributeValue)
+                                                ? prev
+                                                : [...prev, attributeValue],
+                                            );
+                                          } else {
+                                            // チェックOFFなら閉じる
+                                            setOpenItems((prev) =>
+                                              prev.filter((item) => item !== attributeValue),
+                                            );
+                                          }
                                           notify(
                                             updateSeriesProperty(
                                               [
@@ -371,7 +390,14 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   className="flex flex-row items-center gap-x-2"
                                 >
                                   <Checkbox
-                                    onCheckedChange={(v) =>
+                                    onCheckedChange={(v) => {
+                                      if (v) {
+                                        // 全表示
+                                        setOpenItems(Object.keys(REGIONS_PREFECTURES));
+                                      } else {
+                                        // 全非表示
+                                        setOpenItems([]);
+                                      }
                                       notify(
                                         updateSeriesProperty(
                                           [
@@ -385,10 +411,10 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                           ],
                                           series,
                                         ),
-                                      )
-                                    }
+                                      );
+                                    }}
                                     className="block"
-                                    checked={series.exclude?.[objectClassAttribute]?.length === 0}
+                                    checked={!series.exclude?.[objectClassAttribute]?.length}
                                   />
                                   <span>{String(attributeValueText)}</span>
                                 </label>
