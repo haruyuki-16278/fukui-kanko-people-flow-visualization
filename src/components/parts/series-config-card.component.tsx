@@ -258,8 +258,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   onValueChange={setOpenRegions}
                                   key={attributeValue}
                                 >
-                                  <AccordionItem value={attributeValue}>
-                                    <div className="flex items-center">
+                                  <AccordionItem value={attributeValue} className="border-none">
+                                    <div className="flex items-center gap-x-2">
                                       <Checkbox
                                         checked={allChecked}
                                         onCheckedChange={(v) => {
@@ -310,15 +310,15 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                           );
                                         }}
                                       />
-                                      <AccordionTrigger>
+                                      <AccordionTrigger className="text-base py-0">
                                         <span>{String(attributeValueText)}</span>
                                       </AccordionTrigger>
                                     </div>
-                                    <AccordionContent>
+                                    <AccordionContent className="text-base pb-2">
                                       {regionPrefectures.map((prefectureKey) => (
                                         <label
                                           key={prefectureKey}
-                                          className="flex flex-row items-center gap-x-2 ml-5"
+                                          className="flex flex-row items-center gap-x-2 ml-5 mt-0"
                                         >
                                           <Checkbox
                                             onCheckedChange={(v) =>
