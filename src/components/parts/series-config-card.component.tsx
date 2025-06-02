@@ -241,8 +241,54 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                       ? // 都道府県
                         Object.entries(attributeValues).map(
                           ([attributeValue, attributeValueText]) => {
-                            const isRegion = attributeValue.endsWith("Region");
-                            if (isRegion) {
+                            if (attributeValue === "All") {
+                              // 全選択
+                              // 全ての地方の都道府県キーを取得
+                              const allRegionPrefectureKeys = Object.entries(attributeValues)
+                                .filter(([attributeValue]) => attributeValue.endsWith("Region"))
+                                .flatMap(
+                                  ([attributeValue]) =>
+                                    REGIONS_PREFECTURES[
+                                      attributeValue as keyof typeof REGIONS_PREFECTURES
+                                    ],
+                                );
+                              return (
+                                <label
+                                  key={attributeValue}
+                                  className="flex flex-row items-center gap-x-2"
+                                >
+                                  <Checkbox
+                                    onCheckedChange={(v) => {
+                                      if (v) {
+                                        // 全アコーディオンを開く
+                                        setOpenRegions(Object.keys(REGIONS_PREFECTURES));
+                                      } else {
+                                        // 全アコーディオンを閉じる
+                                        setOpenRegions([]);
+                                      }
+                                      notify(
+                                        updateSeriesProperty(
+                                          [
+                                            "exclude",
+                                            v
+                                              ? { ...series.exclude, [objectClassAttribute]: [] } // 全チェックON
+                                              : {
+                                                  ...series.exclude,
+                                                  [objectClassAttribute]: allRegionPrefectureKeys,
+                                                }, // 全チェックOFF
+                                          ],
+                                          series,
+                                        ),
+                                      );
+                                    }}
+                                    className="block"
+                                    checked={!series.exclude?.[objectClassAttribute]?.length}
+                                  />
+                                  <span>{String(attributeValueText)}</span>
+                                </label>
+                              );
+                            } else if (attributeValue.endsWith("Region")) {
+                              // 地方ごとのアコーディオン
                               const regionPrefectures =
                                 REGIONS_PREFECTURES[
                                   attributeValue as keyof typeof REGIONS_PREFECTURES
@@ -314,6 +360,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                         <span>{String(attributeValueText)}</span>
                                       </AccordionTrigger>
                                     </div>
+                                    {/* その地方に属した都道府県 */}
                                     <AccordionContent className="text-base pb-2">
                                       {regionPrefectures.map((prefectureKey) => (
                                         <label
@@ -373,52 +420,6 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                     </AccordionContent>
                                   </AccordionItem>
                                 </Accordion>
-                              );
-                            } else if (attributeValue === "All") {
-                              // 全選択
-                              // 全ての地方の都道府県キーを取得
-                              const allRegionPrefectureKeys = Object.entries(attributeValues)
-                                .filter(([attributeValue]) => attributeValue.endsWith("Region"))
-                                .flatMap(
-                                  ([attributeValue]) =>
-                                    REGIONS_PREFECTURES[
-                                      attributeValue as keyof typeof REGIONS_PREFECTURES
-                                    ],
-                                );
-                              return (
-                                <label
-                                  key={attributeValue}
-                                  className="flex flex-row items-center gap-x-2"
-                                >
-                                  <Checkbox
-                                    onCheckedChange={(v) => {
-                                      if (v) {
-                                        // 全アコーディオンを開く
-                                        setOpenRegions(Object.keys(REGIONS_PREFECTURES));
-                                      } else {
-                                        // 全アコーディオンを閉じる
-                                        setOpenRegions([]);
-                                      }
-                                      notify(
-                                        updateSeriesProperty(
-                                          [
-                                            "exclude",
-                                            v
-                                              ? { ...series.exclude, [objectClassAttribute]: [] } // 全チェックON
-                                              : {
-                                                  ...series.exclude,
-                                                  [objectClassAttribute]: allRegionPrefectureKeys,
-                                                }, // 全チェックOFF
-                                          ],
-                                          series,
-                                        ),
-                                      );
-                                    }}
-                                    className="block"
-                                    checked={!series.exclude?.[objectClassAttribute]?.length}
-                                  />
-                                  <span>{String(attributeValueText)}</span>
-                                </label>
                               );
                             }
                           },

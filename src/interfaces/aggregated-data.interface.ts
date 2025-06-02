@@ -44,6 +44,7 @@ export const OBJECT_CLASS_ATTRIBUTES = {
   } as const,
   LicensePlate: {
     prefectures: {
+      All: "全選択",
       HokkaidoTohokuRegion: "北海道・東北地方",
       Hokkaido: "北海道",
       Aomori: "青森県",
@@ -109,7 +110,6 @@ export const OBJECT_CLASS_ATTRIBUTES = {
 
       OtherRegion: "その他",
       Other: "その他",
-      All: "全選択",
     } as const,
     carCategories: {
       PassengerCars: "自家用車",
