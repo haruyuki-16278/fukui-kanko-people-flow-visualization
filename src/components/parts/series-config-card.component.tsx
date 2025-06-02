@@ -44,7 +44,7 @@ import {
 } from "@/interfaces/graph-series.interface";
 import { Placement, PLACEMENTS } from "@/interfaces/placement.interface";
 import { cn } from "@/lib/utils";
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler } from "react";
 import { TrashIcon } from "@primer/octicons-react";
 
 interface Props {
@@ -72,7 +72,6 @@ function updateSeriesProperty<Key extends keyof GraphSeries>(
 }
 
 export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
-  const [openRegions, setOpenRegions] = useState<string[]>(Object.keys(REGIONS_PREFECTURES));
   return (
     <Card className="flex w-full flex-col gap-y-4 p-4">
       <div className="flex justify-between">
@@ -303,12 +302,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   : false;
 
                               return (
-                                <Accordion
-                                  type="multiple"
-                                  value={openRegions}
-                                  onValueChange={setOpenRegions}
-                                  key={attributeValue}
-                                >
+                                <Accordion type="multiple" key={attributeValue}>
                                   <AccordionItem value={attributeValue} className="border-none">
                                     <div key={attributeValue} className="flex">
                                       <label className="flex flex-row items-center">
