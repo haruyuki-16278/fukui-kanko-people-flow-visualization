@@ -180,8 +180,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
               {Object.entries(GRAPH_TYPES).map(([graphType, graphTypeText]) => (
                 <div key={graphType + "radio"}>
                   <div className="flex items-center space-x-2">
-                    <RadioGroupItem value={graphType} id={graphType} />
-                    <Label htmlFor={graphType}>{graphTypeText}</Label>
+                    <RadioGroupItem value={graphType} id={`${series.id}-${graphType}`} />
+                    <Label htmlFor={`${series.id}-${graphType}`}>{graphTypeText}</Label>
                   </div>
                   {graphType !== "simple" &&
                   graphType === series.graphType &&
