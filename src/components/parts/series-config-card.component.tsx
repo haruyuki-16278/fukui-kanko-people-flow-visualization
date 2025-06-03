@@ -304,7 +304,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                               return (
                                 <Accordion type="multiple" key={attributeValue}>
                                   <AccordionItem value={attributeValue} className="border-none">
-                                    <div key={attributeValue} className="flex">
+                                    <div className="flex">
                                       <label className="flex flex-row items-center">
                                         <Checkbox
                                           checked={checkState}
