@@ -296,8 +296,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                                 notify={notify}
                                                 updateSeriesProperty={updateSeriesProperty}
                                               />
+                                              <span>{attributeValues[prefectureKey]}</span>
                                             </label>
-                                            <span>{attributeValues[prefectureKey]}</span>
                                           </div>
                                         ))}
                                       </AccordionContent>
