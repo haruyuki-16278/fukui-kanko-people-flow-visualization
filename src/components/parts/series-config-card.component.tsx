@@ -1,12 +1,5 @@
-import { AllCheckbox } from "@/components/parts/all-checkbox.component";
 import { FilterCheckbox } from "@/components/parts/filter-checkbox.component";
-import { RegionCheckbox } from "@/components/parts/region-checkbox.component";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { PrefectureFilter } from "@/components/parts/prefecture-filter.component";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,7 +29,7 @@ import {
   OBJECT_CLASS_ATTRIBUTES,
   ObjectClass,
   ObjectClassAttribute,
-  REGIONS_PREFECTURES,
+  PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import {
   defaultSeriesName,
@@ -240,88 +233,14 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                   </span>
                   <div className="pl-2">
                     {objectClassAttribute === "prefectures" ? (
-                      <>
-                        {(() => {
-                          // 全ての都道府県キーを取得
-                          const allPrefectureKeys = Object.keys(
-                            OBJECT_CLASS_ATTRIBUTES.LicensePlate.prefectures,
-                          );
-
-                          return (
-                            <>
-                              {/* 全選択 */}
-                              <div className="flex">
-                                <label className="flex flex-row items-center gap-x-2">
-                                  <AllCheckbox
-                                    attributeKey={objectClassAttribute}
-                                    itemKey={allPrefectureKeys}
-                                    series={series}
-                                    notify={notify}
-                                    updateSeriesProperty={updateSeriesProperty}
-                                  />
-                                  <span>全選択</span>
-                                </label>
-                              </div>
-                              <Accordion type="multiple">
-                                {Object.entries(REGIONS_PREFECTURES).map(([regionKey, region]) => {
-                                  return (
-                                    // 地方
-                                    <AccordionItem
-                                      value={regionKey}
-                                      key={regionKey}
-                                      className="border-none"
-                                    >
-                                      <div className="flex">
-                                        <label className="flex flex-row items-center">
-                                          <RegionCheckbox
-                                            region={region}
-                                            objectClassAttribute={objectClassAttribute}
-                                            series={series}
-                                            notify={notify}
-                                            updateSeriesProperty={updateSeriesProperty}
-                                          />
-                                          <span className="pl-2 pr-1">{region.name}</span>
-                                          <AccordionTrigger className="text-base py-0"></AccordionTrigger>
-                                        </label>
-                                      </div>
-                                      {/* その地方に属した都道府県 */}
-                                      <AccordionContent className="text-base pb-2">
-                                        {region.prefectures.map((prefectureKey) => (
-                                          <div key={prefectureKey} className="flex">
-                                            <label className="flex flex-row items-center gap-x-2 ml-5 mt-0">
-                                              <FilterCheckbox
-                                                attributeKey={objectClassAttribute}
-                                                itemKey={prefectureKey}
-                                                series={series}
-                                                notify={notify}
-                                                updateSeriesProperty={updateSeriesProperty}
-                                              />
-                                              <span>{attributeValues[prefectureKey]}</span>
-                                            </label>
-                                          </div>
-                                        ))}
-                                      </AccordionContent>
-                                    </AccordionItem>
-                                  );
-                                })}
-                              </Accordion>
-                              {/* その他 */}
-                              <div className="flex">
-                                <label className="flex flex-row items-center gap-x-2">
-                                  <FilterCheckbox
-                                    attributeKey={objectClassAttribute}
-                                    itemKey={"Other"}
-                                    series={series}
-                                    notify={notify}
-                                    updateSeriesProperty={updateSeriesProperty}
-                                  />
-                                  <span>{attributeValues["Other"]}</span>
-                                </label>
-                              </div>
-                            </>
-                          );
-                        })()}
-                      </>
+                      <PrefectureFilter
+                        objectClassAttribute={objectClassAttribute as ObjectClassAttribute}
+                        allPrefectureKeys={Object.keys(PREFECTURES)}
+                        series={series}
+                        notify={notify}
+                        updateSeriesProperty={updateSeriesProperty}
+                        attributeValues={attributeValues}
+                      ></PrefectureFilter>
                     ) : (
                       Object.entries(attributeValues).map(
                         ([attributeValue, attributeValueText]) => (
