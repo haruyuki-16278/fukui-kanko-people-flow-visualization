@@ -1,4 +1,3 @@
-import { updateSeriesProperty } from "@/components/parts/series-config-card.component";
 import { Checkbox } from "@/components/ui/checkbox";
 import { GraphSeries } from "@/interfaces/graph-series.interface";
 
@@ -7,9 +6,19 @@ interface FilterCheckboxProps {
   itemKey: string;
   series: GraphSeries;
   notify: (series: GraphSeries) => void;
+  updateSeriesProperty: <Key extends keyof GraphSeries>(
+    [key, value]: [Key, GraphSeries[Key]],
+    series: GraphSeries,
+  ) => GraphSeries;
 }
 
-export function FilterCheckbox({ attributeKey, itemKey, series, notify }: FilterCheckboxProps) {
+export function FilterCheckbox({
+  attributeKey,
+  itemKey,
+  series,
+  notify,
+  updateSeriesProperty,
+}: FilterCheckboxProps) {
   return (
     <Checkbox
       onCheckedChange={(v) =>

@@ -54,7 +54,7 @@ interface Props {
   onRemoveClick: MouseEventHandler;
 }
 
-export function updateSeriesProperty<Key extends keyof GraphSeries>(
+function updateSeriesProperty<Key extends keyof GraphSeries>(
   [key, value]: [Key, GraphSeries[Key]],
   series: GraphSeries,
 ): GraphSeries {
@@ -310,6 +310,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                           itemKey={prefectureKey}
                                           series={series}
                                           notify={notify}
+                                          updateSeriesProperty={updateSeriesProperty}
                                         />
                                       </label>
                                       <span>{attributeValues[prefectureKey]}</span>
@@ -367,6 +368,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   itemKey={attributeValue}
                                   series={series}
                                   notify={notify}
+                                  updateSeriesProperty={updateSeriesProperty}
                                 />
                                 <span>{attributeValueText}</span>
                               </label>
