@@ -1,4 +1,5 @@
 import { FilterCheckbox } from "@/components/parts/filter-checkbox.component";
+import { RegionCheckbox } from "@/components/parts/region-checkbox.component";
 import {
   Accordion,
   AccordionContent,
@@ -239,62 +240,17 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                   <div className="pl-2">
                     {objectClassAttribute === "prefectures"
                       ? Object.entries(REGIONS_PREFECTURES).map(([regionKey, region]) => {
-                          // 地方に属する都道府県が全て表示されているかチェック
-                          const allChecked = region.prefectures.every(
-                            (prefectureKey) =>
-                              !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
-                          );
-
-                          // 地方に属する都道府県が一つでも表示されているかチェック
-                          const anyChecked = region.prefectures.some(
-                            (prefectureKey) =>
-                              !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
-                          );
-
-                          // チェックボックスの状態を決定
-                          const checkState = allChecked
-                            ? true
-                            : anyChecked
-                              ? "indeterminate"
-                              : false;
-
                           return (
                             <Accordion type="multiple" key={regionKey}>
                               <AccordionItem value={regionKey} className="border-none">
                                 <div className="flex">
                                   <label className="flex flex-row items-center">
-                                    <Checkbox
-                                      checked={checkState}
-                                      onCheckedChange={(v) =>
-                                        notify(
-                                          updateSeriesProperty(
-                                            [
-                                              "exclude",
-                                              {
-                                                ...series.exclude,
-                                                [objectClassAttribute]: v
-                                                  ? (
-                                                      series.exclude?.[objectClassAttribute] ?? []
-                                                    ).filter(
-                                                      (prefectureKey) =>
-                                                        !region.prefectures.includes(prefectureKey),
-                                                    )
-                                                  : [
-                                                      ...(series.exclude?.[objectClassAttribute] ??
-                                                        []),
-                                                      ...region.prefectures.filter(
-                                                        (prefectureKey) =>
-                                                          !series.exclude?.[
-                                                            objectClassAttribute
-                                                          ]?.includes(prefectureKey),
-                                                      ),
-                                                    ],
-                                              },
-                                            ],
-                                            series,
-                                          ),
-                                        )
-                                      }
+                                    <RegionCheckbox
+                                      region={region}
+                                      objectClassAttribute={objectClassAttribute}
+                                      series={series}
+                                      notify={notify}
+                                      updateSeriesProperty={updateSeriesProperty}
                                     />
                                     <span className="pl-2 pr-1">{region.name}</span>
                                     <AccordionTrigger className="text-base py-0"></AccordionTrigger>
