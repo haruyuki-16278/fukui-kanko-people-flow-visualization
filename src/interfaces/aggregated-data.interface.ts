@@ -44,7 +44,6 @@ export const OBJECT_CLASS_ATTRIBUTES = {
   } as const,
   LicensePlate: {
     prefectures: {
-      All: "全選択",
       Hokkaido: "北海道",
       Aomori: "青森県",
       Iwate: "岩手県",
