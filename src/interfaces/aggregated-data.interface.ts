@@ -116,7 +116,7 @@ export const JAPANESE_ATTRIBUTE_NAME: Record<ObjectClassAttribute, string> = {
   prefectures: "都道府県",
   carCategories: "車両分類",
 } as const;
-export const REGIONS_PREFECTURES: Record<string, { name: string; prefectures: string[] }> = {
+export const REGIONS_PREFECTURES: Record<string, { name: string; prefectures: (keyof typeof PREFECTURES)[]  }> = {
   HokkaidoTohokuRegion: {
     name: "北海道・東北地方",
     prefectures: ["Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima"],
