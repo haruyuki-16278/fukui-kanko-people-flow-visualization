@@ -304,14 +304,15 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                 <AccordionContent className="text-base pb-2">
                                   {region.prefectures.map((prefectureKey) => (
                                     <div key={prefectureKey} className="flex">
-                                      <FilterCheckbox
-                                        attributeKey={objectClassAttribute}
-                                        itemKey={prefectureKey}
-                                        label={attributeValues[prefectureKey]}
-                                        series={series}
-                                        notify={notify}
-                                        className="ml-5 mt-0"
-                                      />
+                                      <label className="flex flex-row items-center gap-x-2 ml-5 mt-0">
+                                        <FilterCheckbox
+                                          attributeKey={objectClassAttribute}
+                                          itemKey={prefectureKey}
+                                          series={series}
+                                          notify={notify}
+                                        />
+                                      </label>
+                                      <span>{attributeValues[prefectureKey]}</span>
                                     </div>
                                   ))}
                                 </AccordionContent>
@@ -360,13 +361,15 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                         Object.entries(attributeValues).map(
                           ([attributeValue, attributeValueText]) => (
                             <div key={attributeValue} className="flex">
-                              <FilterCheckbox
-                                attributeKey={objectClassAttribute}
-                                itemKey={attributeValue}
-                                label={attributeValueText}
-                                series={series}
-                                notify={notify}
-                              />
+                              <label className="flex flex-row items-center gap-x-2">
+                                <FilterCheckbox
+                                  attributeKey={objectClassAttribute}
+                                  itemKey={attributeValue}
+                                  series={series}
+                                  notify={notify}
+                                />
+                                <span>{attributeValueText}</span>
+                              </label>
                             </div>
                           ),
                         )}
