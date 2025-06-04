@@ -45,7 +45,6 @@ export const OBJECT_CLASS_ATTRIBUTES = {
   LicensePlate: {
     prefectures: {
       All: "全選択",
-      HokkaidoTohokuRegion: "北海道・東北地方",
       Hokkaido: "北海道",
       Aomori: "青森県",
       Iwate: "岩手県",
@@ -53,8 +52,6 @@ export const OBJECT_CLASS_ATTRIBUTES = {
       Miyagi: "宮城県",
       Yamagata: "山形県",
       Fukushima: "福島県",
-
-      KantoRegion: "関東地方",
       Ibaraki: "茨城県",
       Tochigi: "栃木県",
       Gunma: "群馬県",
@@ -64,41 +61,29 @@ export const OBJECT_CLASS_ATTRIBUTES = {
       Chiba: "千葉県",
       Tokyo: "東京都",
       Kanagawa: "神奈川県",
-
-      TokaiRegion: "東海地方",
       Shizuoka: "静岡県",
       Gifu: "岐阜県",
       Aichi: "愛知県",
       Mie: "三重県",
-
-      HokurikuRegion: "北陸地方",
       Niigata: "新潟県",
       Toyama: "富山県",
       Ishikawa: "石川県",
       Fukui: "福井県",
-
-      KinkiRegion: "近畿地方",
       Shiga: "滋賀県",
       Kyoto: "京都府",
       Nara: "奈良県",
       Wakayama: "和歌山県",
       Osaka: "大阪府",
       Hyogo: "兵庫県",
-
-      ChugokuRegion: "中国地方",
       Tottori: "鳥取県",
       Shimane: "島根県",
       Okayama: "岡山県",
       Hiroshima: "広島県",
       Yamaguchi: "山口県",
-
-      ShikokuRegion: "四国地方",
       Tokushima: "徳島県",
       Kagawa: "香川県",
       Ehime: "愛媛県",
       Kochi: "高知県",
-
-      KyushuOkinawaRegion: "九州・沖縄地方",
       Fukuoka: "福岡県",
       Saga: "佐賀県",
       Nagasaki: "長崎県",
@@ -107,8 +92,6 @@ export const OBJECT_CLASS_ATTRIBUTES = {
       Miyazaki: "宮崎県",
       Kagoshima: "鹿児島県",
       Okinawa: "沖縄県",
-
-      OtherRegion: "その他",
       Other: "その他",
     } as const,
     carCategories: {
@@ -133,35 +116,62 @@ export const JAPANESE_ATTRIBUTE_NAME: Record<ObjectClassAttribute, string> = {
   prefectures: "都道府県",
   carCategories: "車両分類",
 } as const;
-export const REGIONS_PREFECTURES = {
-  HokkaidoTohokuRegion: ["Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima"],
-  KantoRegion: [
-    "Ibaraki",
-    "Tochigi",
-    "Gunma",
-    "Yamanashi",
-    "Nagano",
-    "Saitama",
-    "Chiba",
-    "Tokyo",
-    "Kanagawa",
-  ],
-  TokaiRegion: ["Shizuoka", "Gifu", "Aichi", "Mie"],
-  HokurikuRegion: ["Niigata", "Toyama", "Ishikawa", "Fukui"],
-  KinkiRegion: ["Shiga", "Kyoto", "Nara", "Wakayama", "Osaka", "Hyogo"],
-  ChugokuRegion: ["Tottori", "Shimane", "Okayama", "Hiroshima", "Yamaguchi"],
-  ShikokuRegion: ["Tokushima", "Kagawa", "Ehime", "Kochi"],
-  KyushuOkinawaRegion: [
-    "Fukuoka",
-    "Saga",
-    "Nagasaki",
-    "Oita",
-    "Kumamoto",
-    "Miyazaki",
-    "Kagoshima",
-    "Okinawa",
-  ],
-  OtherRegion: ["Other"],
+export const REGIONS_PREFECTURES: Record<string, { name: string; prefectures: string[] }> = {
+  HokkaidoTohokuRegion: {
+    name: "北海道・東北地方",
+    prefectures: ["Hokkaido", "Aomori", "Iwate", "Miyagi", "Akita", "Yamagata", "Fukushima"],
+  },
+  KantoRegion: {
+    name: "関東地方",
+    prefectures: [
+      "Ibaraki",
+      "Tochigi",
+      "Gunma",
+      "Yamanashi",
+      "Nagano",
+      "Saitama",
+      "Chiba",
+      "Tokyo",
+      "Kanagawa",
+    ],
+  },
+  TokaiRegion: {
+    name: "東海地方",
+    prefectures: ["Shizuoka", "Gifu", "Aichi", "Mie"],
+  },
+  HokurikuRegion: {
+    name: "北陸地方",
+    prefectures: ["Niigata", "Toyama", "Ishikawa", "Fukui"],
+  },
+  KinkiRegion: {
+    name: "近畿地方",
+    prefectures: ["Shiga", "Kyoto", "Nara", "Wakayama", "Osaka", "Hyogo"],
+  },
+  ChugokuRegion: {
+    name: "中国地方",
+    prefectures: ["Tottori", "Shimane", "Okayama", "Hiroshima", "Yamaguchi"],
+  },
+  ShikokuRegion: {
+    name: "四国地方",
+    prefectures: ["Tokushima", "Kagawa", "Ehime", "Kochi"],
+  },
+  KyushuOkinawaRegion: {
+    name: "九州・沖縄地方",
+    prefectures: [
+      "Fukuoka",
+      "Saga",
+      "Nagasaki",
+      "Oita",
+      "Kumamoto",
+      "Miyazaki",
+      "Kagoshima",
+      "Okinawa",
+    ],
+  },
+  OtherRegion: {
+    name: "その他",
+    prefectures: ["Other"],
+  },
 };
 
 type AttributeValue<Attribute extends ObjectClassAttribute> = Attribute extends "genders"
