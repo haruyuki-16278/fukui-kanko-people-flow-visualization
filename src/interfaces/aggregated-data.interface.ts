@@ -170,10 +170,6 @@ export const REGIONS_PREFECTURES: Record<
       "Okinawa",
     ],
   },
-  OtherRegion: {
-    name: "その他",
-    prefectures: ["Other"],
-  },
 };
 
 type AttributeValue<Attribute extends ObjectClassAttribute> = Attribute extends "genders"

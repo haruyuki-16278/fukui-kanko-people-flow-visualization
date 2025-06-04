@@ -242,9 +242,9 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                       <>
                         {(() => {
                           // 全ての地方の都道府県キーを取得
-                          const allRegionPrefectureKeys = Object.values(
-                            REGIONS_PREFECTURES,
-                          ).flatMap((region) => region.prefectures);
+                          const allPrefectureKeys = Object.values(REGIONS_PREFECTURES).flatMap(
+                            (region) => region.prefectures,
+                          );
 
                           return (
                             <>
@@ -260,7 +260,10 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                               ? { ...series.exclude, [objectClassAttribute]: [] } // 全チェックON
                                               : {
                                                   ...series.exclude,
-                                                  [objectClassAttribute]: allRegionPrefectureKeys,
+                                                  [objectClassAttribute]: [
+                                                    ...allPrefectureKeys,
+                                                    "Other",
+                                                  ],
                                                 }, // 全チェックOFF
                                           ],
                                           series,
@@ -315,6 +318,18 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   );
                                 })}
                               </Accordion>
+                              <div className="flex">
+                                <label className="flex flex-row items-center gap-x-2">
+                                  <FilterCheckbox
+                                    attributeKey={objectClassAttribute}
+                                    itemKey={"Other"}
+                                    series={series}
+                                    notify={notify}
+                                    updateSeriesProperty={updateSeriesProperty}
+                                  />
+                                </label>
+                                <span>{attributeValues["Other"]}</span>
+                              </div>
                             </>
                           );
                         })()}
