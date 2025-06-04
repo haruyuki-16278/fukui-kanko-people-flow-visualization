@@ -248,7 +248,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
 
                           return (
                             <>
-                              <div className="flex mb-2">
+                              {/* 全選択 */}
+                              <div className="flex">
                                 <label className="flex flex-row items-center gap-x-2">
                                   <Checkbox
                                     onCheckedChange={(v) =>
@@ -279,6 +280,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                               <Accordion type="multiple">
                                 {Object.entries(REGIONS_PREFECTURES).map(([regionKey, region]) => {
                                   return (
+                                    // 地方
                                     <AccordionItem
                                       value={regionKey}
                                       key={regionKey}
@@ -318,6 +320,7 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                   );
                                 })}
                               </Accordion>
+                              {/* その他 */}
                               <div className="flex">
                                 <label className="flex flex-row items-center gap-x-2">
                                   <FilterCheckbox
@@ -327,8 +330,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                                     notify={notify}
                                     updateSeriesProperty={updateSeriesProperty}
                                   />
+                                  <span>{attributeValues["Other"]}</span>
                                 </label>
-                                <span>{attributeValues["Other"]}</span>
                               </div>
                             </>
                           );
