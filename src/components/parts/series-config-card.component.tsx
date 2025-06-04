@@ -1,3 +1,4 @@
+import { AllCheckbox } from "@/components/parts/all-checkbox.component";
 import { FilterCheckbox } from "@/components/parts/filter-checkbox.component";
 import { RegionCheckbox } from "@/components/parts/region-checkbox.component";
 import {
@@ -241,9 +242,9 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                     {objectClassAttribute === "prefectures" ? (
                       <>
                         {(() => {
-                          // 全ての地方の都道府県キーを取得
-                          const allPrefectureKeys = Object.values(REGIONS_PREFECTURES).flatMap(
-                            (region) => region.prefectures,
+                          // 全ての都道府県キーを取得
+                          const allPrefectureKeys = Object.keys(
+                            OBJECT_CLASS_ATTRIBUTES.LicensePlate.prefectures,
                           );
 
                           return (
@@ -251,28 +252,12 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                               {/* 全選択 */}
                               <div className="flex">
                                 <label className="flex flex-row items-center gap-x-2">
-                                  <Checkbox
-                                    onCheckedChange={(v) =>
-                                      notify(
-                                        updateSeriesProperty(
-                                          [
-                                            "exclude",
-                                            v
-                                              ? { ...series.exclude, [objectClassAttribute]: [] } // 全チェックON
-                                              : {
-                                                  ...series.exclude,
-                                                  [objectClassAttribute]: [
-                                                    ...allPrefectureKeys,
-                                                    "Other",
-                                                  ],
-                                                }, // 全チェックOFF
-                                          ],
-                                          series,
-                                        ),
-                                      )
-                                    }
-                                    className="block"
-                                    checked={!series.exclude?.[objectClassAttribute]?.length}
+                                  <AllCheckbox
+                                    attributeKey={objectClassAttribute}
+                                    itemKey={allPrefectureKeys}
+                                    series={series}
+                                    notify={notify}
+                                    updateSeriesProperty={updateSeriesProperty}
                                   />
                                   <span>全選択</span>
                                 </label>
