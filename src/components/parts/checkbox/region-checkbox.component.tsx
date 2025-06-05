@@ -12,37 +12,6 @@ interface Props {
   ) => GraphSeries;
 }
 
-export function handleRegionCheckboxChange(
-  series: GraphSeries,
-  objectClassAttribute: string,
-  region: { name: string; prefectures: string[] },
-  isChecked: boolean,
-  updateSeriesProperty: <Key extends keyof GraphSeries>(
-    [key, value]: [Key, GraphSeries[Key]],
-    series: GraphSeries,
-  ) => GraphSeries,
-): GraphSeries {
-  return updateSeriesProperty(
-    [
-      "exclude",
-      {
-        ...series.exclude,
-        [objectClassAttribute]: isChecked
-          ? (series.exclude?.[objectClassAttribute] ?? []).filter(
-              (prefectureKey) => !region.prefectures.includes(prefectureKey),
-            )
-          : [
-              ...(series.exclude?.[objectClassAttribute] ?? []),
-              ...region.prefectures.filter(
-                (prefectureKey) => !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
-              ),
-            ],
-      },
-    ],
-    series,
-  );
-}
-
 export function RegionCheckbox({
   region,
   objectClassAttribute,
@@ -63,20 +32,33 @@ export function RegionCheckbox({
   // チェックボックスの状態を決定
   const checkState = allChecked ? true : anyChecked ? "indeterminate" : false;
 
+  const handleRegionCheckboxChange = (isChecked: boolean) => {
+    return updateSeriesProperty(
+      [
+        "exclude",
+        {
+          ...series.exclude,
+          [objectClassAttribute]: isChecked
+            ? (series.exclude?.[objectClassAttribute] ?? []).filter(
+                (prefectureKey) => !region.prefectures.includes(prefectureKey),
+              )
+            : [
+                ...(series.exclude?.[objectClassAttribute] ?? []),
+                ...region.prefectures.filter(
+                  (prefectureKey) =>
+                    !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
+                ),
+              ],
+        },
+      ],
+      series,
+    );
+  };
+
   return (
     <Checkbox
       checked={checkState}
-      onCheckedChange={(v) =>
-        notify(
-          handleRegionCheckboxChange(
-            series,
-            objectClassAttribute,
-            region,
-            !!v,
-            updateSeriesProperty,
-          ),
-        )
-      }
+      onCheckedChange={(v) => notify(handleRegionCheckboxChange(!!v))}
     />
   );
 }

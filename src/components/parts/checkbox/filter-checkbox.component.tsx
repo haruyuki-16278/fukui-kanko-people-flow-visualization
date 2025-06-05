@@ -12,41 +12,6 @@ interface Props {
   ) => GraphSeries;
 }
 
-export function handleFilterCheckboxChange(
-  series: GraphSeries,
-  attributeKey: string,
-  itemKey: string,
-  isChecked: boolean,
-  updateSeriesProperty: <Key extends keyof GraphSeries>(
-    [key, value]: [Key, GraphSeries[Key]],
-    series: GraphSeries,
-  ) => GraphSeries,
-): GraphSeries {
-  return updateSeriesProperty(
-    [
-      "exclude",
-      series.exclude !== undefined
-        ? isChecked
-          ? // truthyなら表示する→excludeからは外す
-            {
-              ...series.exclude,
-              [attributeKey]: [
-                ...series.exclude[attributeKey].filter((excludeItem) => excludeItem !== itemKey),
-              ],
-            }
-          : // falsyなら表示しない→excludeに含める
-            {
-              ...series.exclude,
-              [attributeKey]: [...(series.exclude[attributeKey] ?? []), itemKey],
-            }
-        : isChecked
-          ? undefined
-          : { [attributeKey]: [itemKey] },
-    ],
-    series,
-  );
-}
-
 export function FilterCheckbox({
   attributeKey,
   itemKey,
@@ -54,11 +19,35 @@ export function FilterCheckbox({
   notify,
   updateSeriesProperty,
 }: Props) {
+  const handleFilterCheckboxChange = (isChecked: boolean) => {
+    return updateSeriesProperty(
+      [
+        "exclude",
+        series.exclude !== undefined
+          ? isChecked
+            ? // truthyなら表示する→excludeからは外す
+              {
+                ...series.exclude,
+                [attributeKey]: [
+                  ...series.exclude[attributeKey].filter((excludeItem) => excludeItem !== itemKey),
+                ],
+              }
+            : // falsyなら表示しない→excludeに含める
+              {
+                ...series.exclude,
+                [attributeKey]: [...(series.exclude[attributeKey] ?? []), itemKey],
+              }
+          : isChecked
+            ? undefined
+            : { [attributeKey]: [itemKey] },
+      ],
+      series,
+    );
+  };
+
   return (
     <Checkbox
-      onCheckedChange={(v) =>
-        notify(handleFilterCheckboxChange(series, attributeKey, itemKey, !!v, updateSeriesProperty))
-      }
+      onCheckedChange={(v) => notify(handleFilterCheckboxChange(!!v))}
       className="block"
       checked={!series.exclude?.[attributeKey]?.includes(itemKey)}
     />
