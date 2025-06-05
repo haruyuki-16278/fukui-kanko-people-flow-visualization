@@ -1,7 +1,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { GraphSeries } from "@/interfaces/graph-series.interface";
 
-interface RegionCheckboxProps {
+interface Props {
   region: { name: string; prefectures: string[] };
   objectClassAttribute: string;
   series: GraphSeries;
@@ -12,13 +12,44 @@ interface RegionCheckboxProps {
   ) => GraphSeries;
 }
 
+export function handleRegionCheckboxChange(
+  series: GraphSeries,
+  objectClassAttribute: string,
+  region: { name: string; prefectures: string[] },
+  isChecked: boolean,
+  updateSeriesProperty: <Key extends keyof GraphSeries>(
+    [key, value]: [Key, GraphSeries[Key]],
+    series: GraphSeries,
+  ) => GraphSeries,
+): GraphSeries {
+  return updateSeriesProperty(
+    [
+      "exclude",
+      {
+        ...series.exclude,
+        [objectClassAttribute]: isChecked
+          ? (series.exclude?.[objectClassAttribute] ?? []).filter(
+              (prefectureKey) => !region.prefectures.includes(prefectureKey),
+            )
+          : [
+              ...(series.exclude?.[objectClassAttribute] ?? []),
+              ...region.prefectures.filter(
+                (prefectureKey) => !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
+              ),
+            ],
+      },
+    ],
+    series,
+  );
+}
+
 export function RegionCheckbox({
   region,
   objectClassAttribute,
   series,
   notify,
   updateSeriesProperty,
-}: RegionCheckboxProps) {
+}: Props) {
   // 地方に属する都道府県が全て表示されているかチェック
   const allChecked = region.prefectures.every(
     (prefectureKey) => !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
@@ -37,25 +68,12 @@ export function RegionCheckbox({
       checked={checkState}
       onCheckedChange={(v) =>
         notify(
-          updateSeriesProperty(
-            [
-              "exclude",
-              {
-                ...series.exclude,
-                [objectClassAttribute]: v
-                  ? (series.exclude?.[objectClassAttribute] ?? []).filter(
-                      (prefectureKey) => !region.prefectures.includes(prefectureKey),
-                    )
-                  : [
-                      ...(series.exclude?.[objectClassAttribute] ?? []),
-                      ...region.prefectures.filter(
-                        (prefectureKey) =>
-                          !series.exclude?.[objectClassAttribute]?.includes(prefectureKey),
-                      ),
-                    ],
-              },
-            ],
+          handleRegionCheckboxChange(
             series,
+            objectClassAttribute,
+            region,
+            !!v,
+            updateSeriesProperty,
           ),
         )
       }
