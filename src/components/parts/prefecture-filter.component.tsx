@@ -1,6 +1,6 @@
-import { AllCheckbox } from "@/components/parts/all-checkbox.component";
-import { FilterCheckbox } from "@/components/parts/filter-checkbox.component";
-import { RegionCheckbox } from "@/components/parts/region-checkbox.component";
+import { AllCheckbox } from "@/components/parts/checkbox/all-checkbox.component";
+import { FilterCheckbox } from "@/components/parts/checkbox/filter-checkbox.component";
+import { RegionCheckbox } from "@/components/parts/checkbox/region-checkbox.component";
 import {
   Accordion,
   AccordionContent,

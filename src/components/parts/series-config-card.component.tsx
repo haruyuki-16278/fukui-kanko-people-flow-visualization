@@ -1,4 +1,4 @@
-import { FilterCheckbox } from "@/components/parts/filter-checkbox.component";
+import { FilterCheckbox } from "@/components/parts/checkbox/filter-checkbox.component";
 import { PrefectureFilter } from "@/components/parts/prefecture-filter.component";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
