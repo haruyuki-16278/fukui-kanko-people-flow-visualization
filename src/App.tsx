@@ -242,14 +242,16 @@ export default function App() {
             </Button>
           </div>
           <div className="flex w-full flex-col gap-y-2 px-1">
-            {Object.entries(seriesAll).map(([id, series]) => (
-              <SeriesConfigCard
-                key={id}
-                series={series}
-                notify={(nextSeries) => setSeries(nextSeries)}
-                onRemoveClick={() => onClickRemoveSeries(id)}
-              />
-            ))}
+            {Object.entries(seriesAll)
+              .reverse()
+              .map(([id, series]) => (
+                <SeriesConfigCard
+                  key={id}
+                  series={series}
+                  notify={(nextSeries) => setSeries(nextSeries)}
+                  onRemoveClick={() => onClickRemoveSeries(id)}
+                />
+              ))}
           </div>
         </section>
       </aside>
