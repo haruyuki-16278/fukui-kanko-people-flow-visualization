@@ -1,3 +1,5 @@
+import { FilterCheckbox } from "@/components/parts/checkbox/filter-checkbox.component";
+import { PrefectureFilter } from "@/components/parts/prefecture-filter.component";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -27,6 +29,7 @@ import {
   OBJECT_CLASS_ATTRIBUTES,
   ObjectClass,
   ObjectClassAttribute,
+  PREFECTURES,
 } from "@/interfaces/aggregated-data.interface";
 import {
   defaultSeriesName,
@@ -223,55 +226,39 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
           <div>
             <span>フィルタ</span>
             {Object.entries(OBJECT_CLASS_ATTRIBUTES[series.objectClass]).map(
-              ([objectClassAttribute, attributeValues]) => (
-                <div className="mt-2 pl-2" key={`${objectClassAttribute}`}>
+              ([objectClassAttribute, attributeValues]: [string, Record<string, string>]) => (
+                <div className="mt-2 pl-2" key={objectClassAttribute}>
                   <span>
                     {JAPANESE_ATTRIBUTE_NAME[objectClassAttribute as ObjectClassAttribute]}
                   </span>
                   <div className="pl-2">
-                    {Object.entries(attributeValues).map(([attributeValue, attributeValueText]) => (
-                      <label key={attributeValue} className="flex flex-row items-center gap-x-2">
-                        <Checkbox
-                          onCheckedChange={(v) =>
-                            notify(
-                              updateSeriesProperty(
-                                [
-                                  "exclude",
-                                  series.exclude !== undefined
-                                    ? v
-                                      ? // truthyなら表示する→excludeからは外す
-                                        {
-                                          ...series.exclude,
-                                          [objectClassAttribute]: [
-                                            ...series.exclude[objectClassAttribute].filter(
-                                              (excludeItem) => excludeItem !== attributeValue,
-                                            ),
-                                          ],
-                                        }
-                                      : // falsyなら表示しない→excludeに含める
-                                        {
-                                          ...series.exclude,
-                                          [objectClassAttribute]: [
-                                            ...(series.exclude[objectClassAttribute] ?? []),
-                                            attributeValue,
-                                          ],
-                                        }
-                                    : v
-                                      ? undefined
-                                      : { [objectClassAttribute]: [attributeValue] },
-                                ],
-                                series,
-                              ),
-                            )
-                          }
-                          className="block"
-                          checked={
-                            !series.exclude?.[objectClassAttribute]?.includes(attributeValue)
-                          }
-                        />
-                        <span>{String(attributeValueText)}</span>
-                      </label>
-                    ))}
+                    {objectClassAttribute === "prefectures" ? (
+                      <PrefectureFilter
+                        objectClassAttribute={objectClassAttribute as ObjectClassAttribute}
+                        allPrefectureKeys={Object.keys(PREFECTURES)}
+                        series={series}
+                        notify={notify}
+                        updateSeriesProperty={updateSeriesProperty}
+                        attributeValues={attributeValues}
+                      ></PrefectureFilter>
+                    ) : (
+                      Object.entries(attributeValues).map(
+                        ([attributeValue, attributeValueText]) => (
+                          <div key={attributeValue} className="flex">
+                            <label className="flex flex-row items-center gap-x-2">
+                              <FilterCheckbox
+                                attributeKey={objectClassAttribute}
+                                itemKey={attributeValue}
+                                series={series}
+                                notify={notify}
+                                updateSeriesProperty={updateSeriesProperty}
+                              />
+                              <span>{attributeValueText}</span>
+                            </label>
+                          </div>
+                        ),
+                      )
+                    )}
                   </div>
                 </div>
               ),
