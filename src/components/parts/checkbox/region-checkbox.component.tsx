@@ -32,8 +32,8 @@ export function RegionCheckbox({
   // チェックボックスの状態を決定
   const checkState = allChecked ? true : anyChecked ? "indeterminate" : false;
 
-  const handleRegionCheckboxChange = (isChecked: boolean) => {
-    return updateSeriesProperty(
+  const handleRegionCheckboxChange = (isChecked: boolean) =>
+    updateSeriesProperty(
       [
         "exclude",
         {
@@ -53,7 +53,6 @@ export function RegionCheckbox({
       ],
       series,
     );
-  };
 
   return (
     <Checkbox

@@ -19,8 +19,8 @@ export function AllCheckbox({
   notify,
   updateSeriesProperty,
 }: Props) {
-  const handleAllCheckboxChange = (isChecked: boolean) => {
-    return updateSeriesProperty(
+  const handleAllCheckboxChange = (isChecked: boolean) =>
+    updateSeriesProperty(
       [
         "exclude",
         isChecked
@@ -32,7 +32,6 @@ export function AllCheckbox({
       ],
       series,
     );
-  };
 
   return (
     <Checkbox
