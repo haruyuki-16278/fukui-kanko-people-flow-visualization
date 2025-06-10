@@ -95,7 +95,7 @@ export async function getData(
   let filteredData = [...rawData].filter((rawDataRow) =>
     isDateIncludedInRange(new Date(rawDataRow["aggregate from"]), date),
   );
-  // console.log(filteredData);
+  
   if (exclude) filteredData = removeColumnFromRawData(filteredData, exclude);
   // console.log(filteredData);
   return filteredData;
