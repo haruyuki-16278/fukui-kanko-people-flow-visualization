@@ -34,16 +34,45 @@ function removeColumnFromRawData(
     for (const /** `first second` の形になる */ key in workRow) {
       // 基本データの列は何もしない
       if ((KEYOF_AGGREGATED_DATA_BASE as string[]).includes(key)) continue;
-
-      const isKeyMatchesExclude = key
-        .split(" ")
-        .some((keyPart) =>
-          Object.values(exclude).some((excludeItem) =>
-            excludeItem.some((excludeValue) => keyPart === excludeValue),
-          ),
-        );
+      const isKeyMatchesExclude = (() => {
+        
+        // キーを単語に分割
+        const keyParts = key.split(" ");
+        
+        // Other関連の特別処理
+        const containsOther = keyParts.includes("Other");
+        if (containsOther) {
+          // carCategoriesにOtherが含まれているかチェック
+          const hasCarCategoriesOther = exclude.carCategories?.includes("Other");
+          
+          // 他のカテゴリにOtherが含まれているかチェック
+          const hasOtherCategoriesOther = Object.entries(exclude)
+            .some(([category, values]) => category !== "carCategories" && values.includes("Other"));
+          
+          // carCategoriesにOtherがある場合：末尾が"Other"のものを排除
+          if (hasCarCategoriesOther && keyParts[keyParts.length - 1] === "Other") {
+            return true;
+          }
+          
+          // 他のカテゴリにOtherがある場合：先頭が"Other"のものを排除
+          if (hasOtherCategoriesOther && keyParts[0] === "Other") {
+            return true;
+          }
+        }
+        
+        // 通常の除外処理：キーのいずれかの部分が除外リストに含まれていれば除外
+        // ただし、Otherに関しては上記の特別処理で対応済みなので、それ以外の部分のみチェック
+        return keyParts.some(keyPart => {
+          if (keyPart === "Other") return false; // Otherは上で処理済み
+          
+          return Object.values(exclude).some(excludeValues => 
+            excludeValues.includes(keyPart)
+          );
+        });
+      })();
       if (isKeyMatchesExclude) delete workRow[key];
     }
+
     // フィルタ後のデータで合計を計算して更新する
     workRow["total count"] = Object.entries(workRow)
       .filter(([key]) => !(KEYOF_AGGREGATED_DATA_BASE as string[]).includes(key))
@@ -66,7 +95,8 @@ export async function getData(
   let filteredData = [...rawData].filter((rawDataRow) =>
     isDateIncludedInRange(new Date(rawDataRow["aggregate from"]), date),
   );
+  // console.log(filteredData);
   if (exclude) filteredData = removeColumnFromRawData(filteredData, exclude);
-
+  // console.log(filteredData);
   return filteredData;
 }
