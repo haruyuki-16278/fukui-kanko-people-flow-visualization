@@ -97,6 +97,6 @@ export async function getData(
   );
   
   if (exclude) filteredData = removeColumnFromRawData(filteredData, exclude);
-  // console.log(filteredData);
+  
   return filteredData;
 }
