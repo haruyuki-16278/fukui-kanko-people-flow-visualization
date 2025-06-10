@@ -107,6 +107,23 @@ const flatData = <T extends Record<string, unknown>>(
   }, {});
 };
 
+function filterKeyByAttribute(key: string, listitem: string, focusedAttribute?: string): boolean {
+  const keyParts = key.split(" ");
+
+  // Otherの特別処理
+  if (listitem === "Other") {
+    // カテゴリによって位置を区別
+    if (focusedAttribute === "carCategories") {
+      return keyParts[keyParts.length - 1] === "Other"; // 末尾
+    } else {
+      return keyParts[0] === "Other"; // 先頭
+    }
+  }
+
+  // 通常処理: キーの単語に属性が含まれるかチェック
+  return keyParts.includes(listitem);
+}
+
 export async function dataFromSeriesAll(
   seriesAll: { [id: string]: GraphSeries },
   dateRange: { from: Date; to: Date },
@@ -165,19 +182,7 @@ export async function dataFromSeriesAll(
                   ...orientedData[dateString],
                   [listitem]: {
                     count: Object.keys(rawDataRowTheDay)
-                      .filter((key) => {
-                        const keyParts = key.split(" ");
-
-                        if (listitem === "Other") {
-                          // カテゴリによって位置を区別
-                          if (series.focusedAttribute === "carCategories") {
-                            return keyParts[keyParts.length - 1] === "Other"; // 末尾
-                          } else {
-                            return keyParts[0] === "Other"; // 先頭
-                          }
-                        }
-                        return keyParts.includes(listitem);
-                      })
+                      .filter((key) => filterKeyByAttribute(key, listitem, series.focusedAttribute))
                       .map((key) => Number(rawDataRowTheDay[key]))
                       .reduce((sum, current) => (sum += current), 0),
                   },
@@ -218,19 +223,7 @@ export async function dataFromSeriesAll(
                 count: rawData.reduce(
                   (sum, rawDataRow) =>
                     (sum += Object.keys(rawDataRow)
-                      .filter((key) => {
-                        const keyParts = key.split(" ");
-
-                        if (listitem === "Other") {
-                          // カテゴリによって位置を区別
-                          if (series.focusedAttribute === "carCategories") {
-                            return keyParts[keyParts.length - 1] === "Other"; // 末尾
-                          } else {
-                            return keyParts[0] === "Other"; // 先頭
-                          }
-                        }
-                        return keyParts.includes(listitem);
-                      })
+                      .filter((key) => filterKeyByAttribute(key, listitem, series.focusedAttribute))
                       .map((key) => Number(rawDataRow[key]))
                       .reduce((rowSum, rowCurrent) => (rowSum += rowCurrent), 0)),
                   0,
