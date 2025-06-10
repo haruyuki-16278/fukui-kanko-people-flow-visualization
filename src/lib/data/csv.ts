@@ -28,6 +28,7 @@ function removeColumnFromRawData(
 ): AggregatedData[] {
   /** 作業用配列 */
   const work = [...rawData];
+  const exclusionSet = new Set(Object.values(exclude).flat());
 
   const result = work.map((row) => {
     const workRow = { ...row };
@@ -35,7 +36,6 @@ function removeColumnFromRawData(
       // 基本データの列は何もしない
       if ((KEYOF_AGGREGATED_DATA_BASE as string[]).includes(key)) continue;
       const isKeyMatchesExclude = (() => {
-        const exclusionSet = new Set(Object.values(exclude).flat());
         // キーを単語に分割
         const keyParts = key.split(" ");
         
