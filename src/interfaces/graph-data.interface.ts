@@ -165,7 +165,19 @@ export async function dataFromSeriesAll(
                   ...orientedData[dateString],
                   [listitem]: {
                     count: Object.keys(rawDataRowTheDay)
-                      .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                      .filter((key) => {
+                        const keyParts = key.split(" ");
+
+                        if (listitem === "Other") {
+                          // カテゴリによって位置を区別
+                          if (series.focusedAttribute === "carCategories") {
+                            return keyParts[keyParts.length - 1] === "Other"; // 末尾
+                          } else {
+                            return keyParts[0] === "Other"; // 先頭
+                          }
+                        }
+                        return keyParts.includes(listitem);
+                      })
                       .map((key) => Number(rawDataRowTheDay[key]))
                       .reduce((sum, current) => (sum += current), 0),
                   },
@@ -206,7 +218,19 @@ export async function dataFromSeriesAll(
                 count: rawData.reduce(
                   (sum, rawDataRow) =>
                     (sum += Object.keys(rawDataRow)
-                      .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                      .filter((key) => {
+                        const keyParts = key.split(" ");
+
+                        if (listitem === "Other") {
+                          // カテゴリによって位置を区別
+                          if (series.focusedAttribute === "carCategories") {
+                            return keyParts[keyParts.length - 1] === "Other"; // 末尾
+                          } else {
+                            return keyParts[0] === "Other"; // 先頭
+                          }
+                        }
+                        return keyParts.includes(listitem);
+                      })
                       .map((key) => Number(rawDataRow[key]))
                       .reduce((rowSum, rowCurrent) => (rowSum += rowCurrent), 0)),
                   0,
