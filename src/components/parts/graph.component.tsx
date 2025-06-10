@@ -140,7 +140,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                       <CustomizedXAxisTick {...props} data={chartGroup[chartId]} />
                     )}
                   />
-                  <YAxis type="number" tickLine={true} tickCount={10} />
+                  <YAxis type="number" tickLine={true} tickCount={10} allowDecimals={false} />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
                     .filter((key) => key !== "date" && key !== "holidayName" && key !== "dayOfWeek")
                     .map((key) => [key, ...key.split("#")])
