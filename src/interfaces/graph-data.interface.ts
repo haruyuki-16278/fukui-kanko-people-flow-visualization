@@ -148,6 +148,7 @@ export async function dataFromSeriesAll(
           });
           if (rawDataRowTheDay === undefined) continue;
           const list = ATTRIBUTES[series.focusedAttribute];
+          let dateTotal = 0;
           Object.keys(list)
             .filter((listitem) => {
               if (
@@ -159,15 +160,22 @@ export async function dataFromSeriesAll(
               return !series.exclude[series.focusedAttribute].includes(listitem);
             })
             .forEach((listitem) => {
+              const itemCount = Object.keys(rawDataRowTheDay)
+                .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                .map((key) => Number(rawDataRowTheDay[key]))
+                .reduce((sum, current) => (sum += current), 0);
+
+              dateTotal += itemCount;
+
               orientedData = {
                 ...orientedData,
                 [dateString]: {
                   ...orientedData[dateString],
                   [listitem]: {
-                    count: Object.keys(rawDataRowTheDay)
-                      .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
-                      .map((key) => Number(rawDataRowTheDay[key]))
-                      .reduce((sum, current) => (sum += current), 0),
+                    count: itemCount,
+                  },
+                  total: {
+                    count: dateTotal,
                   },
                 },
               };

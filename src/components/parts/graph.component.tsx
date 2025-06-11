@@ -165,7 +165,20 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     }
                   />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
-                    .filter((key) => key !== "date" && key !== "holidayName" && key !== "dayOfWeek")
+                    .filter((key) => {
+                      // 常に除外する項目
+                      if (key === "date" || key === "holidayName" || key === "dayOfWeek")
+                        return false;
+
+                      // 比率グラフの場合は total も除外
+                      const isRatioGraph = Object.values(seriesAll).every(
+                        (item) => item.graphType === "stack" || item.graphType === "ratio",
+                      );
+                      if (isRatioGraph && key.includes("total")) return false;
+
+                      // それ以外のキーは表示
+                      return true;
+                    })
                     .map((key) => [key, ...key.split("#")])
                     .map(([key, id, attributeKey], i) => (
                       <Bar
@@ -192,7 +205,14 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     ))}
                   <ChartTooltip
                     cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
-                    content={<ChartTooltipContent className="bg-white" />}
+                    content={
+                      <ChartTooltipContent
+                        className="bg-white"
+                        isRatio={Object.values(seriesAll).every(
+                          (item) => item.graphType === "ratio",
+                        )}
+                      />
+                    }
                   />
                   {Object.keys(chartGroup[chartId][0]).length <= 10 ? (
                     <ChartLegend content={<ChartLegendContent />} />

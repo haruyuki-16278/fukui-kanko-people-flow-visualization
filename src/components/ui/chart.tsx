@@ -114,6 +114,7 @@ const ChartTooltipContent = React.forwardRef<
       indicator?: "line" | "dot" | "dashed"
       nameKey?: string
       labelKey?: string
+      isRatio?: boolean
     }
 >(
   (
@@ -131,10 +132,26 @@ const ChartTooltipContent = React.forwardRef<
       color,
       nameKey,
       labelKey,
+      isRatio = false,
     },
     ref
   ) => {
     const { config } = useChart()
+
+    const totalValue = React.useMemo(() => {
+      if (!payload?.length || !payload[0]?.payload) return 0;
+      
+      // 総数が含まれるキーを検索
+      const dataObj = payload[0].payload;
+      const totalKey = Object.keys(dataObj).find(key => key.includes("#total"));
+      
+      // 総数キーが見つかったらその値を返す
+      if (totalKey && dataObj[totalKey] !== undefined) {
+        return Number(dataObj[totalKey]);
+      }
+      
+      return 0;
+    }, [payload]);
 
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !payload?.length) {
@@ -265,7 +282,10 @@ const ChartTooltipContent = React.forwardRef<
                       </div>
                       {item.value && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
-                          {item.value.toLocaleString()}
+                          {isRatio
+                            ? `${(Number(item.value) / totalValue * 100).toFixed(1)}%`
+                            : item.value.toLocaleString()
+                          }
                         </span>
                       )}
                     </div>
