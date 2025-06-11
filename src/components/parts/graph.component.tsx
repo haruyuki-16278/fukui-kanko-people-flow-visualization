@@ -103,6 +103,7 @@ interface Props {
   className?: string;
 }
 export function Graph({ chartGroup, seriesAll, className }: Props) {
+  const isAllRatio = Object.values(seriesAll).every((item) => item.graphType === "ratio");
   return (
     <MultiChartContainer className={className}>
       {Object.keys(chartGroup)
@@ -129,14 +130,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               className="h-full w-full"
             >
               {chartId === "cartesian" ? (
-                <BarChart
-                  data={chartGroup[chartId]}
-                  stackOffset={
-                    Object.values(seriesAll).every((item) => item.graphType === "ratio")
-                      ? "expand"
-                      : "none"
-                  }
-                >
+                <BarChart data={chartGroup[chartId]} stackOffset={isAllRatio ? "expand" : "none"}>
                   <CartesianGrid vertical={false} />
                   <XAxis
                     dataKey={"date"}
@@ -150,35 +144,24 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                   <YAxis
                     type="number"
                     tickLine={true}
-                    tickCount={
-                      Object.values(seriesAll).every((item) => item.graphType === "ratio") ? 6 : 10
-                    }
+                    tickCount={isAllRatio ? 6 : 10}
                     domain={
-                      Object.values(seriesAll).every((item) => item.graphType === "ratio")
+                      isAllRatio
                         ? [0, 1] // 比率グラフの場合は0〜1の範囲
                         : [0, "auto"] // それ以外の場合はdefault
                     }
                     tickFormatter={
-                      Object.values(seriesAll).every((item) => item.graphType === "ratio")
-                        ? (value: number) => `${Math.floor(value * 100)}%`
-                        : undefined
+                      isAllRatio ? (value: number) => `${Math.floor(value * 100)}%` : undefined
                     }
                   />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
-                    .filter((key) => {
-                      // 常に除外する項目
-                      if (key === "date" || key === "holidayName" || key === "dayOfWeek")
-                        return false;
-
-                      // 比率グラフの場合は total も除外
-                      const isRatioGraph = Object.values(seriesAll).every(
-                        (item) => item.graphType === "stack" || item.graphType === "ratio",
-                      );
-                      if (isRatioGraph && key.includes("total")) return false;
-
-                      // それ以外のキーは表示
-                      return true;
-                    })
+                    .filter(
+                      (key) =>
+                        key !== "date" &&
+                        key !== "holidayName" &&
+                        key !== "dayOfWeek" &&
+                        !key.includes("categoryTotal"),
+                    )
                     .map((key) => [key, ...key.split("#")])
                     .map(([key, id, attributeKey], i) => (
                       <Bar

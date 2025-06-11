@@ -174,7 +174,7 @@ export async function dataFromSeriesAll(
                   [listitem]: {
                     count: itemCount,
                   },
-                  total: {
+                  categoryTotal: {
                     count: dateTotal,
                   },
                 },

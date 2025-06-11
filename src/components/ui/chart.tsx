@@ -143,7 +143,7 @@ const ChartTooltipContent = React.forwardRef<
       
       // 総数が含まれるキーを検索
       const dataObj = payload[0].payload;
-      const totalKey = Object.keys(dataObj).find(key => key.includes("#total"));
+      const totalKey = Object.keys(dataObj).find(key => key.includes("#categoryTotal"));
       
       // 総数キーが見つかったらその値を返す
       if (totalKey && dataObj[totalKey] !== undefined) {
