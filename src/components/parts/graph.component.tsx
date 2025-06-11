@@ -150,11 +150,18 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                   <YAxis
                     type="number"
                     tickLine={true}
-                    tickCount={10}
+                    tickCount={
+                      Object.values(seriesAll).every((item) => item.graphType === "ratio") ? 6 : 10
+                    }
                     domain={
                       Object.values(seriesAll).every((item) => item.graphType === "ratio")
                         ? [0, 1] // 比率グラフの場合は0〜1の範囲
                         : [0, "auto"] // それ以外の場合はdefault
+                    }
+                    tickFormatter={
+                      Object.values(seriesAll).every((item) => item.graphType === "ratio")
+                        ? (value: number) => `${Math.floor(value * 100)}%`
+                        : undefined
                     }
                   />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
