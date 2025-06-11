@@ -147,7 +147,16 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                       <CustomizedXAxisTick {...props} data={chartGroup[chartId]} />
                     )}
                   />
-                  <YAxis type="number" tickLine={true} tickCount={10} />
+                  <YAxis
+                    type="number"
+                    tickLine={true}
+                    tickCount={10}
+                    domain={
+                      Object.values(seriesAll).every((item) => item.graphType === "ratio")
+                        ? [0, 1] // 比率グラフの場合は0〜1の範囲
+                        : [0, "auto"] // それ以外の場合はdefault
+                    }
+                  />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
                     .filter((key) => key !== "date" && key !== "holidayName" && key !== "dayOfWeek")
                     .map((key) => [key, ...key.split("#")])
