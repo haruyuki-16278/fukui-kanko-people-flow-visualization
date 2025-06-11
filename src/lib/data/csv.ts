@@ -28,7 +28,6 @@ function removeColumnFromRawData(
 ): AggregatedData[] {
   /** 作業用配列 */
   const work = [...rawData];
-  const exclusionSet = new Set(Object.values(exclude).flat());
 
   const result = work.map((row) => {
     const workRow = { ...row };
@@ -36,37 +35,26 @@ function removeColumnFromRawData(
       // 基本データの列は何もしない
       if ((KEYOF_AGGREGATED_DATA_BASE as string[]).includes(key)) continue;
       const isKeyMatchesExclude = (() => {
-        // キーを単語に分割
-        const keyParts = key.split(" ");
-        
-        // Other関連の特別処理
-        const containsOther = keyParts.includes("Other");
-        if (containsOther) {
-          // carCategoriesにOtherが含まれているかチェック
-          const hasCarCategoriesOther = exclude.carCategories?.includes("Other");
-          
-          // 他のカテゴリにOtherが含まれているかチェック
-          const hasOtherCategoriesOther = Object.entries(exclude)
-            .some(([category, values]) => category !== "carCategories" && values.includes("Other"));
-          
-          // carCategoriesにOtherがある場合：末尾が"Other"のものを排除
-          if (hasCarCategoriesOther && keyParts[keyParts.length - 1] === "Other") {
-            return true;
-          }
-          
-          // 他のカテゴリにOtherがある場合：先頭が"Other"のものを排除
-          if (hasOtherCategoriesOther && keyParts[0] === "Other") {
-            return true;
+        // 属性タイプによって異なる除外処理を適用
+        for (const [category, excludedValues] of Object.entries(exclude)) {
+          switch (category) {
+            case "genders":
+            case "prefectures":
+              // 先頭で始まる属性のチェック
+              if (excludedValues.some(value => new RegExp(`^${value} `).test(key))) {
+                return true;
+              }
+              break;
+            case "ageRanges":
+            case "carCategories":
+              // 末尾で終わる属性のチェック
+              if (excludedValues.some(value => new RegExp(` ${value}$`).test(key))) {
+                return true;
+              }
+              break;
           }
         }
-        
-        // 通常の除外処理：キーのいずれかの部分が除外リストに含まれていれば除外
-        // ただし、Otherに関しては上記の特別処理で対応済みなので、それ以外の部分のみチェック
-        return keyParts.some(keyPart => {
-          if (keyPart === "Other") return false; // Otherは上で処理済み
-          
-          return exclusionSet.has(keyPart);
-        });
+        return false;
       })();
       if (isKeyMatchesExclude) delete workRow[key];
     }

@@ -107,22 +107,17 @@ const flatData = <T extends Record<string, unknown>>(
   }, {});
 };
 
-function filterKeyByAttribute(key: string, listitem: string, focusedAttribute?: string): boolean {
-  const keyParts = key.split(" ");
+// function filterKeyByAttribute(key: string, listitem: string, focusedAttribute?: string): boolean {
+//   switch (series.focusedAttribute) {
+//     case "genders":
+//     case "prefectures":
+//       return new RegExp(`^${listitem} `).test(key);
 
-  // Otherの特別処理
-  if (listitem === "Other") {
-    // カテゴリによって位置を区別
-    if (focusedAttribute === "carCategories") {
-      return keyParts[keyParts.length - 1] === "Other"; // 末尾
-    } else {
-      return keyParts[0] === "Other"; // 先頭
-    }
-  }
-
-  // 通常処理: キーの単語に属性が含まれるかチェック
-  return keyParts.includes(listitem);
-}
+//     case "ageRanges":
+//     case "carCategories":
+//       return new RegExp(` ${listitem}$`).test(key);
+//   }
+// }
 
 export async function dataFromSeriesAll(
   seriesAll: { [id: string]: GraphSeries },
@@ -182,7 +177,17 @@ export async function dataFromSeriesAll(
                   ...orientedData[dateString],
                   [listitem]: {
                     count: Object.keys(rawDataRowTheDay)
-                      .filter((key) => filterKeyByAttribute(key, listitem, series.focusedAttribute))
+                      .filter((key) => {
+                        switch (series.focusedAttribute) {
+                          case "genders":
+                          case "prefectures":
+                            return new RegExp(`^${listitem} `).test(key);
+
+                          case "ageRanges":
+                          case "carCategories":
+                            return new RegExp(` ${listitem}$`).test(key);
+                        }
+                      })
                       .map((key) => Number(rawDataRowTheDay[key]))
                       .reduce((sum, current) => (sum += current), 0),
                   },
@@ -223,7 +228,17 @@ export async function dataFromSeriesAll(
                 count: rawData.reduce(
                   (sum, rawDataRow) =>
                     (sum += Object.keys(rawDataRow)
-                      .filter((key) => filterKeyByAttribute(key, listitem, series.focusedAttribute))
+                      .filter((key) => {
+                        switch (series.focusedAttribute) {
+                          case "genders":
+                          case "prefectures":
+                            return new RegExp(`^${listitem} `).test(key);
+
+                          case "ageRanges":
+                          case "carCategories":
+                            return new RegExp(` ${listitem}$`).test(key);
+                        }
+                      })
                       .map((key) => Number(rawDataRow[key]))
                       .reduce((rowSum, rowCurrent) => (rowSum += rowCurrent), 0)),
                   0,
