@@ -129,7 +129,14 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               className="h-full w-full"
             >
               {chartId === "cartesian" ? (
-                <BarChart data={chartGroup[chartId]}>
+                <BarChart
+                  data={chartGroup[chartId]}
+                  stackOffset={
+                    Object.values(seriesAll).every((item) => item.graphType === "ratio")
+                      ? "expand"
+                      : "none"
+                  }
+                >
                   <CartesianGrid vertical={false} />
                   <XAxis
                     dataKey={"date"}
