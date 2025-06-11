@@ -5,6 +5,7 @@ import {
 } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries } from "@/interfaces/graph-series.interface";
 import { Placement } from "@/interfaces/placement.interface";
+import { isKeyMatchingAttribute } from "@/lib/utils";
 import Papa from "papaparse";
 import { isDateIncludedInRange } from "../date";
 
@@ -37,21 +38,8 @@ function removeColumnFromRawData(
       const isKeyMatchesExclude = (() => {
         // 属性タイプによって異なる除外処理を適用
         for (const [category, excludedValues] of Object.entries(exclude)) {
-          switch (category) {
-            case "genders":
-            case "prefectures":
-              // 先頭で始まる属性のチェック
-              if (excludedValues.some(value => new RegExp(`^${value} `).test(key))) {
-                return true;
-              }
-              break;
-            case "ageRanges":
-            case "carCategories":
-              // 末尾で終わる属性のチェック
-              if (excludedValues.some(value => new RegExp(` ${value}$`).test(key))) {
-                return true;
-              }
-              break;
+          if (excludedValues.some(value => isKeyMatchingAttribute(category, value, key))) {
+            return true;
           }
         }
         return false;

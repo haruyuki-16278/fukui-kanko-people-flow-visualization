@@ -1,6 +1,7 @@
 import { ChartConfig } from "@/components/ui/chart";
 import { getData } from "@/lib/data/csv";
 import { getDateStringRange, WEEK_DAYS } from "@/lib/date";
+import { isKeyMatchingAttribute } from "@/lib/utils";
 import {
   AGE_RANGES,
   ATTRIBUTES,
@@ -178,15 +179,8 @@ export async function dataFromSeriesAll(
                   [listitem]: {
                     count: Object.keys(rawDataRowTheDay)
                       .filter((key) => {
-                        switch (series.focusedAttribute) {
-                          case "genders":
-                          case "prefectures":
-                            return new RegExp(`^${listitem} `).test(key);
-
-                          case "ageRanges":
-                          case "carCategories":
-                            return new RegExp(` ${listitem}$`).test(key);
-                        }
+                        if (!series.focusedAttribute) return false;
+                        return isKeyMatchingAttribute(series.focusedAttribute, listitem, key);
                       })
                       .map((key) => Number(rawDataRowTheDay[key]))
                       .reduce((sum, current) => (sum += current), 0),
@@ -229,15 +223,8 @@ export async function dataFromSeriesAll(
                   (sum, rawDataRow) =>
                     (sum += Object.keys(rawDataRow)
                       .filter((key) => {
-                        switch (series.focusedAttribute) {
-                          case "genders":
-                          case "prefectures":
-                            return new RegExp(`^${listitem} `).test(key);
-
-                          case "ageRanges":
-                          case "carCategories":
-                            return new RegExp(` ${listitem}$`).test(key);
-                        }
+                        if (!series.focusedAttribute) return false;
+                        return isKeyMatchingAttribute(series.focusedAttribute, listitem, key);
                       })
                       .map((key) => Number(rawDataRow[key]))
                       .reduce((rowSum, rowCurrent) => (rowSum += rowCurrent), 0)),
