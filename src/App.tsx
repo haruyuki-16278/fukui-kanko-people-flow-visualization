@@ -17,8 +17,10 @@ import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import * as holidayJP from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
+import { Toaster, toast } from "sonner";
 import { Graph } from "./components/parts/graph.component";
 import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
+import { getDateTimeString } from "./lib/date";
 import { CARTESIAN_RENDER_THRESHOLD } from "./lib/utils";
 
 function getDefaultDateRange(): DateRange {
@@ -271,7 +273,14 @@ export default function App() {
               Object.values(seriesAll).length === 0 ||
               (title !== undefined && title !== "" && Object.keys(stars).includes(title))
             }
-            onClick={() => appendStar(title, seriesAll)}
+            onClick={() => {
+              appendStar(title, seriesAll);
+              toast.success(
+                title
+                  ? `「${title}」をお気に入りに追加しました`
+                  : `「${getDateTimeString(new Date())}」をお気に入りに追加しました`,
+              );
+            }}
           >
             {title !== undefined && title !== "" && Object.keys(stars).includes(title) ? (
               <StarFillIcon fill="hsl(var(--star))" size="medium" />
@@ -284,6 +293,7 @@ export default function App() {
             title={title}
             seriesAll={seriesAll}
           />
+          <Toaster richColors closeButton />
         </div>
         {chartGroup !== undefined &&
         (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD ||
