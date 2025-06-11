@@ -153,7 +153,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     tickFormatter={
                       isAllRatio ? (value: number) => `${Math.floor(value * 100)}%` : undefined
                     }
-                    allowDecimals={false}
+                    allowDecimals={isAllRatio ? true : false}
                   />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
                     .filter(
