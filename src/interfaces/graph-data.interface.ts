@@ -140,6 +140,7 @@ export async function dataFromSeriesAll(
           };
         }
       } else if (series.graphType === "stack" || series.graphType === "ratio") {
+        let dateTotal = 0;
         if (series.focusedAttribute === undefined)
           throw new Error("invalid focused attribute value");
         for (const dateString of dateStrings) {
@@ -148,7 +149,6 @@ export async function dataFromSeriesAll(
           });
           if (rawDataRowTheDay === undefined) continue;
           const list = ATTRIBUTES[series.focusedAttribute];
-          let dateTotal = 0;
           Object.keys(list)
             .filter((listitem) => {
               if (
