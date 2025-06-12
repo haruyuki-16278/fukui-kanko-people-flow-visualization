@@ -35,15 +35,10 @@ function removeColumnFromRawData(
     for (const /** `first second` の形になる */ key in workRow) {
       // 基本データの列は何もしない
       if ((KEYOF_AGGREGATED_DATA_BASE as string[]).includes(key)) continue;
-      const isKeyMatchesExclude = (() => {
-        // 属性タイプによって異なる除外処理を適用
-        for (const [category, excludedValues] of Object.entries(exclude)) {
-          if (excludedValues.some(value => isKeyMatchingAttribute(category, value, key))) {
-            return true;
-          }
-        }
-        return false;
-      })();
+      const isKeyMatchesExclude = Object.entries(exclude).some(
+        ([category, excludedValues]) =>
+          excludedValues.some((value) => isKeyMatchingAttribute(category, value, key)),
+      );
       if (isKeyMatchesExclude) delete workRow[key];
     }
 
