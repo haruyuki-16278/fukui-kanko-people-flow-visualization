@@ -66,6 +66,5 @@ export async function getData(
   );
   
   if (exclude) filteredData = removeColumnFromRawData(filteredData, exclude);
-  
   return filteredData;
 }
