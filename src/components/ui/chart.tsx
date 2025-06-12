@@ -280,7 +280,9 @@ const ChartTooltipContent = React.forwardRef<
                       {item.value !== undefined && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
                           {isRatio
-                            ? `${(Number(item.value) / totalValue(key) * 100).toFixed(1)}%`
+                            ? totalValue(key) !== 0
+                              ? `${(Number(item.value) / totalValue(key) * 100).toFixed(1)}%`
+                              : "0.0%"
                             : item.value.toLocaleString()
                           }
                         </span>
