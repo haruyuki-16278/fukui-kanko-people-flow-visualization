@@ -39,12 +39,12 @@ export function isKeyMatchingAttribute(
     case "genders":
     case "prefectures":
       // 先頭で始まる属性のチェック
-      return new RegExp(`^${value} `).test(key);
+      return new RegExp.escape(`^${value} `).test(key);
 
     case "ageRanges":
     case "carCategories":
       // 末尾で終わる属性のチェック
-      return new RegExp(` ${value}$`).test(key);
+      return new RegExp.escape(` ${value}$`).test(key);
 
     default:
       return false;
