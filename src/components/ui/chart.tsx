@@ -138,18 +138,20 @@ const ChartTooltipContent = React.forwardRef<
   ) => {
     const { config } = useChart()
 
-    const totalValue = React.useMemo(() => {
+    const totalValue = React.useCallback((key: string) => {
       if (!payload?.length || !payload[0]?.payload) return 0;
       
-      // 総数が含まれるキーを検索
+      // データオブジェクトを取得
       const dataObj = payload[0].payload;
-      const totalKey = Object.keys(dataObj).find(key => key.includes("#categoryTotal"));
       
-      // 総数キーが見つかったらその値を返す
-      if (totalKey && dataObj[totalKey] !== undefined) {
-        return Number(dataObj[totalKey]);
+      // #より前のidを取得
+      const baseKey = key.includes('#') ? key.split('#')[0] : key;
+
+      const totalKey = Object.keys(dataObj).find(key => key === `${baseKey}#categoryTotal`);
+      if (totalKey && typeof dataObj[totalKey] === 'number') {
+        return dataObj[totalKey];
       }
-      
+
       return 0;
     }, [payload]);
 
@@ -157,7 +159,7 @@ const ChartTooltipContent = React.forwardRef<
       if (hideLabel || !payload?.length) {
         return null
       }
-
+    // console.log("payload", payload)
       const [item] = payload
       const key = `${labelKey || item.dataKey || item.name || "value"}`
       const itemConfig = getPayloadConfigFromPayload(config, item, key)
@@ -280,10 +282,10 @@ const ChartTooltipContent = React.forwardRef<
                           {itemConfig?.label || item.name}{": "}
                         </span>
                       </div>
-                      {item.value && (
+                      {item.value !== undefined && (
                         <span className="font-mono font-medium tabular-nums text-foreground">
                           {isRatio
-                            ? `${(Number(item.value) / totalValue * 100).toFixed(1)}%`
+                            ? `${(Number(item.value) / totalValue(key) * 100).toFixed(1)}%`
                             : item.value.toLocaleString()
                           }
                         </span>
