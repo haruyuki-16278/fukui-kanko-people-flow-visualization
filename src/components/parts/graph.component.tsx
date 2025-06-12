@@ -197,12 +197,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                   <ChartTooltip
                     cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
                     content={
-                      <ChartTooltipContent
-                        className="bg-white"
-                        isRatio={Object.values(seriesAll).every(
-                          (item) => item.graphType === "ratio",
-                        )}
-                      />
+                      <ChartTooltipContent className="bg-white" isRatio={isCartesianRatioOnly} />
                     }
                   />
                   {Object.keys(chartGroup[chartId][0]).length <= 10 ? (
