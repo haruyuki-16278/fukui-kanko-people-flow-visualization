@@ -199,6 +199,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     content={
                       <ChartTooltipContent className="bg-white" isRatio={isCartesianRatioOnly} />
                     }
+                    wrapperStyle={{ zIndex: "var(--tooltip-z-index)" }}
                   />
                   {Object.keys(chartGroup[chartId][0]).length <= 10 ? (
                     <ChartLegend content={<ChartLegendContent />} />
@@ -223,6 +224,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                   <ChartTooltip
                     cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
                     content={<ChartTooltipContent className="bg-white" />}
+                    wrapperStyle={{ zIndex: "var(--tooltip-z-index)" }}
                   />
                   {Object.keys(chartGroup[chartId]).length <= 10 ? (
                     <ChartLegend content={<ChartLegendContent />} />
