@@ -5,6 +5,7 @@ import {
 } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries } from "@/interfaces/graph-series.interface";
 import { Placement } from "@/interfaces/placement.interface";
+import { isKeyMatchingAttribute } from "@/lib/utils";
 import Papa from "papaparse";
 import { isDateIncludedInRange } from "../date";
 
@@ -34,16 +35,13 @@ function removeColumnFromRawData(
     for (const /** `first second` の形になる */ key in workRow) {
       // 基本データの列は何もしない
       if ((KEYOF_AGGREGATED_DATA_BASE as string[]).includes(key)) continue;
-
-      const isKeyMatchesExclude = key
-        .split(" ")
-        .some((keyPart) =>
-          Object.values(exclude).some((excludeItem) =>
-            excludeItem.some((excludeValue) => keyPart === excludeValue),
-          ),
-        );
+      const isKeyMatchesExclude = Object.entries(exclude).some(
+        ([category, excludedValues]) =>
+          excludedValues.some((value) => isKeyMatchingAttribute(category, value, key)),
+      );
       if (isKeyMatchesExclude) delete workRow[key];
     }
+
     // フィルタ後のデータで合計を計算して更新する
     workRow["total count"] = Object.entries(workRow)
       .filter(([key]) => !(KEYOF_AGGREGATED_DATA_BASE as string[]).includes(key))
@@ -66,7 +64,7 @@ export async function getData(
   let filteredData = [...rawData].filter((rawDataRow) =>
     isDateIncludedInRange(new Date(rawDataRow["aggregate from"]), date),
   );
+  
   if (exclude) filteredData = removeColumnFromRawData(filteredData, exclude);
-
   return filteredData;
 }
