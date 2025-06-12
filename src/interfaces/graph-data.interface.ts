@@ -166,10 +166,11 @@ export async function dataFromSeriesAll(
                   ...orientedData[dateString],
                   [listitem]: {
                     count: Object.keys(rawDataRowTheDay)
-                      .filter((key) => {
-                        if (!series.focusedAttribute) return false;
-                        return isKeyMatchingAttribute(series.focusedAttribute, listitem, key);
-                      })
+                      .filter((key) =>
+                        series.focusedAttribute
+                          ? isKeyMatchingAttribute(series.focusedAttribute, listitem, key)
+                          : false,
+                      )
                       .map((key) => Number(rawDataRowTheDay[key]))
                       .reduce((sum, current) => (sum += current), 0),
                   },
@@ -210,10 +211,11 @@ export async function dataFromSeriesAll(
                 count: rawData.reduce(
                   (sum, rawDataRow) =>
                     (sum += Object.keys(rawDataRow)
-                      .filter((key) => {
-                        if (!series.focusedAttribute) return false;
-                        return isKeyMatchingAttribute(series.focusedAttribute, listitem, key);
-                      })
+                      .filter((key) =>
+                        series.focusedAttribute
+                          ? isKeyMatchingAttribute(series.focusedAttribute, listitem, key)
+                          : false,
+                      )
                       .map((key) => Number(rawDataRow[key]))
                       .reduce((rowSum, rowCurrent) => (rowSum += rowCurrent), 0)),
                   0,
