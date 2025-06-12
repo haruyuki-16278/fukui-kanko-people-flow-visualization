@@ -1,6 +1,7 @@
 import { ChartConfig } from "@/components/ui/chart";
 import { getData } from "@/lib/data/csv";
 import { getDateStringRange, WEEK_DAYS } from "@/lib/date";
+import { isKeyMatchingAttribute } from "@/lib/utils";
 import {
   AGE_RANGES,
   ATTRIBUTES,
@@ -165,7 +166,11 @@ export async function dataFromSeriesAll(
                   ...orientedData[dateString],
                   [listitem]: {
                     count: Object.keys(rawDataRowTheDay)
-                      .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                      .filter((key) =>
+                        series.focusedAttribute
+                          ? isKeyMatchingAttribute(series.focusedAttribute, listitem, key)
+                          : false,
+                      )
                       .map((key) => Number(rawDataRowTheDay[key]))
                       .reduce((sum, current) => (sum += current), 0),
                   },
@@ -206,7 +211,11 @@ export async function dataFromSeriesAll(
                 count: rawData.reduce(
                   (sum, rawDataRow) =>
                     (sum += Object.keys(rawDataRow)
-                      .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                      .filter((key) =>
+                        series.focusedAttribute
+                          ? isKeyMatchingAttribute(series.focusedAttribute, listitem, key)
+                          : false,
+                      )
                       .map((key) => Number(rawDataRow[key]))
                       .reduce((rowSum, rowCurrent) => (rowSum += rowCurrent), 0)),
                   0,
