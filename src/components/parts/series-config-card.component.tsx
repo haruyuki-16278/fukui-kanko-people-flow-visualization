@@ -1,3 +1,4 @@
+import { AllCheckbox } from "@/components/parts/checkbox/all-checkbox.component";
 import { FilterCheckbox } from "@/components/parts/checkbox/filter-checkbox.component";
 import { PrefectureFilter } from "@/components/parts/prefecture-filter.component";
 import { Button } from "@/components/ui/button";
@@ -242,22 +243,36 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                         attributeValues={attributeValues}
                       ></PrefectureFilter>
                     ) : (
-                      Object.entries(attributeValues).map(
-                        ([attributeValue, attributeValueText]) => (
-                          <div key={attributeValue} className="flex">
-                            <label className="flex flex-row items-center gap-x-2">
-                              <FilterCheckbox
-                                attributeKey={objectClassAttribute}
-                                itemKey={attributeValue}
-                                series={series}
-                                notify={notify}
-                                updateSeriesProperty={updateSeriesProperty}
-                              />
-                              <span>{attributeValueText}</span>
-                            </label>
-                          </div>
-                        ),
-                      )
+                      <>
+                        <div className="flex">
+                          <label className="flex flex-row items-center gap-x-2">
+                            <AllCheckbox
+                              attributeKey={objectClassAttribute}
+                              itemKey={Object.keys(attributeValues)}
+                              series={series}
+                              notify={notify}
+                              updateSeriesProperty={updateSeriesProperty}
+                            />
+                            <span>全選択</span>
+                          </label>
+                        </div>
+                        {Object.entries(attributeValues).map(
+                          ([attributeValue, attributeValueText]) => (
+                            <div key={attributeValue} className="flex">
+                              <label className="flex flex-row items-center gap-x-2">
+                                <FilterCheckbox
+                                  attributeKey={objectClassAttribute}
+                                  itemKey={attributeValue}
+                                  series={series}
+                                  notify={notify}
+                                  updateSeriesProperty={updateSeriesProperty}
+                                />
+                                <span>{attributeValueText}</span>
+                              </label>
+                            </div>
+                          ),
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
