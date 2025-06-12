@@ -148,18 +148,13 @@ const ChartTooltipContent = React.forwardRef<
       const baseKey = key.includes('#') ? key.split('#')[0] : key;
 
       const totalKey = Object.keys(dataObj).find(key => key === `${baseKey}#categoryTotal`);
-      if (totalKey && typeof dataObj[totalKey] === 'number') {
-        return dataObj[totalKey];
-      }
-
-      return 0;
+      return totalKey && typeof dataObj[totalKey] === 'number' ? dataObj[totalKey] : 0;
     }, [payload]);
 
     const tooltipLabel = React.useMemo(() => {
       if (hideLabel || !payload?.length) {
         return null
       }
-    // console.log("payload", payload)
       const [item] = payload
       const key = `${labelKey || item.dataKey || item.name || "value"}`
       const itemConfig = getPayloadConfigFromPayload(config, item, key)
