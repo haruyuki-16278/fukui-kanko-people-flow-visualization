@@ -108,18 +108,6 @@ const flatData = <T extends Record<string, unknown>>(
   }, {});
 };
 
-// function filterKeyByAttribute(key: string, listitem: string, focusedAttribute?: string): boolean {
-//   switch (series.focusedAttribute) {
-//     case "genders":
-//     case "prefectures":
-//       return new RegExp(`^${listitem} `).test(key);
-
-//     case "ageRanges":
-//     case "carCategories":
-//       return new RegExp(` ${listitem}$`).test(key);
-//   }
-// }
-
 export async function dataFromSeriesAll(
   seriesAll: { [id: string]: GraphSeries },
   dateRange: { from: Date; to: Date },
