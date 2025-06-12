@@ -103,7 +103,9 @@ interface Props {
   className?: string;
 }
 export function Graph({ chartGroup, seriesAll, className }: Props) {
-  const isAllRatio = Object.values(seriesAll).every((item) => item.graphType === "ratio");
+  const isCartesianRatioOnly = !Object.values(seriesAll).some(
+    (item) => item.graphType === "stack" || item.graphType === "simple",
+  );
   return (
     <MultiChartContainer className={className}>
       {Object.keys(chartGroup)
@@ -130,7 +132,10 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               className="h-full w-full"
             >
               {chartId === "cartesian" ? (
-                <BarChart data={chartGroup[chartId]} stackOffset={isAllRatio ? "expand" : "none"}>
+                <BarChart
+                  data={chartGroup[chartId]}
+                  stackOffset={isCartesianRatioOnly ? "expand" : "none"}
+                >
                   <CartesianGrid vertical={false} />
                   <XAxis
                     dataKey={"date"}
@@ -144,16 +149,18 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                   <YAxis
                     type="number"
                     tickLine={true}
-                    tickCount={isAllRatio ? 6 : 10}
+                    tickCount={isCartesianRatioOnly ? 6 : 10}
                     domain={
-                      isAllRatio
+                      isCartesianRatioOnly
                         ? [0, 1] // 比率グラフの場合は0〜1の範囲
                         : [0, "auto"] // それ以外の場合はdefault
                     }
                     tickFormatter={
-                      isAllRatio ? (value: number) => `${Math.floor(value * 100)}%` : undefined
+                      isCartesianRatioOnly
+                        ? (value: number) => `${Math.floor(value * 100)}%`
+                        : undefined
                     }
-                    allowDecimals={isAllRatio ? true : false}
+                    allowDecimals={isCartesianRatioOnly ? true : false}
                   />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
                     .filter(
