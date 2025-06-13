@@ -124,7 +124,7 @@ const computeAttributeCounts = (
     // 各属性値についてマッチングをチェック
     Object.keys(attributeValues).forEach((attributeValue) => {
       if (isKeyMatchingAttribute(focusedAttribute, attributeValue, key)) {
-        if (!attributeCounts[attributeValue]) attributeCounts[attributeValue] = 0;
+        if (attributeCounts[attributeValue] === undefined) attributeCounts[attributeValue] = 0;
         const value = Number(rawDataRow[key]);
         attributeCounts[attributeValue] += value;
       }
