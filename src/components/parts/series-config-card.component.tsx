@@ -1,4 +1,4 @@
-import { FilterCheckbox } from "@/components/parts/checkbox/filter-checkbox.component";
+import { AttributeFilter } from "@/components/parts/attribute-filter.component";
 import { PrefectureFilter } from "@/components/parts/prefecture-filter.component";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -242,22 +242,13 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
                         attributeValues={attributeValues}
                       ></PrefectureFilter>
                     ) : (
-                      Object.entries(attributeValues).map(
-                        ([attributeValue, attributeValueText]) => (
-                          <div key={attributeValue} className="flex">
-                            <label className="flex flex-row items-center gap-x-2">
-                              <FilterCheckbox
-                                attributeKey={objectClassAttribute}
-                                itemKey={attributeValue}
-                                series={series}
-                                notify={notify}
-                                updateSeriesProperty={updateSeriesProperty}
-                              />
-                              <span>{attributeValueText}</span>
-                            </label>
-                          </div>
-                        ),
-                      )
+                      <AttributeFilter
+                        objectClassAttribute={objectClassAttribute as ObjectClassAttribute}
+                        series={series}
+                        notify={notify}
+                        updateSeriesProperty={updateSeriesProperty}
+                        attributeValues={attributeValues}
+                      ></AttributeFilter>
                     )}
                   </div>
                 </div>
