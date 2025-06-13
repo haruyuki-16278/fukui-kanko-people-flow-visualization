@@ -141,10 +141,10 @@ export async function dataFromSeriesAll(
           };
         }
       } else if (series.graphType === "stack" || series.graphType === "ratio") {
-        let dateTotal = 0;
         if (series.focusedAttribute === undefined)
           throw new Error("invalid focused attribute value");
         for (const dateString of dateStrings) {
+          let dateTotal = 0;
           const rawDataRowTheDay = rawData.find((rawDataRow) => {
             return String(rawDataRow["aggregate from"].slice(0, 10)) === dateString;
           });
