@@ -125,7 +125,6 @@ export async function dataFromSeriesAll(
 
     if (isCartesian(series.graphType)) {
       let orientedData: { [date: string]: { [attribute: string]: Count } } = {};
-
       if (series.graphType === "simple") {
         for (const dateString of dateStrings) {
           const rawDataRowTheDay = rawData.find((rawDataRow) => {
@@ -144,6 +143,7 @@ export async function dataFromSeriesAll(
         if (series.focusedAttribute === undefined)
           throw new Error("invalid focused attribute value");
         for (const dateString of dateStrings) {
+          const dateData = orientedData[dateString] || {};
           let dateTotal = 0;
           const rawDataRowTheDay = rawData.find((rawDataRow) => {
             return String(rawDataRow["aggregate from"].slice(0, 10)) === dateString;
@@ -171,20 +171,13 @@ export async function dataFromSeriesAll(
                 .reduce((sum, current) => (sum += current), 0);
 
               dateTotal += itemCount;
-
-              orientedData = {
-                ...orientedData,
-                [dateString]: {
-                  ...orientedData[dateString],
-                  [listitem]: {
-                    count: itemCount,
-                  },
-                  categoryTotal: {
-                    count: dateTotal,
-                  },
-                },
-              };
+              dateData[listitem] = { count: itemCount };
             });
+          dateData.categoryTotal = { count: dateTotal };
+          orientedData = {
+            ...orientedData,
+            [dateString]: dateData,
+          };
         }
       }
 
