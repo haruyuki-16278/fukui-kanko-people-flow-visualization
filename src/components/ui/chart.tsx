@@ -147,8 +147,8 @@ const ChartTooltipContent = React.forwardRef<
       // #より前のidを取得
       const baseKey = key.includes('#') ? key.split('#')[0] : key;
 
-      const totalKey = Object.keys(dataObj).find(key => key === `${baseKey}#categoryTotal`);
-      return totalKey && typeof dataObj[totalKey] === 'number' ? dataObj[totalKey] : 0;
+      const totalKey = `${baseKey}#categoryTotal`;
+      return typeof dataObj[totalKey] === 'number' ? dataObj[totalKey] : 0;
     }, [payload]);
 
     const tooltipLabel = React.useMemo(() => {
