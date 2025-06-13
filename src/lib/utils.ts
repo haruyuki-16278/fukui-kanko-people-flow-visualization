@@ -1,3 +1,4 @@
+import { ObjectClassAttribute } from "@/interfaces/aggregated-data.interface";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -27,4 +28,25 @@ export function linkPath(path: string) {
   return location.host.endsWith("github.io")
     ? `/${location.pathname.slice(1).split("/").at(0)}/${path.at(0) === "/" ? path.slice(1) : path}`
     : path;
+}
+
+export function isKeyMatchingAttribute(
+  attributeType: ObjectClassAttribute | string,
+  value: string,
+  key: string,
+): boolean {
+  switch (attributeType) {
+    case "genders":
+    case "prefectures":
+      // 先頭で始まる属性のチェック
+      return new RegExp(`^${value} `).test(key);
+
+    case "ageRanges":
+    case "carCategories":
+      // 末尾で終わる属性のチェック
+      return new RegExp(` ${value}$`).test(key);
+
+    default:
+      return false;
+  }
 }
