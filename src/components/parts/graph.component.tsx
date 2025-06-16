@@ -213,6 +213,8 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     data={chartGroup[chartId]}
                     cx="50%"
                     cy="50%"
+                    startAngle={90}
+                    endAngle={-270}
                     fill="#8884d8"
                     labelLine={false}
                     label={CustomizedLabel}
