@@ -103,6 +103,7 @@ const ChartTooltip = RechartsPrimitive.Tooltip
 type ChartTooltipRow = {
   holidayName?: string
   dayOfWeek?: string
+  id?: string
 }
 
 const ChartTooltipContent = React.forwardRef<
@@ -192,7 +193,17 @@ const ChartTooltipContent = React.forwardRef<
 
     const row = payload[0]?.payload as ChartTooltipRow
     const nestLabel = payload.length === 1 && indicator !== "dot"
-
+    const groupedById = payload
+      .filter((item) => (payload.length < 10 ? true : item.value !== 0))
+      .reduce((groups, item) => {
+        const customItem = item as ChartTooltipRow;
+        const groupKey = customItem.id || 'default';
+      if (!groups[groupKey]) {
+        groups[groupKey] = [];
+      }
+      groups[groupKey].push(item);
+      return groups;
+    }, {} as Record<string, typeof payload>);
     return (
       <div
         ref={ref}
@@ -222,13 +233,12 @@ const ChartTooltipContent = React.forwardRef<
         ) : undefined}
 
         <div className="grid gap-1.5">
-          {payload
-            .filter((item) => (payload.length < 10 ? true : item.value !== 0))
+          {Object.values(groupedById)
+            .flatMap(group => [...group].reverse())
             .map((item, index) => {
             const key = `${nameKey || item.name || item.dataKey || "value"}`
             const itemConfig = getPayloadConfigFromPayload(config, item, key)
             const indicatorColor = color || item.payload.fill || item.color
-
             return (
               <div
                 key={item.dataKey}

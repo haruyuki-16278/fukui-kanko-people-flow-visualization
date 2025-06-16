@@ -171,8 +171,10 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                         !key.includes("categoryTotal"),
                     )
                     .map((key) => [key, ...key.split("#")])
+                    .reverse()
                     .map(([key, id, attributeKey], i) => (
                       <Bar
+                        id={id}
                         type="linear"
                         key={key}
                         dataKey={key}
