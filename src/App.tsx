@@ -232,7 +232,9 @@ export default function App() {
             mode="range"
             selected={dateRange}
             onSelect={(v) => {
-              setDateRange(v);
+              if (!isLoading) {
+                setDateRange(v);
+              }
             }}
             disabled={{
               before: new Date("2024-10-17"),
