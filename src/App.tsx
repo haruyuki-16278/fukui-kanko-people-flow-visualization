@@ -98,77 +98,82 @@ export default function App() {
 
     setIsLoading(true);
 
-    // 実データを取得して処理する
-    for await (const [id, series] of Object.entries(seriesAll)) {
-      if (series.placement === undefined || series.objectClass === undefined) return;
+    try {
+      // 実データを取得して処理する
+      for await (const [id, series] of Object.entries(seriesAll)) {
+        if (series.placement === undefined || series.objectClass === undefined) return;
 
-      const rawData = await getData(
-        series.placement,
-        series.objectClass,
-        dateRange as { from: Date; to: Date },
-        series.exclude,
-      );
+        const rawData = await getData(
+          series.placement,
+          series.objectClass,
+          dateRange as { from: Date; to: Date },
+          series.exclude,
+        );
 
-      if (series.graphType === "simple") {
-        newData = newData.map((newDataRow) => {
-          const rawDataRowTheDay = rawData.find((rawDataRow) => {
-            return String(rawDataRow["aggregate from"].slice(0, 10)) === newDataRow.date;
+        if (series.graphType === "simple") {
+          newData = newData.map((newDataRow) => {
+            const rawDataRowTheDay = rawData.find((rawDataRow) => {
+              return String(rawDataRow["aggregate from"].slice(0, 10)) === newDataRow.date;
+            });
+            const theDayCount = Number(rawDataRowTheDay?.["total count"]);
+            return {
+              ...newDataRow,
+              [id]: isNaN(theDayCount) ? 0 : theDayCount,
+            };
           });
-          const theDayCount = Number(rawDataRowTheDay?.["total count"]);
-          return {
+        } else if (series.graphType === "stack" || series.graphType === "ratio") {
+          const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
+            rawData.map((rawDataRow) => {
+              if (series.focusedAttribute === undefined)
+                throw new Error("invalid focused attribute value.");
+              const list = ATTRIBUTES[series.focusedAttribute];
+              const data: Record<string, string | number> & { "aggregate from": string } = {
+                "aggregate from": rawDataRow["aggregate from"],
+              };
+              Object.keys(list)
+                .filter((listitem) => {
+                  if (!series.exclude || !series.focusedAttribute) return true;
+                  if (!series.exclude[series.focusedAttribute]) return true;
+                  return !series.exclude[series.focusedAttribute].includes(listitem);
+                })
+                .map((listitem) => ({
+                  [`${series.id}#${listitem}`]: Object.keys(rawDataRow)
+                    // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
+                    .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                    .map((key) => Number(rawDataRow[key]))
+                    .reduce((sum, current) => (sum += current), 0),
+                }))
+                .forEach((obj) =>
+                  Object.entries(obj).forEach(([k, v]) => {
+                    data[k] = v;
+                  }),
+                );
+              return data;
+            });
+          newData = newData.map((newDataRow) => ({
             ...newDataRow,
-            [id]: isNaN(theDayCount) ? 0 : theDayCount,
-          };
-        });
-      } else if (series.graphType === "stack" || series.graphType === "ratio") {
-        const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
-          rawData.map((rawDataRow) => {
-            if (series.focusedAttribute === undefined)
-              throw new Error("invalid focused attribute value.");
-            const list = ATTRIBUTES[series.focusedAttribute];
-            const data: Record<string, string | number> & { "aggregate from": string } = {
-              "aggregate from": rawDataRow["aggregate from"],
-            };
-            Object.keys(list)
-              .filter((listitem) => {
-                if (!series.exclude || !series.focusedAttribute) return true;
-                if (!series.exclude[series.focusedAttribute]) return true;
-                return !series.exclude[series.focusedAttribute].includes(listitem);
-              })
-              .map((listitem) => ({
-                [`${series.id}#${listitem}`]: Object.keys(rawDataRow)
-                  // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
-                  .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
-                  .map((key) => Number(rawDataRow[key]))
-                  .reduce((sum, current) => (sum += current), 0),
-              }))
-              .forEach((obj) =>
-                Object.entries(obj).forEach(([k, v]) => {
-                  data[k] = v;
-                }),
-              );
-            return data;
-          });
-        newData = newData.map((newDataRow) => ({
-          ...newDataRow,
-          ...(() => {
-            const orientedDataItem = {
-              ...(orientedData.find(
-                (orientedDataRow) =>
-                  orientedDataRow["aggregate from"].slice(0, 10) === newDataRow.date,
-              ) as Record<string, string | number>),
-            };
-            delete orientedDataItem?.["aggregate from"];
-            return orientedDataItem;
-          })(),
-        }));
+            ...(() => {
+              const orientedDataItem = {
+                ...(orientedData.find(
+                  (orientedDataRow) =>
+                    orientedDataRow["aggregate from"].slice(0, 10) === newDataRow.date,
+                ) as Record<string, string | number>),
+              };
+              delete orientedDataItem?.["aggregate from"];
+              return orientedDataItem;
+            })(),
+          }));
+        }
       }
+      setChartGroup(
+        await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
+      );
+      setData(newData);
+    } catch {
+      toast.error("データの処理中にエラーが発生しました");
+    } finally {
+      setIsLoading(false);
     }
-    setChartGroup(
-      await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
-    );
-    setData(newData);
-    setIsLoading(false);
   }, [dateRange, seriesAll]);
 
   useEffect(() => {
