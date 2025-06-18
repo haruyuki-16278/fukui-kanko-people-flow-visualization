@@ -322,7 +322,7 @@ export default function App() {
         )}
       </article>
 
-      {!isLoading && <LoadingSpinner />}
+      {isLoading && <LoadingSpinner />}
     </>
   );
 }
