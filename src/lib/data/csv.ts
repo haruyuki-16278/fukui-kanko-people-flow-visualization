@@ -59,6 +59,16 @@ export async function getData(
   date: { from: Date; to: Date },
   exclude?: GraphSeries["exclude"],
 ): Promise<AggregatedData[]> {
+  if ((placement === "rainbow-line-parking-lot-1-gate" && objectClass === "LicensePlate") || (placement === "rainbow-line-parking-lot-2-gate" && objectClass === "LicensePlate")) {
+    const toDate = new Date(date.to);
+    toDate.setDate(toDate.getDate() + 1); // APIの仕様上
+    const rawData = Object.values((await (await fetch(`https://ktxs4d484a.execute-api.ap-northeast-3.amazonaws.com/prod/?placement=${placement}&objectClass=${objectClass}&dateFrom=${date.from.getTime()}&dateTo=${toDate.getTime() - 1}&likelihoodThreshold=0.75&matchingAttributes=2"`)).json() as {message: string, body: Record<string, AggregatedData>}).body);
+    if (exclude) {
+      return removeColumnFromRawData(rawData, exclude);
+    } else {
+      return rawData;
+    }
+  }
   const rawData = await getRawData(placement, objectClass);
 
   let filteredData = [...rawData].filter((rawDataRow) =>
