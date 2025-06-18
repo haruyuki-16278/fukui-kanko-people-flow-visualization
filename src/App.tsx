@@ -19,6 +19,7 @@ import * as holidayJP from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
 import { Toaster, toast } from "sonner";
 import { Graph } from "./components/parts/graph.component";
+import { LoadingSpinner } from "./components/parts/loading-spinner.component";
 import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
 import { getDateTimeString } from "./lib/date";
 import { CARTESIAN_RENDER_THRESHOLD } from "./lib/utils";
@@ -57,6 +58,7 @@ export default function App() {
       ? holidayJP.between(dateRange.from, dateRange.to)
       : [];
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
   const [checkedKey, setCheckedKey] = useState<string | undefined>(() => {
     return defaultStarKey ?? undefined;
@@ -93,6 +95,8 @@ export default function App() {
     let newData: (Record<string, string | number> & { date: string })[] = getDateStringRange(
       dateRange as { from: Date; to: Date },
     ).map((v) => ({ date: v }));
+
+    setIsLoading(true);
 
     // 実データを取得して処理する
     for await (const [id, series] of Object.entries(seriesAll)) {
@@ -164,6 +168,7 @@ export default function App() {
       await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
     );
     setData(newData);
+    setIsLoading(false);
   }, [dateRange, seriesAll]);
 
   useEffect(() => {
@@ -295,9 +300,11 @@ export default function App() {
           />
           <Toaster richColors closeButton />
         </div>
-        {chartGroup !== undefined &&
-        (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD ||
-          Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : chartGroup !== undefined &&
+          (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD ||
+            Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
           <Graph
             className="flex-grow h-[calc(100svh_-_96px_-_48px)] min-h-[calc(100svh_-_96px_-_48px)]"
             chartGroup={chartGroup}
