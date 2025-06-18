@@ -75,7 +75,6 @@ export default {
       },
       zIndex: {
         tooltip: "var(--tooltip-z-index)",
-        loading: "var(--loading-z-index)",
       },
     },
   },

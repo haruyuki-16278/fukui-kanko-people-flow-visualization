@@ -7,13 +7,13 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
-import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
+import { GraphSeries } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
 import { useLocalDefaultStar } from "@/lib/hooks/local-default-star";
 import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { DateRange } from "react-day-picker";
 import * as holidayJP from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
@@ -175,11 +175,11 @@ export default function App() {
     }
   }, [dateRange, seriesAll]);
 
-  useEffect(() => {
-    if (Object.values(seriesAll).every(isSeriesValid)) {
-      apply();
-    }
-  }, [seriesAll, dateRange]);
+  // useEffect(() => {
+  //   if (Object.values(seriesAll).every(isSeriesValid)) {
+  //     apply();
+  //   }
+  // }, [seriesAll, dateRange]);
 
   return (
     <>
@@ -267,6 +267,9 @@ export default function App() {
               ))}
           </div>
         </section>
+        <section className="flex items-center justify-center w-full sticky bottom-1">
+          <Button onClick={apply}>グラフに反映する</Button>
+        </section>
       </aside>
       <article className="flex-glow flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-[calc(100%_-_288px)] flex-col items-center justify-center">
         <div className="flex h-12 w-full gap-x-2 pl-4">
@@ -306,11 +309,9 @@ export default function App() {
           />
           <Toaster richColors closeButton />
         </div>
-        {isLoading ? (
-          <LoadingSpinner />
-        ) : chartGroup !== undefined &&
-          (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD ||
-            Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
+        {chartGroup !== undefined &&
+        (Object.keys(chartGroup["cartesian"].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD ||
+          Object.keys(chartGroup).filter((k) => k !== "cartesian").length > 0) ? (
           <Graph
             className="flex-grow h-[calc(100svh_-_96px_-_48px)] min-h-[calc(100svh_-_96px_-_48px)]"
             chartGroup={chartGroup}
@@ -320,6 +321,8 @@ export default function App() {
           <p className="flex-glow my-auto">グラフに表示するデータをサイドバーで設定して下さい</p>
         )}
       </article>
+
+      {!isLoading && <LoadingSpinner />}
     </>
   );
 }
