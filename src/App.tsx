@@ -267,7 +267,7 @@ export default function App() {
               ))}
           </div>
         </section>
-        <section className="flex items-center justify-center w-full sticky bottom-1">
+        <section className="flex justify-center w-full bg-background sticky bottom-0 py-2">
           <Button onClick={apply}>グラフに反映する</Button>
         </section>
       </aside>
