@@ -96,8 +96,6 @@ export default function App() {
       dateRange as { from: Date; to: Date },
     ).map((v) => ({ date: v }));
 
-    setIsLoading(true);
-
     try {
       // 実データを取得して処理する
       for await (const [id, series] of Object.entries(seriesAll)) {
@@ -108,6 +106,7 @@ export default function App() {
           series.objectClass,
           dateRange as { from: Date; to: Date },
           series.exclude,
+          setIsLoading,
         );
 
         if (series.graphType === "simple") {
