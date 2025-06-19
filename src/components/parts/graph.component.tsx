@@ -108,7 +108,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
       {Object.keys(chartGroup)
         .filter(
           (chartId) =>
-            chartId !== "cartesian" ||
+            (chartId !== "cartesian" && chartId !== "ratio") ||
             Object.keys(chartGroup[chartId].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD,
         )
         .map((chartId) => (
