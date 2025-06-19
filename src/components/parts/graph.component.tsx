@@ -207,6 +207,69 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     <ChartLegend content={<ChartLegendContent />} />
                   ) : undefined}
                 </BarChart>
+              ) : chartId === "ratio" ? (
+                <BarChart data={chartGroup[chartId]} stackOffset={"expand"}>
+                  <CartesianGrid vertical={false} />
+                  <XAxis
+                    dataKey={"date"}
+                    tickLine={false}
+                    tickMargin={7}
+                    axisLine={false}
+                    tick={(props: XAxisTickProps) => (
+                      <CustomizedXAxisTick {...props} data={chartGroup[chartId]} />
+                    )}
+                  />
+                  <YAxis
+                    type="number"
+                    tickLine={true}
+                    tickCount={6}
+                    domain={[0, 1]}
+                    tickFormatter={(value: number) => `${Math.floor(value * 100)}%`}
+                    allowDecimals={true}
+                  />
+                  {Object.keys(chartGroup[chartId].at(-1) ?? {})
+                    .filter(
+                      (key) =>
+                        key !== "date" &&
+                        key !== "holidayName" &&
+                        key !== "dayOfWeek" &&
+                        !key.includes("categoryTotal"),
+                    )
+                    .map((key) => [key, ...key.split("#")])
+                    .reverse()
+                    .map(([key, id, attributeKey], i) => (
+                      <Bar
+                        id={id}
+                        type="linear"
+                        key={key}
+                        dataKey={key}
+                        stackId={id}
+                        name={
+                          seriesAll
+                            ? (() => {
+                                const series = seriesAll[id];
+                                if (!series) return undefined;
+                                return series.name === undefined || series.name === ""
+                                  ? defaultSeriesName(series)
+                                  : series.name;
+                              })() + attributeKey
+                              ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
+                              : ""
+                            : key
+                        }
+                        fill={`hsl(var(--chart-${(i % 5) + 1}))`}
+                        radius={id.split("#")[1] === "" ? 2 : 0}
+                      />
+                    ))}
+                  <ChartTooltip
+                    cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
+                    content={<ChartTooltipContent className="bg-white" isRatio={true} />}
+                    wrapperStyle={{ zIndex: "var(--tooltip-z-index)" }}
+                  />
+                  {Object.keys(chartGroup[chartId][0]).length <= 10 ? (
+                    <ChartLegend content={<ChartLegendContent />} />
+                  ) : undefined}
+                </BarChart>
               ) : (
                 <PieChart>
                   <Pie
