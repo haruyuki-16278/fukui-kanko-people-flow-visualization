@@ -53,6 +53,7 @@ export default function App() {
         : JSON.parse(stars[defaultStarKey] ?? "{}");
     })(),
   );
+  const [graphSeriesAll, setGraphSeriesAll] = useState<typeof seriesAll>({});
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const holidays =
     dateRange && dateRange.from && dateRange.to
@@ -170,6 +171,7 @@ export default function App() {
       );
       setData(newData);
       setHasChanges(false);
+      setGraphSeriesAll({ ...seriesAll });
     } catch {
       toast.error("データの処理中にエラーが発生しました");
     } finally {
@@ -284,18 +286,18 @@ export default function App() {
             placeholder="グラフタイトル"
             onChange={(ev) => setTitle(ev.target.value !== null ? ev.target.value : undefined)}
             defaultValue={title}
-            disabled={Object.values(seriesAll).length === 0}
+            disabled={Object.values(graphSeriesAll).length === 0}
           />
           <Button
             className="shrink-0"
             variant="outline"
             size="icon"
             disabled={
-              Object.values(seriesAll).length === 0 ||
+              Object.values(graphSeriesAll).length === 0 ||
               (title !== undefined && title !== "" && Object.keys(stars).includes(title))
             }
             onClick={() => {
-              appendStar(title, seriesAll);
+              appendStar(title, graphSeriesAll);
               toast.success(
                 title
                   ? `「${title}」をお気に入りに追加しました`
@@ -310,9 +312,9 @@ export default function App() {
             )}
           </Button>
           <ShareDialogTrigger
-            disabled={!seriesAll || Object.values(seriesAll).length === 0}
+            disabled={!graphSeriesAll || Object.values(graphSeriesAll).length === 0}
             title={title}
-            seriesAll={seriesAll}
+            seriesAll={graphSeriesAll}
           />
           <Toaster richColors closeButton />
         </div>
@@ -322,7 +324,7 @@ export default function App() {
           <Graph
             className="flex-grow h-[calc(100svh_-_96px_-_48px)] min-h-[calc(100svh_-_96px_-_48px)]"
             chartGroup={chartGroup}
-            seriesAll={seriesAll}
+            seriesAll={graphSeriesAll}
           />
         ) : (
           <p className="flex-glow my-auto">グラフに表示するデータをサイドバーで設定して下さい</p>
