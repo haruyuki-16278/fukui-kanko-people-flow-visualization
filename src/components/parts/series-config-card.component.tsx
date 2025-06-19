@@ -68,6 +68,21 @@ function updateSeriesProperty<Key extends keyof GraphSeries>(
 }
 
 export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
+  const handleGraphTypeChange = (selectedGraphType: GraphType) => {
+    if (selectedGraphType === "simple") {
+      notify({
+        ...series,
+        graphType: selectedGraphType,
+        focusedAttribute: undefined,
+      });
+    } else {
+      notify({
+        ...series,
+        graphType: selectedGraphType,
+      });
+    }
+  };
+
   return (
     <Card className="flex w-full flex-col gap-y-4 p-4">
       <div className="flex justify-between">
@@ -174,10 +189,8 @@ export function SeriesConfigCard({ series, notify, onRemoveClick }: Props) {
           <div>
             <span>グラフ種類</span>
             <RadioGroup
-              defaultValue={series.graphType}
-              onValueChange={(v: GraphType) =>
-                notify(updateSeriesProperty(["graphType", v], series))
-              }
+              value={series.graphType}
+              onValueChange={handleGraphTypeChange}
               className="mt-2 pl-2"
             >
               {Object.entries(GRAPH_TYPES).map(([graphType, graphTypeText]) => (
