@@ -181,6 +181,13 @@ export default function App() {
     setHasChanges(true);
   }, [seriesAll, dateRange]);
 
+  useEffect(() => {
+    // 初期表示時にお気に入りまたはURLパラメータがある場合は自動的にデータを読み込む
+    if (seriesAll && !isLoading && data === undefined) {
+      apply();
+    }
+  }, []);
+
   return (
     <>
       <aside className="relative flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-72 flex-col items-center gap-y-4 overflow-y-auto border-r-2 px-2">
