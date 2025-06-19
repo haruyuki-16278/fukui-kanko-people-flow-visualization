@@ -13,7 +13,7 @@ import { floorDate, getDateStringRange } from "@/lib/date";
 import { useLocalDefaultStar } from "@/lib/hooks/local-default-star";
 import { useLocalStars } from "@/lib/hooks/local-stars";
 import { useRecord } from "@/lib/hooks/record";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 import * as holidayJP from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
@@ -39,6 +39,7 @@ function getDefaultDateRange(): DateRange {
   };
 }
 export default function App() {
+  const [hasChanges, setHasChanges] = useState(false);
   const { stars, appendStar, removeStar } = useLocalStars();
   const { defaultStarKey, setDefaultStar, removeDefaultStar } = useLocalDefaultStar();
   const [title, setTitle] = useState<string | undefined>(
@@ -168,6 +169,7 @@ export default function App() {
         await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
       );
       setData(newData);
+      setHasChanges(false);
     } catch {
       toast.error("データの処理中にエラーが発生しました");
     } finally {
@@ -175,11 +177,9 @@ export default function App() {
     }
   }, [dateRange, seriesAll]);
 
-  // useEffect(() => {
-  //   if (Object.values(seriesAll).every(isSeriesValid)) {
-  //     apply();
-  //   }
-  // }, [seriesAll, dateRange]);
+  useEffect(() => {
+    setHasChanges(true);
+  }, [seriesAll, dateRange]);
 
   return (
     <>
@@ -232,9 +232,7 @@ export default function App() {
             mode="range"
             selected={dateRange}
             onSelect={(v) => {
-              if (!isLoading) {
-                setDateRange(v);
-              }
+              setDateRange(v);
             }}
             disabled={{
               before: new Date("2024-10-17"),
@@ -268,7 +266,17 @@ export default function App() {
           </div>
         </section>
         <section className="flex justify-center w-full bg-background sticky bottom-0 py-2">
-          <Button onClick={apply}>グラフに反映する</Button>
+          <Button
+            onClick={apply}
+            disabled={
+              !hasChanges ||
+              isLoading ||
+              dateRange === undefined ||
+              Object.keys(seriesAll).length === 0
+            }
+          >
+            グラフに反映する
+          </Button>
         </section>
       </aside>
       <article className="flex-glow flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-[calc(100%_-_288px)] flex-col items-center justify-center">
