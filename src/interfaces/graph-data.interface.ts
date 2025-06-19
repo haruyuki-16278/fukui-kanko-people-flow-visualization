@@ -36,6 +36,19 @@ export const getChartConfig = (
           label,
         };
       });
+    } else if (chartId === "ratio") {
+      Object.keys(data.at(-1) ?? {}).forEach((k) => {
+        if (k === "date") return;
+        const [id, attributeKey] = k.split("#");
+        const series = seriesAll[id];
+        if (series === undefined) return id;
+        let label = series.name ?? defaultSeriesName(series);
+        if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
+          label += " " + attributeValueText(series.focusedAttribute, attributeKey);
+        config[k] = {
+          label,
+        };
+      });
     } else {
       data.forEach((v) => {
         const [id, attributeKey] = String(v.name).split("#");

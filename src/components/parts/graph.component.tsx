@@ -113,7 +113,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
         )
         .map((chartId) => (
           <div key={chartId} className="h-full w-full first:col-span-2 flex flex-col items-center">
-            {seriesAll && chartId !== "cartesian" ? (
+            {seriesAll && chartId !== "cartesian" && chartId !== "ratio" ? (
               <p className="-mb-4 pt-4">
                 {(() => {
                   const series = seriesAll[chartId];
