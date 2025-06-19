@@ -2,6 +2,7 @@ import {
   AggregatedData,
   KEYOF_AGGREGATED_DATA_BASE,
   ObjectClass,
+  PREFECTURES
 } from "@/interfaces/aggregated-data.interface";
 import { GraphSeries } from "@/interfaces/graph-series.interface";
 import { Placement } from "@/interfaces/placement.interface";
@@ -53,6 +54,28 @@ function removeColumnFromRawData(
   return result;
 }
 
+function reorderDataColumns(data: AggregatedData[]): AggregatedData[] {
+  return data.map(row => {
+    const reorderedRow: Record<string, string | number> = {};
+    
+    // まず基本項目をコピー
+    KEYOF_AGGREGATED_DATA_BASE.forEach(key => {
+      reorderedRow[key] = row[key];
+    });
+    
+    // 都道府県データをPREFECTURESの順序で追加
+    Object.keys(PREFECTURES).forEach(prefecture => {
+      Object.entries(row).forEach(([key, value]) => {
+        if (isKeyMatchingAttribute('prefectures', prefecture, key)) {
+          reorderedRow[key] = value;
+        }
+      });
+    });
+    
+    return reorderedRow as AggregatedData;
+  });
+}
+
 export async function getData(
   placement: Placement,
   objectClass: ObjectClass,
@@ -64,7 +87,10 @@ export async function getData(
   let filteredData = [...rawData].filter((rawDataRow) =>
     isDateIncludedInRange(new Date(rawDataRow["aggregate from"]), date),
   );
-  
+  // 都道府県の順番をPREFECTURESに従って並べ替える
+  if (objectClass === 'LicensePlate') {
+    filteredData = reorderDataColumns(filteredData);
+  }
   if (exclude) filteredData = removeColumnFromRawData(filteredData, exclude);
   return filteredData;
 }
