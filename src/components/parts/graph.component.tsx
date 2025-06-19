@@ -103,9 +103,6 @@ interface Props {
   className?: string;
 }
 export function Graph({ chartGroup, seriesAll, className }: Props) {
-  const isCartesianRatioOnly = !Object.values(seriesAll).some(
-    (item) => item.graphType === "stack" || item.graphType === "simple",
-  );
   return (
     <MultiChartContainer className={className}>
       {Object.keys(chartGroup)
@@ -132,10 +129,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               className="h-full w-full"
             >
               {chartId === "cartesian" ? (
-                <BarChart
-                  data={chartGroup[chartId]}
-                  stackOffset={isCartesianRatioOnly ? "expand" : "none"}
-                >
+                <BarChart data={chartGroup[chartId]}>
                   <CartesianGrid vertical={false} />
                   <XAxis
                     dataKey={"date"}
@@ -146,22 +140,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                       <CustomizedXAxisTick {...props} data={chartGroup[chartId]} />
                     )}
                   />
-                  <YAxis
-                    type="number"
-                    tickLine={true}
-                    tickCount={isCartesianRatioOnly ? 6 : 10}
-                    domain={
-                      isCartesianRatioOnly
-                        ? [0, 1] // 比率グラフの場合は0〜1の範囲
-                        : [0, "auto"] // それ以外の場合はdefault
-                    }
-                    tickFormatter={
-                      isCartesianRatioOnly
-                        ? (value: number) => `${Math.floor(value * 100)}%`
-                        : undefined
-                    }
-                    allowDecimals={isCartesianRatioOnly ? true : false}
-                  />
+                  <YAxis type="number" tickLine={true} tickCount={10} allowDecimals={false} />
                   {Object.keys(chartGroup[chartId].at(-1) ?? {})
                     .filter(
                       (key) =>
@@ -198,9 +177,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                     ))}
                   <ChartTooltip
                     cursor={{ fillOpacity: 0.4, stroke: "hsl(var(--primary))" }}
-                    content={
-                      <ChartTooltipContent className="bg-white" isRatio={isCartesianRatioOnly} />
-                    }
+                    content={<ChartTooltipContent className="bg-white" />}
                     wrapperStyle={{ zIndex: "var(--tooltip-z-index)" }}
                   />
                   {Object.keys(chartGroup[chartId][0]).length <= 10 ? (
