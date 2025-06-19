@@ -188,7 +188,7 @@ export default function App() {
     if (seriesAll && !isLoading && data === undefined) {
       apply();
     }
-  }, []);
+  }, [seriesAll, isLoading, data, apply]);
 
   return (
     <>
