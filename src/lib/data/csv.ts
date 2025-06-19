@@ -98,11 +98,13 @@ export async function getData(
 
     const now = Date.now();
     if (licensePlateApiCache[cacheKey] && (now - licensePlateApiCache[cacheKey].timestamp) < CACHE_TTL) {
-      const rawData = licensePlateApiCache[cacheKey].data;
+      let rawData = licensePlateApiCache[cacheKey].data;
+      rawData = reorderDataColumns(rawData);
       return exclude ? removeColumnFromRawData(rawData, exclude) : rawData;
     }
 
-    const rawData = Object.values((await (await fetch(`https://ktxs4d484a.execute-api.ap-northeast-3.amazonaws.com/prod/?placement=${placement}&objectClass=${objectClass}&dateFrom=${date.from.getTime()}&dateTo=${toDate.getTime() - 1}&likelihoodThreshold=0.75&matchingAttributes=2"`)).json() as {message: string, body: Record<string, AggregatedData>}).body);
+    let rawData = Object.values((await (await fetch(`https://ktxs4d484a.execute-api.ap-northeast-3.amazonaws.com/prod/?placement=${placement}&objectClass=${objectClass}&dateFrom=${date.from.getTime()}&dateTo=${toDate.getTime() - 1}&likelihoodThreshold=0.75&matchingAttributes=2"`)).json() as {message: string, body: Record<string, AggregatedData>}).body);
+    rawData = reorderDataColumns(rawData);
     licensePlateApiCache[cacheKey] = {
       timestamp: now,
       data: rawData
@@ -117,10 +119,6 @@ export async function getData(
   let filteredData = [...rawData].filter((rawDataRow) =>
     isDateIncludedInRange(new Date(rawDataRow["aggregate from"]), date),
   );
-  // 都道府県の順番をPREFECTURESに従って並べ替える
-  if (objectClass === 'LicensePlate') {
-    filteredData = reorderDataColumns(filteredData);
-  }
   if (exclude) filteredData = removeColumnFromRawData(filteredData, exclude);
   return filteredData;
 }
