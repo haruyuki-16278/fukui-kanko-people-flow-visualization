@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
-import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
+import { GraphSeries } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
 import { useLocalDefaultStar } from "@/lib/hooks/local-default-star";
@@ -19,6 +19,7 @@ import * as holidayJP from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
 import { Toaster, toast } from "sonner";
 import { Graph } from "./components/parts/graph.component";
+import { LoadingSpinner } from "./components/parts/loading-spinner.component";
 import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
 import { getDateTimeString } from "./lib/date";
 import { CARTESIAN_RENDER_THRESHOLD } from "./lib/utils";
@@ -38,6 +39,7 @@ function getDefaultDateRange(): DateRange {
   };
 }
 export default function App() {
+  const [hasChanges, setHasChanges] = useState(false);
   const { stars, appendStar, removeStar } = useLocalStars();
   const { defaultStarKey, setDefaultStar, removeDefaultStar } = useLocalDefaultStar();
   const [title, setTitle] = useState<string | undefined>(
@@ -51,12 +53,14 @@ export default function App() {
         : JSON.parse(stars[defaultStarKey] ?? "{}");
     })(),
   );
+  const [graphSeriesAll, setGraphSeriesAll] = useState<typeof seriesAll>({});
   const [dateRange, setDateRange] = useState<DateRange | undefined>(getDefaultDateRange());
   const holidays =
     dateRange && dateRange.from && dateRange.to
       ? holidayJP.between(dateRange.from, dateRange.to)
       : [];
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
   const [checkedKey, setCheckedKey] = useState<string | undefined>(() => {
     return defaultStarKey ?? undefined;
@@ -94,83 +98,97 @@ export default function App() {
       dateRange as { from: Date; to: Date },
     ).map((v) => ({ date: v }));
 
-    // 実データを取得して処理する
-    for await (const [id, series] of Object.entries(seriesAll)) {
-      if (series.placement === undefined || series.objectClass === undefined) return;
+    try {
+      // 実データを取得して処理する
+      for await (const [id, series] of Object.entries(seriesAll)) {
+        if (series.placement === undefined || series.objectClass === undefined) return;
 
-      const rawData = await getData(
-        series.placement,
-        series.objectClass,
-        dateRange as { from: Date; to: Date },
-        series.exclude,
-      );
+        const rawData = await getData(
+          series.placement,
+          series.objectClass,
+          dateRange as { from: Date; to: Date },
+          series.exclude,
+          setIsLoading,
+        );
 
-      if (series.graphType === "simple") {
-        newData = newData.map((newDataRow) => {
-          const rawDataRowTheDay = rawData.find((rawDataRow) => {
-            return String(rawDataRow["aggregate from"].slice(0, 10)) === newDataRow.date;
+        if (series.graphType === "simple") {
+          newData = newData.map((newDataRow) => {
+            const rawDataRowTheDay = rawData.find((rawDataRow) => {
+              return String(rawDataRow["aggregate from"].slice(0, 10)) === newDataRow.date;
+            });
+            const theDayCount = Number(rawDataRowTheDay?.["total count"]);
+            return {
+              ...newDataRow,
+              [id]: isNaN(theDayCount) ? 0 : theDayCount,
+            };
           });
-          const theDayCount = Number(rawDataRowTheDay?.["total count"]);
-          return {
+        } else if (series.graphType === "stack" || series.graphType === "ratio") {
+          const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
+            rawData.map((rawDataRow) => {
+              if (series.focusedAttribute === undefined)
+                throw new Error("invalid focused attribute value.");
+              const list = ATTRIBUTES[series.focusedAttribute];
+              const data: Record<string, string | number> & { "aggregate from": string } = {
+                "aggregate from": rawDataRow["aggregate from"],
+              };
+              Object.keys(list)
+                .filter((listitem) => {
+                  if (!series.exclude || !series.focusedAttribute) return true;
+                  if (!series.exclude[series.focusedAttribute]) return true;
+                  return !series.exclude[series.focusedAttribute].includes(listitem);
+                })
+                .map((listitem) => ({
+                  [`${series.id}#${listitem}`]: Object.keys(rawDataRow)
+                    // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
+                    .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
+                    .map((key) => Number(rawDataRow[key]))
+                    .reduce((sum, current) => (sum += current), 0),
+                }))
+                .forEach((obj) =>
+                  Object.entries(obj).forEach(([k, v]) => {
+                    data[k] = v;
+                  }),
+                );
+              return data;
+            });
+          newData = newData.map((newDataRow) => ({
             ...newDataRow,
-            [id]: isNaN(theDayCount) ? 0 : theDayCount,
-          };
-        });
-      } else if (series.graphType === "stack" || series.graphType === "ratio") {
-        const orientedData: (Record<string, string | number> & { "aggregate from": string })[] =
-          rawData.map((rawDataRow) => {
-            if (series.focusedAttribute === undefined)
-              throw new Error("invalid focused attribute value.");
-            const list = ATTRIBUTES[series.focusedAttribute];
-            const data: Record<string, string | number> & { "aggregate from": string } = {
-              "aggregate from": rawDataRow["aggregate from"],
-            };
-            Object.keys(list)
-              .filter((listitem) => {
-                if (!series.exclude || !series.focusedAttribute) return true;
-                if (!series.exclude[series.focusedAttribute]) return true;
-                return !series.exclude[series.focusedAttribute].includes(listitem);
-              })
-              .map((listitem) => ({
-                [`${series.id}#${listitem}`]: Object.keys(rawDataRow)
-                  // TODO: 厳密でないフィルタなので、もっと壊れづらいものを考える
-                  .filter((key) => key.startsWith(listitem) || key.endsWith(listitem))
-                  .map((key) => Number(rawDataRow[key]))
-                  .reduce((sum, current) => (sum += current), 0),
-              }))
-              .forEach((obj) =>
-                Object.entries(obj).forEach(([k, v]) => {
-                  data[k] = v;
-                }),
-              );
-            return data;
-          });
-        newData = newData.map((newDataRow) => ({
-          ...newDataRow,
-          ...(() => {
-            const orientedDataItem = {
-              ...(orientedData.find(
-                (orientedDataRow) =>
-                  orientedDataRow["aggregate from"].slice(0, 10) === newDataRow.date,
-              ) as Record<string, string | number>),
-            };
-            delete orientedDataItem?.["aggregate from"];
-            return orientedDataItem;
-          })(),
-        }));
+            ...(() => {
+              const orientedDataItem = {
+                ...(orientedData.find(
+                  (orientedDataRow) =>
+                    orientedDataRow["aggregate from"].slice(0, 10) === newDataRow.date,
+                ) as Record<string, string | number>),
+              };
+              delete orientedDataItem?.["aggregate from"];
+              return orientedDataItem;
+            })(),
+          }));
+        }
       }
+      setChartGroup(
+        await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
+      );
+      setData(newData);
+      setHasChanges(false);
+      setGraphSeriesAll({ ...seriesAll });
+    } catch {
+      toast.error("データの処理中にエラーが発生しました");
+    } finally {
+      setIsLoading(false);
     }
-    setChartGroup(
-      await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
-    );
-    setData(newData);
   }, [dateRange, seriesAll]);
 
   useEffect(() => {
-    if (Object.values(seriesAll).every(isSeriesValid)) {
+    setHasChanges(true);
+  }, [seriesAll, dateRange]);
+
+  useEffect(() => {
+    // 初期表示時にお気に入りまたはURLパラメータがある場合は自動的にデータを読み込む
+    if (seriesAll && !isLoading && data === undefined) {
       apply();
     }
-  }, [seriesAll, dateRange]);
+  }, [seriesAll, isLoading, data, apply]);
 
   return (
     <>
@@ -256,6 +274,24 @@ export default function App() {
               ))}
           </div>
         </section>
+        <section className="flex justify-center w-full bg-background sticky bottom-0 py-2">
+          <Button
+            onClick={apply}
+            disabled={
+              !hasChanges ||
+              isLoading ||
+              dateRange === undefined ||
+              Object.values(seriesAll).some(
+                (series) =>
+                  series.placement === undefined ||
+                  series.objectClass === undefined ||
+                  (series.graphType !== "simple" && series.focusedAttribute === undefined),
+              )
+            }
+          >
+            グラフに反映する
+          </Button>
+        </section>
       </aside>
       <article className="flex-glow flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-[calc(100%_-_288px)] flex-col items-center justify-center">
         <div className="flex h-12 w-full gap-x-2 pl-4">
@@ -263,18 +299,18 @@ export default function App() {
             placeholder="グラフタイトル"
             onChange={(ev) => setTitle(ev.target.value !== null ? ev.target.value : undefined)}
             defaultValue={title}
-            disabled={Object.values(seriesAll).length === 0}
+            disabled={Object.values(graphSeriesAll).length === 0}
           />
           <Button
             className="shrink-0"
             variant="outline"
             size="icon"
             disabled={
-              Object.values(seriesAll).length === 0 ||
+              Object.values(graphSeriesAll).length === 0 ||
               (title !== undefined && title !== "" && Object.keys(stars).includes(title))
             }
             onClick={() => {
-              appendStar(title, seriesAll);
+              appendStar(title, graphSeriesAll);
               toast.success(
                 title
                   ? `「${title}」をお気に入りに追加しました`
@@ -289,9 +325,9 @@ export default function App() {
             )}
           </Button>
           <ShareDialogTrigger
-            disabled={!seriesAll || Object.values(seriesAll).length === 0}
+            disabled={!graphSeriesAll || Object.values(graphSeriesAll).length === 0}
             title={title}
-            seriesAll={seriesAll}
+            seriesAll={graphSeriesAll}
           />
           <Toaster richColors closeButton />
         </div>
@@ -301,12 +337,14 @@ export default function App() {
           <Graph
             className="flex-grow h-[calc(100svh_-_96px_-_48px)] min-h-[calc(100svh_-_96px_-_48px)]"
             chartGroup={chartGroup}
-            seriesAll={seriesAll}
+            seriesAll={graphSeriesAll}
           />
         ) : (
           <p className="flex-glow my-auto">グラフに表示するデータをサイドバーで設定して下さい</p>
         )}
       </article>
+
+      {isLoading && <LoadingSpinner />}
     </>
   );
 }
