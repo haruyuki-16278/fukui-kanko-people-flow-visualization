@@ -273,15 +273,7 @@ export default function App() {
           </div>
         </section>
         <section className="flex justify-center w-full bg-background sticky bottom-0 py-2">
-          <Button
-            onClick={apply}
-            disabled={
-              !hasChanges ||
-              isLoading ||
-              dateRange === undefined ||
-              Object.keys(seriesAll).length === 0
-            }
-          >
+          <Button onClick={apply} disabled={!hasChanges || isLoading || dateRange === undefined}>
             グラフに反映する
           </Button>
         </section>
