@@ -103,7 +103,7 @@ export async function getData(
       return exclude ? removeColumnFromRawData(rawData, exclude) : rawData;
     }
 
-    let rawData = Object.values((await (await fetch(`https://ktxs4d484a.execute-api.ap-northeast-3.amazonaws.com/prod/?placement=${placement}&objectClass=${objectClass}&dateFrom=${date.from.getTime()}&dateTo=${toDate.getTime() - 1}&likelihoodThreshold=0.75&matchingAttributes=2"`)).json() as {message: string, body: Record<string, AggregatedData>}).body);
+    let rawData = Object.values((await (await fetch(`https://ktxs4d484a.execute-api.ap-northeast-3.amazonaws.com/prod/?placement=${placement}&objectClass=${objectClass}&dateFrom=${date.from.getTime()}&dateTo=${toDate.getTime() - 1}&likelihoodThreshold=0.75&matchingAttributes=2`)).json() as {message: string, body: Record<string, AggregatedData>}).body);
     rawData = reorderDataColumns(rawData);
     licensePlateApiCache[cacheKey] = {
       timestamp: now,
