@@ -164,8 +164,9 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
   return (
     <MultiChartContainer className={className}>
       {chartIds.map((chartId) => {
-        // 3種類のグラフがある場合は、cartesianとratioのグラフを横に表示
-        const spanClass = hasCartesian && hasRatio ? "" : "first:col-span-2";
+        // 3つ以上円グラフのみの場合、3種類のグラフがある場合、均等配置
+        const spanClass =
+          (!hasCartesian && !hasRatio) || (hasCartesian && hasRatio) ? "" : "first:col-span-2";
 
         return (
           <div key={chartId} className={`h-full w-full flex ${spanClass} flex-col items-center`}>
