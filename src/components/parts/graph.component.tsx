@@ -24,7 +24,15 @@ function MultiChartContainer(props: { children: ReactNode; className?: string })
 
   // スクロールイベントを監視
   useEffect(() => {
-    setShowScrollIcon(childCount > 3);
+    const checkOverflow = () => {
+      if (!containerRef.current) return;
+
+      const { scrollHeight, clientHeight } = containerRef.current;
+      // コンテンツがコンテナより大きい場合にのみアイコンを表示
+      const hasOverflow = scrollHeight > clientHeight;
+      setShowScrollIcon(hasOverflow);
+    };
+
     const handleScroll = () => {
       if (!containerRef.current) return;
 
@@ -34,8 +42,10 @@ function MultiChartContainer(props: { children: ReactNode; className?: string })
       setShowScrollIcon(!isBottom);
     };
 
+    checkOverflow();
+
     const container = containerRef.current;
-    if (container && childCount > 3) {
+    if (container) {
       container.addEventListener("scroll", handleScroll);
     }
 
@@ -183,7 +193,7 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
             ) : undefined}
             <ChartContainer
               config={getChartConfig(seriesAll, chartGroup[chartId], chartId)}
-              className="h-full w-full"
+              className="h-full w-full min-h-0"
             >
               {chartId === "cartesian" ? (
                 <BarChart data={chartGroup[chartId]}>
