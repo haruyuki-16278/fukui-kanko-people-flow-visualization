@@ -233,10 +233,9 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                                 return series.name === undefined || series.name === ""
                                   ? defaultSeriesName(series)
                                   : series.name;
-                              })() +
-                              (attributeKey
-                                ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
-                                : "")
+                              })() + attributeKey
+                              ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
+                              : ""
                             : key
                         }
                         fill={`hsl(var(--chart-${(i % 5) + 1}))`}
@@ -297,10 +296,9 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
                                 return series.name === undefined || series.name === ""
                                   ? defaultSeriesName(series)
                                   : series.name;
-                              })() +
-                              (attributeKey
-                                ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
-                                : "")
+                              })() + attributeKey
+                              ? JAPANESE_ATTRIBUTE_NAME[attributeKey as ObjectClassAttribute]
+                              : ""
                             : key
                         }
                         fill={`hsl(var(--chart-${(i % 5) + 1}))`}
