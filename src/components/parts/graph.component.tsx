@@ -5,7 +5,8 @@ import {
 import { ChartGroup, getChartConfig } from "@/interfaces/graph-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { CARTESIAN_RENDER_THRESHOLD, cn } from "@/lib/utils";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { ChevronDownIcon } from "@primer/octicons-react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
@@ -18,6 +19,32 @@ import {
 function MultiChartContainer(props: { children: ReactNode; className?: string }) {
   // 子要素（グラフ）の数を取得
   const childCount = React.Children.count(props.children);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [showScrollIcon, setShowScrollIcon] = useState(false);
+
+  // スクロールイベントを監視
+  useEffect(() => {
+    setShowScrollIcon(childCount > 3);
+    const handleScroll = () => {
+      if (!containerRef.current) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      // スクロール位置が下部に近づいたらアイコンを非表示
+      const isBottom = scrollTop + clientHeight >= scrollHeight - 20;
+      setShowScrollIcon(!isBottom);
+    };
+
+    const container = containerRef.current;
+    if (container && childCount > 3) {
+      container.addEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, [childCount]);
 
   // グラフの数に応じてレイアウトを変更
   let gridLayout = "";
@@ -35,7 +62,16 @@ function MultiChartContainer(props: { children: ReactNode; className?: string })
     gridLayout = "grid-cols-2 grid-rows-[repeat(auto-fill,_minmax(356px,_1fr))] overflow-y-auto";
   }
   return (
-    <div className={cn(`grid w-full h-full ${gridLayout}`, props.className)}>{props.children}</div>
+    <div className="relative w-full h-full">
+      <div ref={containerRef} className={cn(`grid w-full h-full ${gridLayout}`, props.className)}>
+        {props.children}
+        {showScrollIcon && (
+          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 animate-bounce pointer-events-none">
+            <ChevronDownIcon size={30} className="text-primary" />
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
