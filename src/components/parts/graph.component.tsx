@@ -5,7 +5,7 @@ import {
 import { ChartGroup, getChartConfig } from "@/interfaces/graph-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { CARTESIAN_RENDER_THRESHOLD, cn } from "@/lib/utils";
-import React, { ReactNode, useEffect, useRef, useState } from "react";
+import { Children, ReactNode, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@primer/octicons-react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
 import {
@@ -18,7 +18,7 @@ import {
 
 function MultiChartContainer(props: { children: ReactNode; className?: string }) {
   // 子要素（グラフ）の数を取得
-  const childCount = React.Children.count(props.children);
+  const childCount = Children.count(props.children);
   const containerRef = useRef<HTMLDivElement>(null);
   const [showScrollIcon, setShowScrollIcon] = useState(false);
 
