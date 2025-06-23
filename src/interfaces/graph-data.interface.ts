@@ -28,7 +28,7 @@ export const getChartConfig = (
         if (k === "date") return;
         const [id, attributeKey] = k.split("#");
         const series = seriesAll[id];
-        if (series === undefined) return id;
+        if (series === undefined) return;
         let label = series.name ?? defaultSeriesName(series);
         if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
           label += " " + attributeValueText(series.focusedAttribute, attributeKey);
@@ -41,7 +41,7 @@ export const getChartConfig = (
         if (k === "date") return;
         const [id, attributeKey] = k.split("#");
         const series = seriesAll[id];
-        if (series === undefined) return id;
+        if (series === undefined) return;
         let label = series.name ?? defaultSeriesName(series);
         if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
           label += " " + attributeValueText(series.focusedAttribute, attributeKey);
@@ -53,7 +53,7 @@ export const getChartConfig = (
       data.forEach((v) => {
         const [id, attributeKey] = String(v.name).split("#");
         const series = seriesAll[id];
-        if (series === undefined) return id;
+        if (series === undefined) return;
         let label = series.name ?? defaultSeriesName(series);
         if (attributeKey !== undefined && attributeKey !== "" && series.focusedAttribute)
           label = attributeValueText(series.focusedAttribute, attributeKey);
