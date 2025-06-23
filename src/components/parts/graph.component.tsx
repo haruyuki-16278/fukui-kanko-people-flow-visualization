@@ -76,7 +76,7 @@ function MultiChartContainer(props: { children: ReactNode; className?: string })
       <div ref={containerRef} className={cn(`grid w-full h-full ${gridLayout}`, props.className)}>
         {props.children}
         {showScrollIcon && (
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 animate-bounce pointer-events-none">
+          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 animate-bounce pointer-events-none">
             <ChevronDownIcon size={30} className="text-primary" />
           </div>
         )}
