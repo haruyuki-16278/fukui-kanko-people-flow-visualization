@@ -5,7 +5,7 @@ import {
 import { ChartGroup, getChartConfig } from "@/interfaces/graph-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
 import { CARTESIAN_RENDER_THRESHOLD, cn } from "@/lib/utils";
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
 import {
   ChartContainer,
@@ -16,14 +16,26 @@ import {
 } from "../ui/chart";
 
 function MultiChartContainer(props: { children: ReactNode; className?: string }) {
+  // 子要素（グラフ）の数を取得
+  const childCount = React.Children.count(props.children);
+
+  // グラフの数に応じてレイアウトを変更
+  let gridLayout = "";
+  if (childCount === 1) {
+    // 1つの場合は全画面表示
+    gridLayout = "grid-cols-1 grid-rows-1";
+  } else if (childCount === 2) {
+    // 2つの場合は縦に並べる
+    gridLayout = "grid-cols-1 grid-rows-2";
+  } else if (childCount === 3) {
+    // 3つの場合は上に1つ、下に2つ
+    gridLayout = "grid-cols-2 grid-rows-2";
+  } else {
+    // 4つ以上の場合は2×2のグリッドで固定高さ
+    gridLayout = "grid-cols-2 grid-rows-[repeat(auto-fill,_minmax(356px,_1fr))] overflow-y-auto";
+  }
   return (
-    <div
-      className={cn(
-        `grid overflow-x-hidden overflow-y-auto grid-cols-[repeat(auto-fit,_minmax(50%,_1fr))] grid-rows-1 w-full h-full`,
-      )}
-    >
-      {props.children}
-    </div>
+    <div className={cn(`grid w-full h-full ${gridLayout}`, props.className)}>{props.children}</div>
   );
 }
 
@@ -103,16 +115,24 @@ interface Props {
   className?: string;
 }
 export function Graph({ chartGroup, seriesAll, className }: Props) {
+  const chartIds = Object.keys(chartGroup).filter(
+    (chartId) =>
+      (chartId !== "cartesian" && chartId !== "ratio") ||
+      Object.keys(chartGroup[chartId].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD,
+  );
+
+  // グラフの種類を判定
+  const hasCartesian = chartIds.includes("cartesian");
+  const hasRatio = chartIds.includes("ratio");
+
   return (
     <MultiChartContainer className={className}>
-      {Object.keys(chartGroup)
-        .filter(
-          (chartId) =>
-            (chartId !== "cartesian" && chartId !== "ratio") ||
-            Object.keys(chartGroup[chartId].at(-1) ?? {}).length > CARTESIAN_RENDER_THRESHOLD,
-        )
-        .map((chartId) => (
-          <div key={chartId} className="h-full w-full first:col-span-2 flex flex-col items-center">
+      {chartIds.map((chartId) => {
+        // 3種類のグラフがある場合は、cartesianとratioのグラフを横に表示
+        const spanClass = hasCartesian && hasRatio ? "" : "first:col-span-2";
+
+        return (
+          <div key={chartId} className={`h-full w-full flex ${spanClass} flex-col items-center`}>
             {seriesAll && chartId !== "cartesian" && chartId !== "ratio" ? (
               <p className="-mb-4 pt-4">
                 {(() => {
@@ -277,7 +297,8 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
               )}
             </ChartContainer>
           </div>
-        ))}
+        );
+      })}
     </MultiChartContainer>
   );
 }
