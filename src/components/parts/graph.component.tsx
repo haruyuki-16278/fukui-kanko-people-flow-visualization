@@ -4,7 +4,7 @@ import {
 } from "@/interfaces/aggregated-data.interface";
 import { ChartGroup, getChartConfig } from "@/interfaces/graph-data.interface";
 import { defaultSeriesName, GraphSeries } from "@/interfaces/graph-series.interface";
-import { CARTESIAN_RENDER_THRESHOLD, cn } from "@/lib/utils";
+import { CARTESIAN_RENDER_THRESHOLD, cn, SCROLL_BOTTOM_THRESHOLD } from "@/lib/utils";
 import { Children, ReactNode, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@primer/octicons-react";
 import { Bar, BarChart, CartesianGrid, Cell, Pie, PieChart, XAxis, YAxis } from "recharts";
@@ -38,7 +38,7 @@ function MultiChartContainer(props: { children: ReactNode; className?: string })
 
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
       // スクロール位置が下部に近づいたらアイコンを非表示
-      const isBottom = scrollTop + clientHeight >= scrollHeight - 20;
+      const isBottom = scrollTop + clientHeight >= scrollHeight - SCROLL_BOTTOM_THRESHOLD;
       setShowScrollIcon(!isBottom);
     };
 
