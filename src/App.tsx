@@ -266,23 +266,6 @@ export default function App() {
               ))}
           </div>
         </section>
-        <section className="flex justify-center w-full bg-background sticky bottom-0 py-2">
-          <Button
-            onClick={apply}
-            disabled={
-              isLoading ||
-              dateRange === undefined ||
-              Object.values(seriesAll).some(
-                (series) =>
-                  series.placement === undefined ||
-                  series.objectClass === undefined ||
-                  (series.graphType !== "simple" && series.focusedAttribute === undefined),
-              )
-            }
-          >
-            グラフに反映する
-          </Button>
-        </section>
       </aside>
       <article className="flex-glow flex h-[calc(100svh_-_96px)] min-h-[calc(100svh_-_96px)] w-[calc(100%_-_288px)] flex-col items-center justify-center">
         <div className="flex h-12 w-full gap-x-2 pl-4">
