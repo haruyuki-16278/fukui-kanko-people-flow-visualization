@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ATTRIBUTES } from "@/interfaces/aggregated-data.interface";
-import { GraphSeries } from "@/interfaces/graph-series.interface";
+import { GraphSeries, isSeriesValid } from "@/interfaces/graph-series.interface";
 import { getData } from "@/lib/data/csv";
 import { floorDate, getDateStringRange } from "@/lib/date";
 import { useLocalDefaultStar } from "@/lib/hooks/local-default-star";
@@ -39,7 +39,6 @@ function getDefaultDateRange(): DateRange {
   };
 }
 export default function App() {
-  const [hasChanges, setHasChanges] = useState(false);
   const { stars, appendStar, removeStar } = useLocalStars();
   const { defaultStarKey, setDefaultStar, removeDefaultStar } = useLocalDefaultStar();
   const [title, setTitle] = useState<string | undefined>(
@@ -108,7 +107,6 @@ export default function App() {
           series.objectClass,
           dateRange as { from: Date; to: Date },
           series.exclude,
-          setIsLoading,
         );
 
         if (series.graphType === "simple") {
@@ -170,7 +168,6 @@ export default function App() {
         await dataFromSeriesAll(seriesAll, dateRange as { from: Date; to: Date }, holidays),
       );
       setData(newData);
-      setHasChanges(false);
       setGraphSeriesAll({ ...seriesAll });
     } catch {
       toast.error("データの処理中にエラーが発生しました");
@@ -180,15 +177,10 @@ export default function App() {
   }, [dateRange, seriesAll]);
 
   useEffect(() => {
-    setHasChanges(true);
-  }, [seriesAll, dateRange]);
-
-  useEffect(() => {
-    // 初期表示時にお気に入りまたはURLパラメータがある場合は自動的にデータを読み込む
-    if (seriesAll && !isLoading && data === undefined) {
+    if (Object.values(seriesAll).every(isSeriesValid)) {
       apply();
     }
-  }, [seriesAll, isLoading, data, apply]);
+  }, [seriesAll, dateRange]);
 
   return (
     <>
@@ -278,7 +270,6 @@ export default function App() {
           <Button
             onClick={apply}
             disabled={
-              !hasChanges ||
               isLoading ||
               dateRange === undefined ||
               Object.values(seriesAll).some(
