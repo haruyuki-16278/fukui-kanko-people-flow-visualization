@@ -19,7 +19,6 @@ import * as holidayJP from "@holiday-jp/holiday_jp";
 import { PlusIcon, QuestionIcon, StarFillIcon, StarIcon } from "@primer/octicons-react";
 import { Toaster, toast } from "sonner";
 import { Graph } from "./components/parts/graph.component";
-import { LoadingSpinner } from "./components/parts/loading-spinner.component";
 import { ChartGroup, dataFromSeriesAll } from "./interfaces/graph-data.interface";
 import { getDateTimeString } from "./lib/date";
 import { CARTESIAN_RENDER_THRESHOLD } from "./lib/utils";
@@ -59,7 +58,6 @@ export default function App() {
       ? holidayJP.between(dateRange.from, dateRange.to)
       : [];
   const [data, setData] = useState<Record<string, string | number>[] | undefined>(undefined);
-  const [isLoading, setIsLoading] = useState(false);
   const [chartGroup, setChartGroup] = useState<ChartGroup | undefined>(undefined);
   const [checkedKey, setCheckedKey] = useState<string | undefined>(() => {
     return defaultStarKey ?? undefined;
@@ -171,8 +169,6 @@ export default function App() {
       setGraphSeriesAll({ ...seriesAll });
     } catch {
       toast.error("データの処理中にエラーが発生しました");
-    } finally {
-      setIsLoading(false);
     }
   }, [dateRange, seriesAll]);
 
@@ -317,8 +313,6 @@ export default function App() {
           <p className="flex-glow my-auto">グラフに表示するデータをサイドバーで設定して下さい</p>
         )}
       </article>
-
-      {isLoading && <LoadingSpinner />}
     </>
   );
 }
