@@ -179,7 +179,10 @@ export function Graph({ chartGroup, seriesAll, className }: Props) {
           (!hasCartesian && !hasRatio) || (hasCartesian && hasRatio) ? "" : "first:col-span-2";
 
         return (
-          <div key={chartId} className={`h-full w-full flex ${spanClass} flex-col items-center`}>
+          <div
+            key={chartId}
+            className={`h-full w-full flex ${spanClass} flex-col items-center border border-muted rounded-md shadow-sm`}
+          >
             {seriesAll && chartId !== "cartesian" && chartId !== "ratio" ? (
               <p className="-mb-4 pt-4">
                 {(() => {
