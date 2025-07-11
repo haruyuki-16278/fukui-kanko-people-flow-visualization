@@ -30,9 +30,28 @@ pnpm dev
 
 # または直接指定
 pnpm --filter whole dev
+
+# 全アプリの開発サーバーを同時起動
+pnpm dev:all
+
+# メインアプリ（landing + whole）のみ同時起動
+pnpm dev:main
+
+# 個別のアプリを起動
+pnpm dev:landing        # ランディングページ
+pnpm dev:whole          # 包括的データ可視化アプリ
+pnpm dev:fukui-terminal # 福井駅周辺データ可視化アプリ
+pnpm dev:tojinbo        # 東尋坊データ可視化アプリ
+pnpm dev:rainbow-line   # レインボーラインデータ可視化アプリ
 ```
 
-ブラウザで [http://localhost:3000](http://localhost:3000) を開くことで起動された開発サーバーのビルド結果を閲覧できます。
+ブラウザで各アプリのポートを開くことで起動された開発サーバーのビルド結果を閲覧できます：
+
+- ランディングページ: [http://localhost:3000](http://localhost:3000)
+- 包括的データ可視化: [http://localhost:3000](http://localhost:3000)
+- 福井駅周辺: [http://localhost:3001](http://localhost:3001)
+- 東尋坊: [http://localhost:3002](http://localhost:3002)
+- レインボーライン: [http://localhost:3003](http://localhost:3003)
 
 ### ビルド
 
@@ -40,8 +59,18 @@ pnpm --filter whole dev
 # 包括的データ可視化アプリのビルド
 pnpm build
 
-# 全アプリのビルド
+# 全アプリのビルド（並列実行）
 pnpm build:all
+
+# メインアプリ（landing + whole）のみビルド
+pnpm build:main
+
+# 個別のアプリをビルド
+pnpm build:landing        # ランディングページ
+pnpm build:whole          # 包括的データ可視化アプリ
+pnpm build:fukui-terminal # 福井駅周辺データ可視化アプリ
+pnpm build:tojinbo        # 東尋坊データ可視化アプリ
+pnpm build:rainbow-line   # レインボーラインデータ可視化アプリ
 ```
 
 ### gitサブモジュールの更新
