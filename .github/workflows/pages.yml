@@ -41,16 +41,29 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install dependencies
         run: pnpm install
-      - name: Build with Vite
+      - name: Build all apps and create deploy structure
         run: |
           date
-          pnpm build
+          # 全アプリをビルド
+          pnpm build:all
+          
+          # デプロイ用ディレクトリ作成
+          mkdir -p deploy
+          
+          # 各アプリのdistをコピー
+          cp -r packages/whole/dist deploy/whole
+          cp -r packages/fukui-terminal/dist deploy/fukui-terminal
+          cp -r packages/tojinbo/dist deploy/tojinbo
+          cp -r packages/rainbow-line/dist deploy/rainbow-line
+          
+          # ランディングページをルートにコピー
+          cp -r packages/landing-page/dist/* deploy/
         env:
           PAGES: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./packages/whole/dist
+          path: ./deploy
 
   # GitHub Pagesへデプロイ
   deploy:
