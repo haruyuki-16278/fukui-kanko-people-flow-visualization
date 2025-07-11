@@ -5,11 +5,11 @@
   "type": "module",
   "packageManager": "pnpm@9.10.0+sha512.73a29afa36a0d092ece5271de5177ecbf8318d454ecd701343131b8ebc0c1a91c487da46ab77c8e596d6acf1461e3594ced4becedf8921b074fbd8653ed7051c",
   "scripts": {
-    "dev": "pnpm --filter people-flow-viz dev",
-    "build": "pnpm --filter people-flow-viz build",
+    "dev": "pnpm --filter whole dev",
+    "build": "pnpm --filter whole build",
     "build:all": "pnpm -r build",
     "lint": "pnpm -r lint",
-    "preview": "pnpm --filter people-flow-viz preview",
+    "preview": "pnpm --filter whole preview",
     "prepare": "husky"
   },
   "devDependencies": {
