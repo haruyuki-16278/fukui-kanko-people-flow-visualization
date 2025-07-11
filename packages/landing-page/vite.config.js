@@ -1,6 +1,8 @@
-import { defineConfig } from 'vite'
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 export default defineConfig({
+  plugins: [react()],
   base: process.env.PAGES ? "/fukui-kanko-people-flow-visualization/" : "./",
   server: {
     port: 3004,
@@ -8,8 +10,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: './index.html'
-      }
-    }
-  }
-})
+        main: "./index.html",
+      },
+    },
+  },
+});

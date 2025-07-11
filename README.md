@@ -47,11 +47,14 @@ pnpm dev:rainbow-line   # レインボーラインデータ可視化アプリ
 
 ブラウザで各アプリのポートを開くことで起動された開発サーバーのビルド結果を閲覧できます：
 
-- ランディングページ: [http://localhost:3000](http://localhost:3000)
+- ランディングページ: [http://localhost:3004](http://localhost:3004)
 - 包括的データ可視化: [http://localhost:3000](http://localhost:3000)
 - 福井駅周辺: [http://localhost:3001](http://localhost:3001)
 - 東尋坊: [http://localhost:3002](http://localhost:3002)
 - レインボーライン: [http://localhost:3003](http://localhost:3003)
+
+**ローカル開発時のナビゲーション:**
+ランディングページ（http://localhost:3004）から各アプリへのリンクは、開発環境では自動的に適切なポートに遷移します。各アプリは新しいタブで開きます。
 
 ### ビルド
 

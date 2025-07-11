@@ -9,6 +9,11 @@ function App() {
     document.documentElement.style.padding = "0";
   }, []);
 
+  // 開発環境かどうかを判定
+  const isDev = import.meta.env.DEV;
+  // ローカル開発時はランディングページのポート、本番時は相対パス
+  const homeUrl = isDev ? "http://localhost:3004" : "../";
+
   const containerStyle = {
     minHeight: "100vh",
     width: "100vw",
@@ -64,7 +69,7 @@ function App() {
         <h1 style={titleStyle}>東尋坊データ可視化</h1>
         <p style={messageStyle}>現在開発中です</p>
         <a
-          href="../"
+          href={homeUrl}
           style={buttonStyle}
           onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#7c3aed")}
           onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#8b5cf6")}
