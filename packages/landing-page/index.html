@@ -42,7 +42,7 @@
           <p class="text-gray-600 mb-4">
             全地点のデータを統合して表示し、包括的な分析を行うアプリケーションです。
           </p>
-          <a href="./whole/" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
+          <a href="whole/" class="inline-block bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors">
             アプリを開く
           </a>
         </div>
@@ -61,7 +61,7 @@
           <p class="text-gray-600 mb-4">
             福井駅東口周辺の人流データに特化した詳細分析アプリケーションです。
           </p>
-          <a href="./fukui-terminal/" class="inline-block bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors">
+          <a href="fukui-terminal/" class="inline-block bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors">
             アプリを開く
           </a>
         </div>
@@ -79,7 +79,7 @@
           <p class="text-gray-600 mb-4">
             東尋坊観光地の人流データに特化した詳細分析アプリケーションです。
           </p>
-          <a href="./tojinbo/" class="inline-block bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors">
+          <a href="tojinbo/" class="inline-block bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-colors">
             アプリを開く
           </a>
         </div>
@@ -97,7 +97,7 @@
           <p class="text-gray-600 mb-4">
             レインボーライン駐車場の車両データに特化した詳細分析アプリケーションです。
           </p>
-          <a href="./rainbow-line/" class="inline-block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors">
+          <a href="rainbow-line/" class="inline-block bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition-colors">
             アプリを開く
           </a>
         </div>
@@ -114,5 +114,22 @@
         </p>
       </footer>
     </div>
+
+    <script>
+      // GitHub Pagesでのパス問題を解決するためのスクリプト
+      document.addEventListener('DOMContentLoaded', function() {
+        const currentPath = window.location.pathname;
+        const basePath = currentPath.endsWith('/') ? currentPath : currentPath + '/';
+        
+        // 各アプリへのリンクを動的に設定
+        const links = document.querySelectorAll('a[href^="whole/"], a[href^="fukui-terminal/"], a[href^="tojinbo/"], a[href^="rainbow-line/"]');
+        links.forEach(link => {
+          const href = link.getAttribute('href');
+          if (!href.startsWith('http')) {
+            link.setAttribute('href', basePath + href);
+          }
+        });
+      });
+    </script>
   </body>
 </html>
