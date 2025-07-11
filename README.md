@@ -13,7 +13,7 @@
 ```
 fukui-kanko-visualization/
 ├── packages/
-│   ├── people-flow-viz/     # 人流可視化アプリ（既存）
+│   ├── whole/               # 包括的データ可視化アプリ
 │   ├── shared/              # 共有コンポーネント・ユーティリティ
 │   └── (新しいアプリ)        # 今後追加予定
 ├── data/                    # gitサブモジュール（データ）
@@ -25,11 +25,11 @@ fukui-kanko-visualization/
 ### 開発サーバーの起動
 
 ```bash
-# 人流可視化アプリの開発サーバーを起動
+# 包括的データ可視化アプリの開発サーバーを起動
 pnpm dev
 
 # または直接指定
-pnpm --filter people-flow-viz dev
+pnpm --filter whole dev
 ```
 
 ブラウザで [http://localhost:3000](http://localhost:3000) を開くことで起動された開発サーバーのビルド結果を閲覧できます。
@@ -37,7 +37,7 @@ pnpm --filter people-flow-viz dev
 ### ビルド
 
 ```bash
-# 人流可視化アプリのビルド
+# 包括的データ可視化アプリのビルド
 pnpm build
 
 # 全アプリのビルド
