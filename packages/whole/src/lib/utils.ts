@@ -31,7 +31,7 @@ export async function digest(value: string): Promise<string> {
 
 export function linkPath(path: string) {
   return location.host.endsWith("github.io")
-    ? `/${location.pathname.slice(1).split("/").at(0)}/${path.at(0) === "/" ? path.slice(1) : path}`
+    ? `/${location.pathname.slice(1).split("/").at(0)}/whole/${path.at(0) === "/" ? path.slice(1) : path}`
     : path;
 }
 
