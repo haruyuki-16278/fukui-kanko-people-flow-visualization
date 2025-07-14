@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -66,8 +67,10 @@ function App() {
     cursor: "pointer",
   };
 
-  const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [openStart, setOpenStart] = useState(false);
+  const [openEnd, setOpenEnd] = useState(false);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
 
   return (
     <>
@@ -80,30 +83,53 @@ function App() {
             <Label htmlFor="date" className="px-1">
               開始日
             </Label>
-            <Popover open={open} onOpenChange={setOpen}>
+            <Popover open={openStart} onOpenChange={setOpenStart}>
               <PopoverTrigger asChild>
-                <button
-                  id="date"
-                  type="button"
-                  className="w-48 flex justify-between items-center font-normal border rounded px-3 py-2 cursor-pointer bg-white hover:bg-gray-100"
-                  aria-label="日付選択"
-                >
+                <Button variant="outline" id="date" className="w-48 justify-between font-normal">
                   <span>
-                    {date
-                      ? `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`
+                    {startDate
+                      ? `${startDate.getFullYear()}/${String(startDate.getMonth() + 1).padStart(2, "0")}/${String(startDate.getDate()).padStart(2, "0")}`
                       : "Select date"}
                   </span>
                   <ChevronDownIcon />
-                </button>
+                </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto overflow-hidden p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={date}
+                  selected={startDate}
                   captionLayout="dropdown"
                   onSelect={(date) => {
-                    setDate(date);
-                    setOpen(false);
+                    setStartDate(date);
+                    setOpenStart(false);
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <div className="flex flex-col gap-3">
+            <Label htmlFor="date" className="px-1">
+              終了日
+            </Label>
+            <Popover open={openEnd} onOpenChange={setOpenEnd}>
+              <PopoverTrigger asChild>
+                <Button variant="outline" id="date" className="w-48 justify-between font-normal">
+                  <span>
+                    {endDate
+                      ? `${endDate.getFullYear()}/${String(endDate.getMonth() + 1).padStart(2, "0")}/${String(endDate.getDate()).padStart(2, "0")}`
+                      : "Select date"}
+                  </span>
+                  <ChevronDownIcon />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto overflow-hidden p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={endDate}
+                  captionLayout="dropdown"
+                  onSelect={(date) => {
+                    setEndDate(date);
+                    setOpenEnd(false);
                   }}
                 />
               </PopoverContent>
