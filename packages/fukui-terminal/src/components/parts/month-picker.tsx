@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import * as React from "react";
 
@@ -19,31 +18,17 @@ const months = [
 ];
 
 export interface MonthPickerProps {
-  value?: Date;
   onChange?: (date: Date) => void;
-  year?: number;
   className?: string;
-  selectedMonthIndex?: number;
   selected?: Date;
+  minDate?: Date;
 }
 
-export function MonthPicker({
-  value,
-  onChange,
-  year: initialYear = new Date().getFullYear(),
-  className,
-  selectedMonthIndex,
-  selected,
-}: MonthPickerProps) {
-  const [year, setYear] = React.useState(initialYear);
+export function MonthPicker({ onChange, className, selected, minDate }: MonthPickerProps) {
+  const [year, setYear] = React.useState(new Date().getFullYear());
+
   const selectedMonth =
-    selected && selected.getFullYear() === year
-      ? selected.getMonth()
-      : typeof selectedMonthIndex === "number"
-        ? selectedMonthIndex
-        : value?.getFullYear() === year
-          ? value.getMonth()
-          : null;
+    selected && selected.getFullYear() === year ? selected.getMonth() : undefined;
 
   const handleMonthClick = (monthIndex: number) => {
     if (onChange) {
@@ -52,7 +37,7 @@ export function MonthPicker({
   };
 
   return (
-    <Card className={cn("p-4 w-fit", className)}>
+    <div className={cn("p-4 w-fit", className)}>
       <div className="flex items-center justify-between mb-4">
         <Button variant="ghost" size="icon" onClick={() => setYear((y) => y - 1)}>
           &lt;
@@ -63,17 +48,25 @@ export function MonthPicker({
         </Button>
       </div>
       <div className="grid grid-cols-4 gap-2">
-        {months.map((m, i) => (
-          <Button
-            key={m}
-            variant={selectedMonth === i ? "default" : "outline"}
-            onClick={() => handleMonthClick(i)}
-            className={cn("w-16", selectedMonth === i && "bg-black text-white")}
-          >
-            {m}
-          </Button>
-        ))}
+        {months.map((m, i) => {
+          // minDateが指定されている場合、その年のminDateより前の月はdisabled
+          const isDisabled =
+            minDate &&
+            (year < minDate.getFullYear() ||
+              (year === minDate.getFullYear() && i < minDate.getMonth()));
+          return (
+            <Button
+              key={m}
+              variant={selectedMonth === i ? "default" : "outline"}
+              onClick={() => handleMonthClick(i)}
+              className={cn("w-16", selectedMonth === i && "bg-black text-white")}
+              disabled={isDisabled}
+            >
+              {m}
+            </Button>
+          );
+        })}
       </div>
-    </Card>
+    </div>
   );
 }

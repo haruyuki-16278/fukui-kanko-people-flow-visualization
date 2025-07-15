@@ -1,4 +1,4 @@
-import { MonthPicker } from "@/components/parts/month-picker";
+import { MonthRangePicker } from "@/components/parts/month-range-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
@@ -70,8 +70,6 @@ function App() {
 
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
-  const [openStartMonth, setOpenStartMonth] = useState(false);
-  const [openEndMonth, setOpenEndMonth] = useState(false);
   const [openStartWeek, setOpenStartWeek] = useState(false);
   const [openEndWeek, setOpenEndWeek] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
@@ -109,68 +107,14 @@ function App() {
             }}
           >
             <p style={messageStyle}>月別</p>
-            <div className="flex flex-row gap-6 mb-6">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="date" className="px-1">
-                  開始
-                </Label>
-                <Popover open={openStartMonth} onOpenChange={setOpenStartMonth}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="date"
-                      className="w-48 justify-between font-normal"
-                    >
-                      <span>
-                        {startMonth
-                          ? `${startMonth.getFullYear()}/${String(startMonth.getMonth() + 1).padStart(2, "0")}`
-                          : "Select month"}
-                      </span>
-                      <ChevronDownIcon />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                    <MonthPicker
-                      selected={startMonth}
-                      onChange={(date) => {
-                        setStartMonth(date);
-                        setOpenStartMonth(false);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="date" className="px-1">
-                  終了
-                </Label>
-                <Popover open={openEndMonth} onOpenChange={setOpenEndMonth}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="date"
-                      className="w-48 justify-between font-normal"
-                    >
-                      <span>
-                        {endMonth
-                          ? `${endMonth.getFullYear()}/${String(endMonth.getMonth() + 1).padStart(2, "0")}`
-                          : "Select month"}
-                      </span>
-                      <ChevronDownIcon />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                    <MonthPicker
-                      selected={endMonth}
-                      onChange={(date) => {
-                        setEndMonth(date);
-                        setOpenEndMonth(false);
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
+            <MonthRangePicker
+              startMonth={startMonth}
+              endMonth={endMonth}
+              onChange={(start, end) => {
+                setStartMonth(start);
+                setEndMonth(end);
+              }}
+            />
           </div>
           <div
             style={{
