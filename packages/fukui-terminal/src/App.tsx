@@ -1,10 +1,6 @@
 import { MonthRangePicker } from "@/components/parts/month-range-picker";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Label } from "@/components/ui/label";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { RangeSelector } from "@/components/parts/range-selector";
 import { useEffect, useState } from "react";
-import { ChevronDownIcon } from "lucide-react";
 
 function App() {
   useEffect(() => {
@@ -68,10 +64,6 @@ function App() {
     cursor: "pointer",
   };
 
-  const [openStart, setOpenStart] = useState(false);
-  const [openEnd, setOpenEnd] = useState(false);
-  const [openStartWeek, setOpenStartWeek] = useState(false);
-  const [openEndWeek, setOpenEndWeek] = useState(false);
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [startMonth, setStartMonth] = useState<Date | undefined>(undefined);
@@ -80,14 +72,6 @@ function App() {
     undefined,
   );
   const [endWeekRange, setEndWeekRange] = useState<{ from: Date; to: Date } | undefined>(undefined);
-
-  function getWeekRange(date: Date) {
-    const sunday = new Date(date);
-    sunday.setDate(date.getDate() - sunday.getDay());
-    const saturday = new Date(sunday);
-    saturday.setDate(sunday.getDate() + 6);
-    return { from: sunday, to: saturday };
-  }
 
   return (
     <>
@@ -127,76 +111,13 @@ function App() {
             }}
           >
             <p style={messageStyle}>週別</p>
-            <div className="flex flex-row gap-6 mb-6">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="date" className="px-1">
-                  開始
-                </Label>
-                <Popover open={openStartWeek} onOpenChange={setOpenStartWeek}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="date"
-                      className="w-48 justify-between font-normal"
-                    >
-                      <span>
-                        {startWeekRange
-                          ? `${startWeekRange.from.getFullYear()}/${startWeekRange.from.getMonth() + 1}/${startWeekRange.from.getDate()} ~ ${startWeekRange.to.getFullYear()}/${startWeekRange.to.getMonth() + 1}/${startWeekRange.to.getDate()}`
-                          : "Select week"}
-                      </span>
-                      <ChevronDownIcon />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                    <Calendar
-                      mode="range"
-                      selected={startWeekRange}
-                      captionLayout="dropdown"
-                      onSelect={(date) => {
-                        if (date?.from) {
-                          setStartWeekRange(getWeekRange(date.from));
-                          setOpenStartWeek(false);
-                        }
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="date" className="px-1">
-                  終了
-                </Label>
-                <Popover open={openEndWeek} onOpenChange={setOpenEndWeek}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      id="date"
-                      className="w-48 justify-between font-normal"
-                    >
-                      <span>
-                        {endWeekRange
-                          ? `${endWeekRange.from.getFullYear()}/${endWeekRange.from.getMonth() + 1}/${endWeekRange.from.getDate()} ~ ${endWeekRange.to.getFullYear()}/${endWeekRange.to.getMonth() + 1}/${endWeekRange.to.getDate()}`
-                          : "Select week"}
-                      </span>
-                      <ChevronDownIcon />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                    <Calendar
-                      mode="range"
-                      selected={endWeekRange}
-                      captionLayout="dropdown"
-                      onSelect={(date) => {
-                        if (date?.from) {
-                          setEndWeekRange(getWeekRange(date.from));
-                          setOpenEndWeek(false);
-                        }
-                      }}
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
+            <RangeSelector
+              type="week"
+              start={startWeekRange}
+              end={endWeekRange}
+              setStart={setStartWeekRange}
+              setEnd={setEndWeekRange}
+            />
           </div>
           <div
             style={{
@@ -209,74 +130,13 @@ function App() {
             }}
           >
             <p style={messageStyle}>日別/時間別</p>
-            <div className="flex flex-row gap-6 mb-6">
-              <div className="flex flex-row gap-6 mb-6">
-                <div className="flex flex-col gap-3">
-                  <Label htmlFor="date" className="px-1">
-                    開始
-                  </Label>
-                  <Popover open={openStart} onOpenChange={setOpenStart}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        id="date"
-                        className="w-48 justify-between font-normal"
-                      >
-                        <span>
-                          {startDate
-                            ? `${startDate.getFullYear()}/${String(startDate.getMonth() + 1).padStart(2, "0")}/${String(startDate.getDate()).padStart(2, "0")}`
-                            : "Select date"}
-                        </span>
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={startDate}
-                        captionLayout="dropdown"
-                        onSelect={(date) => {
-                          setStartDate(date);
-                          setOpenStart(false);
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="flex flex-col gap-3">
-                  <Label htmlFor="date" className="px-1">
-                    終了
-                  </Label>
-                  <Popover open={openEnd} onOpenChange={setOpenEnd}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        id="date"
-                        className="w-48 justify-between font-normal"
-                      >
-                        <span>
-                          {endDate
-                            ? `${endDate.getFullYear()}/${String(endDate.getMonth() + 1).padStart(2, "0")}/${String(endDate.getDate()).padStart(2, "0")}`
-                            : "Select date"}
-                        </span>
-                        <ChevronDownIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto overflow-hidden p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={endDate}
-                        captionLayout="dropdown"
-                        onSelect={(date) => {
-                          setEndDate(date);
-                          setOpenEnd(false);
-                        }}
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </div>
-            </div>
+            <RangeSelector
+              type="date"
+              start={startDate}
+              end={endDate}
+              setStart={setStartDate}
+              setEnd={setEndDate}
+            />
           </div>
           <a
             href={homeUrl}
