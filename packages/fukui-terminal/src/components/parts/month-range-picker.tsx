@@ -54,6 +54,7 @@ export function MonthRangePicker({ startMonth, endMonth, onChange }: MonthRangeP
           </PopoverContent>
         </Popover>
       </div>
+      <div className="flex items-end pb-1 text-xl">〜</div>
       <div className="flex flex-col gap-3">
         <Label className="px-1">終了</Label>
         <Popover open={openEndMonth} onOpenChange={setOpenEndMonth}>
