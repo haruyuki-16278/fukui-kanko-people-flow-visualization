@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "lucide-react";
 
 type WeekRange = { from: Date; to: Date } | undefined;
@@ -24,17 +24,27 @@ type Props =
     };
 
 /**
+ * 週の範囲選択時の処理関数
+ */
+function handleWeekRangeSelect(
+  date: { from?: Date; to?: Date } | undefined,
+  current: WeekRange,
+  setRange: (range: WeekRange) => void,
+  close: () => void,
+) {
+  if (date?.from && current?.from && date.from < current.from) {
+    setRange(getWeekRange(date.from));
+  } else if (date?.to) {
+    setRange(getWeekRange(date.to));
+  }
+  close();
+}
+
+/**
  * 日付を "YYYY/MM/DD" 形式で返す
  */
 function formatDate(date: Date) {
   return `${date.getFullYear()}/${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}`;
-}
-
-/**
- * 週レンジを "YYYY/MM/DD ~ YYYY/MM/DD" 形式で返す
- */
-function formatWeekRange(range: { from: Date; to: Date }) {
-  return `${formatDate(range.from)} ~ ${formatDate(range.to)}`;
 }
 
 function getWeekRange(date: Date) {
@@ -45,9 +55,28 @@ function getWeekRange(date: Date) {
   return { from: startDay, to: endDay };
 }
 
+/**
+ * 終了日が開始日より前の日付を選択できないようにする
+ */
+function isBeforeStart(start: Date | undefined) {
+  return start ? (date: Date) => date < start : undefined;
+}
+
 export const RangeSelector = (props: Props) => {
   const [openStart, setOpenStart] = useState(false);
   const [openEnd, setOpenEnd] = useState(false);
+
+  useEffect(() => {
+    if (props.type === "week") {
+      if (props.start?.from && props.end?.from && props.start.from > props.end.from) {
+        props.setEnd(undefined);
+      }
+    } else {
+      if (props.start && props.end && props.start > props.end) {
+        props.setEnd(undefined);
+      }
+    }
+  }, [props.start]);
 
   return (
     <div className="flex flex-row gap-6 mb-6">
@@ -59,7 +88,7 @@ export const RangeSelector = (props: Props) => {
               <span>
                 {props.type === "week"
                   ? props.start
-                    ? formatWeekRange(props.start)
+                    ? formatDate(props.start.from)
                     : "Select week"
                   : props.start
                     ? formatDate(props.start)
@@ -75,10 +104,9 @@ export const RangeSelector = (props: Props) => {
                 selected={props.start}
                 captionLayout="dropdown"
                 onSelect={(date) => {
-                  if (date?.from) {
-                    props.setStart(getWeekRange(date.from));
-                    setOpenStart(false);
-                  }
+                  handleWeekRangeSelect(date, props.start, props.setStart, () =>
+                    setOpenStart(false),
+                  );
                 }}
               />
             ) : (
@@ -99,11 +127,15 @@ export const RangeSelector = (props: Props) => {
         <Label className="px-1">終了</Label>
         <Popover open={openEnd} onOpenChange={setOpenEnd}>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="w-48 justify-between font-normal">
+            <Button
+              variant="outline"
+              className="w-48 justify-between font-normal"
+              disabled={!props.start}
+            >
               <span>
                 {props.type === "week"
                   ? props.end
-                    ? formatWeekRange(props.end)
+                    ? formatDate(props.end.to)
                     : "Select week"
                   : props.end
                     ? formatDate(props.end)
@@ -118,11 +150,9 @@ export const RangeSelector = (props: Props) => {
                 mode="range"
                 selected={props.end}
                 captionLayout="dropdown"
+                disabled={isBeforeStart(props.start?.from)}
                 onSelect={(date) => {
-                  if (date?.from) {
-                    props.setEnd(getWeekRange(date.from));
-                    setOpenEnd(false);
-                  }
+                  handleWeekRangeSelect(date, props.end, props.setEnd, () => setOpenEnd(false));
                 }}
               />
             ) : (
@@ -130,6 +160,7 @@ export const RangeSelector = (props: Props) => {
                 mode="single"
                 selected={props.end}
                 captionLayout="dropdown"
+                disabled={isBeforeStart(props.start)}
                 onSelect={(date) => {
                   props.setEnd(date);
                   setOpenEnd(false);
