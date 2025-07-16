@@ -90,7 +90,17 @@ function App() {
           <p style={messageStyle}>現在開発中です</p>
           <Select
             value={theme}
-            onValueChange={(v) => setTheme(v as "month" | "week" | "day" | "hour")}
+            onValueChange={(v) => {
+              const newTheme = v as "month" | "week" | "day" | "hour";
+              setTheme(newTheme);
+              // テーマ変更時に値をリセット
+              setStartMonth(undefined);
+              setEndMonth(undefined);
+              setStartDate(undefined);
+              setEndDate(undefined);
+              setStartWeekRange(undefined);
+              setEndWeekRange(undefined);
+            }}
           >
             <SelectTrigger className="w-[180px] bg-white text-black">
               <SelectValue placeholder="Theme" />
