@@ -1,5 +1,12 @@
 import { MonthRangePicker } from "@/components/parts/month-range-picker";
 import { RangeSelector } from "@/components/parts/range-selector";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useEffect, useState } from "react";
 
 function App() {
@@ -72,6 +79,7 @@ function App() {
     undefined,
   );
   const [endWeekRange, setEndWeekRange] = useState<{ from: Date; to: Date } | undefined>(undefined);
+  const [theme, setTheme] = useState<"month" | "week" | "day" | "hour">("month");
 
   return (
     <>
@@ -80,17 +88,21 @@ function App() {
           <div style={emojiStyle}>🚧</div>
           <h1 style={titleStyle}>福井駅周辺データ可視化</h1>
           <p style={messageStyle}>現在開発中です</p>
-          <div
-            style={{
-              border: "2px solid #e5e7eb",
-              borderRadius: "1rem",
-              background: "#f9fafb",
-              padding: "2rem",
-              marginBottom: "2rem",
-              display: "inline-block",
-            }}
+          <Select
+            value={theme}
+            onValueChange={(v) => setTheme(v as "month" | "week" | "day" | "hour")}
           >
-            <p style={messageStyle}>月別</p>
+            <SelectTrigger className="w-[180px] bg-white text-black">
+              <SelectValue placeholder="Theme" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="month">月別</SelectItem>
+              <SelectItem value="week">週別</SelectItem>
+              <SelectItem value="day">日別</SelectItem>
+              <SelectItem value="hour">時間別</SelectItem>
+            </SelectContent>
+          </Select>
+          {theme === "month" && (
             <MonthRangePicker
               startMonth={startMonth}
               endMonth={endMonth}
@@ -99,18 +111,9 @@ function App() {
                 setEndMonth(end);
               }}
             />
-          </div>
-          <div
-            style={{
-              border: "2px solid #e5e7eb",
-              borderRadius: "1rem",
-              background: "#f9fafb",
-              padding: "2rem",
-              marginBottom: "2rem",
-              display: "inline-block",
-            }}
-          >
-            <p style={messageStyle}>週別</p>
+          )}
+
+          {theme === "week" && (
             <RangeSelector
               type="week"
               start={startWeekRange}
@@ -118,18 +121,9 @@ function App() {
               setStart={setStartWeekRange}
               setEnd={setEndWeekRange}
             />
-          </div>
-          <div
-            style={{
-              border: "2px solid #e5e7eb",
-              borderRadius: "1rem",
-              background: "#f9fafb",
-              padding: "2rem",
-              marginBottom: "2rem",
-              display: "inline-block",
-            }}
-          >
-            <p style={messageStyle}>日別/時間別</p>
+          )}
+
+          {(theme === "day" || theme === "hour") && (
             <RangeSelector
               type="date"
               start={startDate}
@@ -137,7 +131,7 @@ function App() {
               setStart={setStartDate}
               setEnd={setEndDate}
             />
-          </div>
+          )}
           <a
             href={homeUrl}
             style={buttonStyle}
