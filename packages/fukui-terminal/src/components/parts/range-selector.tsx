@@ -3,7 +3,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useEffect, useState } from "react";
-import { ChevronDownIcon } from "lucide-react";
+import { CalendarIcon } from "@primer/octicons-react";
 
 type WeekRange = { from: Date; to: Date } | undefined;
 
@@ -104,7 +104,7 @@ export const RangeSelector = (props: Props) => {
                     ? formatDate(props.start)
                     : "Select date"}
               </span>
-              <ChevronDownIcon />
+              <CalendarIcon size={24} />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
@@ -152,7 +152,7 @@ export const RangeSelector = (props: Props) => {
                     ? formatDate(props.end)
                     : "Select date"}
               </span>
-              <ChevronDownIcon />
+              <CalendarIcon size={24} />
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-auto overflow-hidden p-0" align="start">
